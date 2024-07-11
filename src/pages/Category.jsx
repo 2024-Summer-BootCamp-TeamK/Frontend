@@ -1,35 +1,47 @@
 import React from 'react';
 import styled from 'styled-components';
-
+import logo from './images/file.png';  
 const items = [
     { id: 1, label: '계약서 1' },
     { id: 2, label: '계약서 2' },
     { id: 3, label: '근로 계약서' },
     { id: 4, label: '계약서 4' },
     { id: 5, label: '계약서 5' },
-  ];
+];
 
-  const Category = () => {
-    const [activeIndex, setActiveIndex] = React.useState(0);
-  
+const Category = () => {
+    const [activeIndex, setActiveIndex] = React.useState(2);
+
+    const handlePrev = () => {
+        setActiveIndex((prevIndex) => (prevIndex - 1 + items.length) % items.length);
+    };
+
+    const handleNext = () => {
+        setActiveIndex((prevIndex) => (prevIndex + 1) % items.length);
+    };
+
     return (
-      <Container>
-        <Carousel>
-          {items.map((item, index) => (
-            <CarouselItem
-              key={item.id}
-              className={index === activeIndex}
-              onClick={() => setActiveIndex(index)}
-            >
-              <IconWrapper active={index === activeIndex}>
-              <Icon />
-            </IconWrapper>
-            <Label>{item.label}</Label>
-          </CarouselItem>
-        ))}
-      </Carousel>
-    </Container>
-  );
+        <Container>
+            <ArrowButton onClick={handlePrev}>{"<"}</ArrowButton>
+            <Carousel>
+                <CarouselTrack activeIndex={activeIndex}>
+                    {items.map((item, index) => (
+                        <CarouselItem
+                            key={item.id}
+                            active={index === activeIndex}
+                            onClick={() => setActiveIndex(index)}
+                        >
+                            <IconWrapper active={index === activeIndex}>
+                                <Icon src={logo} />
+                            </IconWrapper>
+                            <Label>{item.label}</Label>
+                        </CarouselItem>
+                    ))}
+                </CarouselTrack>
+            </Carousel>
+            <ArrowButton onClick={handleNext}>{">"}</ArrowButton>
+        </Container>
+    );
 };
 
 export default Category;
@@ -37,28 +49,38 @@ export default Category;
 // Styled-components
 const Container = styled.div`
   display: flex;
+  justify-content: center;
   align-items: center;
-  height: 100vh; /* 화면 높이 전체를 차지하도록 설정 */
+  height: 100vh;
   width: 100%;
-  padding: 0 100px; /* 양쪽에 패딩을 추가하여 시작과 끝에서의 간격을 확보 */
+  padding: 20px;
+  box-sizing: border-box;
 `;
 
 const Carousel = styled.div`
   display: flex;
-  justify-content: space-evenly;;
+  justify-content: center;
   align-items: center;
-  width: 100%;
+  width: 80%;
+  white-space: nowrap;
+  overflow: hidden;
 `;
 
 const CarouselItem = styled.div`
-  display: flex;
+  display: inline-flex;
   flex-direction: column;
   align-items: center;
-  margin:  10px;
+  margin: 10px;
   cursor: pointer;
   opacity: ${props => (props.active ? 1 : 0.5)};
   transform: ${props => (props.active ? 'scale(1.2)' : 'scale(1)')};
   transition: transform 0.3s ease, opacity 0.3s ease;
+`;
+
+const CarouselTrack = styled.div`
+  display: flex;
+  transition: transform 0.5s ease-in-out;
+  transform: ${({ activeIndex }) => `translateX(calc(50% - ${(activeIndex * 246.73) + 123.365}px))`};
 `;
 
 const IconWrapper = styled.div`
@@ -70,18 +92,39 @@ const IconWrapper = styled.div`
   justify-content: center;
   align-items: center;
   margin-bottom: 10px;
+
+  @media (max-width: 768px) {
+    width: 118.36px;
+    height: 138.21px;
+  }
 `;
 
-const Icon = styled.div`
+const Icon = styled.img`
   width: 50px;
   height: 50px;
-  background-image: url('/path/to/your/icon.png'); /* 실제 아이콘 경로 설정 */
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-position: center;
+  object-fit: contain;
 `;
 
 const Label = styled.span`
   font-size: 30px;
   color: black;
+
+  @media (max-width: 768px) {
+    font-size: 15px;
+  }
+`;
+
+const ArrowButton = styled.button`
+  background-color: #141F7B;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  font-size: 24px;
+  cursor: pointer;
+  margin: 0 10px;
+  border-radius: 5px;
+
+  &:hover {
+    background-color: #0f154b;
+  }
 `;
