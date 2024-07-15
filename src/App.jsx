@@ -10,6 +10,8 @@ import Reviewresult from "./pages/Reviewresult";
 import Key from "./pages/Key.jsx";
 import Keyinput from "./pages/Keyinput.jsx";
 
+
+import Popupexplain from "./components/Popupexlain.jsx";
 import C from "./pages/C.jsx";
 
 function App() {
@@ -24,6 +26,7 @@ function App() {
           <Route path="/Urlentrance" element={<Urlentrance />} />
           <Route path="/Reviewresult" element={<Reviewresult />} />
           <Route path="/C" element={<C />} />
+          <Route path="/explain" element={<Popupexplain />} />
           <Route path="/key" element={<Key />} />
           <Route path="/keyinput" element={<Keyinput />} />
         </Routes>

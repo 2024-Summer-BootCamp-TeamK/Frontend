@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import Buttonall from '../components/Buttonall';
 
 const PopupWrapper = styled.div`
-   display: flex;
+  display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;

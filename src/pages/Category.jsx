@@ -1,8 +1,7 @@
-import React from "react";
-import styled from "styled-components";
+import React, { useState, useEffect } from "react";
+import styled, { createGlobalStyle, keyframes, css } from "styled-components";
 import Button from "../components/Button";
 import fileSrc from "../images/file.svg";
-
 import {
   Headerall,
   LogoContainer,
@@ -10,6 +9,21 @@ import {
   ButtonContainer,
 } from "../components/Headerall";
 import logoSrc from "../images/logo.svg"; // logo.svg 파일 경로를 올바르게 설정
+
+const GlobalStyle = createGlobalStyle`
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  body {
+    width: 100%;
+    height: 100vh;
+    overflow: hidden;
+  }
+`;
+
 const items = [
   { id: 1, label: "계약서 1" },
   { id: 2, label: "계약서 2" },
@@ -17,18 +31,41 @@ const items = [
   { id: 4, label: "계약서 4" },
   { id: 5, label: "계약서 5" },
 ];
+
+// 카드 슬라이더 애니메이션
+const slideLeft = keyframes`
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-33.33%);
+  }
+`;
+
+const slideRight = keyframes`
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(33.33%);
+  }
+`;
+
 const Category = () => {
-  const [activeIndex, setActiveIndex] = React.useState(2);
+  const [activeIndex, setActiveIndex] = useState(2);
+  const [itemsQueue, setItemsQueue] = useState(items);
+
   const handlePrev = () => {
-    setActiveIndex(
-      (prevIndex) => (prevIndex - 1 + items.length) % items.length
-    );
+    setItemsQueue((prevItems) => [prevItems[prevItems.length - 1], ...prevItems.slice(0, -1)]);
   };
+
   const handleNext = () => {
-    setActiveIndex((prevIndex) => (prevIndex + 1) % items.length);
+    setItemsQueue((prevItems) => [...prevItems.slice(1), prevItems[0]]);
   };
+
   return (
     <>
+      <GlobalStyle />
       <div>
         <Headerall>
           <LogoContainer>
@@ -44,41 +81,41 @@ const Category = () => {
       <Container>
         <ArrowButton onClick={handlePrev}>{"<"}</ArrowButton>
         <Carousel>
-          <CarouselTrack activeIndex={activeIndex}>
-            {items.map((item, index) => (
+          <CardSlider>
+            {itemsQueue.slice(0, 5).map((item, index) => (
               <CarouselItem
                 key={item.id}
                 active={index === activeIndex}
-                onClick={() => setActiveIndex(index)}
               >
                 <IconWrapper active={index === activeIndex}>
-                  <Icon src={fileSrc} /> {/* logoSrc를 올바르게 설정 */}
+                  <Icon src={fileSrc} alt={item.label} />
                 </IconWrapper>
                 <Label>{item.label}</Label>
               </CarouselItem>
             ))}
-          </CarouselTrack>
+          </CardSlider>
         </Carousel>
         <ArrowButton onClick={handleNext}>{">"}</ArrowButton>
       </Container>
     </>
   );
 };
+
 export default Category;
 
 // Styled-components
 const Title = styled.h1`
   text-align: center;
-  margin: 50px 0;
+  margin: 120px 0 50px 0;
   font-size: 24px;
-  color: #141F7B; 
+  color: #141F7B;
 `;
 
 const Container = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 900px; /* 필요한 높이로 설정 */
+  height: calc(100vh - 120px);
   width: 100%;
   overflow: hidden;
 `;
@@ -89,47 +126,43 @@ const Carousel = styled.div`
   align-items: center;
   width: 80%;
   height: 150%;
-  white-space: nowrap;
   overflow: hidden;
 `;
+
+const CardSlider = styled.div`
+  display: flex;
+  transition: transform 0.5s ease-in-out;
+`;
+
 const CarouselItem = styled.div`
   display: inline-flex;
   flex-direction: column;
   align-items: center;
-  margin: 10px;
+  width: 20%;
+  margin:  5%;
   cursor: pointer;
   opacity: ${(props) => (props.active ? 1 : 0.5)};
   transform: ${(props) => (props.active ? "scale(1.2)" : "scale(1)")};
-  transition:
-    transform 0.3s ease,
-    opacity 0.3s ease;
+  transition: transform 0.3s ease, opacity 0.3s ease;
 `;
-const CarouselTrack = styled.div`
-  display: flex;
-  transition: transform 0.5s ease-in-out;
-  transform: ${({ activeIndex }) =>
-    `translateX(calc(50% - ${activeIndex * 246.73 + 123.365}px))`};
-`;
+
 const IconWrapper = styled.div`
-  width: 236.73px;
-  height: 276.43px;
+  width: 100%;
+  height: auto;
   background-color: ${(props) => (props.active ? "#141F7B" : "#FAD23F")};
   border-radius: 10%;
   display: flex;
   justify-content: center;
   align-items: center;
   margin-bottom: 10px;
-  @media (max-width: 768px) {
-    width: 118.36px;
-    height: 138.21px;
-  }
 `;
+
 const Icon = styled.img`
   width: 150px;
   height: 150px;
   object-fit: contain;
-  margin-left: 20px; /* 오른쪽으로 이동 */
 `;
+
 const Label = styled.span`
   font-size: 30px;
   color: black;
@@ -137,6 +170,7 @@ const Label = styled.span`
     font-size: 15px;
   }
 `;
+
 const ArrowButton = styled.button`
   background-color: #141F7B;
   color: white;

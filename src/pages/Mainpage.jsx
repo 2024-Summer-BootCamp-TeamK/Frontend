@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Button from "../components/Button";
 import {
   Header,
@@ -20,10 +20,27 @@ import mainendSrc from "../images/mainend.svg";
 import Orangebutton from "../components/Orangebutton";
 
 const Mainpage = () => {
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  const handleScroll = () => {
+    if (window.scrollY > 0) {
+      setIsScrolled(true);
+    } else {
+      setIsScrolled(false);
+    }
+  };
+
+  useEffect(() => {
+    window.addEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
   return (
     <>
       <div style={{ backgroundColor: "#fefdf6" }}>
-        <Header>
+        <Header isScrolled={isScrolled}>
           <LogoContainer>
             <Logo data={logoSrc} type="image/svg+xml" />
           </LogoContainer>
