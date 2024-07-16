@@ -7,10 +7,9 @@ import Fileupload from "./pages/Fileupload";
 import Fileuploadshare from "./pages/Fileuploadshare";
 import Urlentrance from "./pages/Urlentrance";
 import Reviewresult from "./pages/Reviewresult";
+import ContractShare from "./pages/ContractShare.jsx";
 import Key from "./pages/Key.jsx";
 import Keyinput from "./pages/Keyinput.jsx";
-
-
 import Popupexplain from "./components/Popupexlain.jsx";
 import C from "./pages/C.jsx";
 
@@ -25,6 +24,7 @@ function App() {
           <Route path="/fileuploadshare" element={<Fileuploadshare />} />
           <Route path="/Urlentrance" element={<Urlentrance />} />
           <Route path="/Reviewresult" element={<Reviewresult />} />
+          <Route path="/ContractShare" element={<ContractShare />} />
           <Route path="/C" element={<C />} />
           <Route path="/explain" element={<Popupexplain />} />
           <Route path="/key" element={<Key />} />
