@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import logo from './images/file.png';  
+import logo from '../images/file.png';  
 const items = [
     { id: 1, label: '계약서 1' },
     { id: 2, label: '계약서 2' },
