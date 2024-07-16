@@ -32,25 +32,6 @@ const items = [
   { id: 5, label: "계약서 5" },
 ];
 
-// 카드 슬라이더 애니메이션
-const slideLeft = keyframes`
-  0% {
-    transform: translateX(0);
-  }
-  100% {
-    transform: translateX(-33.33%);
-  }
-`;
-
-const slideRight = keyframes`
-  0% {
-    transform: translateX(0);
-  }
-  100% {
-    transform: translateX(33.33%);
-  }
-`;
-
 const Category = () => {
   const [activeIndex, setActiveIndex] = useState(2);
   const [itemsQueue, setItemsQueue] = useState(items);
@@ -83,10 +64,7 @@ const Category = () => {
         <Carousel>
           <CardSlider>
             {itemsQueue.slice(0, 5).map((item, index) => (
-              <CarouselItem
-                key={item.id}
-                active={index === activeIndex}
-              >
+              <CarouselItem key={item.id} active={index === activeIndex}>
                 <IconWrapper active={index === activeIndex}>
                   <Icon src={fileSrc} alt={item.label} />
                 </IconWrapper>
@@ -118,6 +96,7 @@ const Container = styled.div`
   height: calc(100vh - 120px);
   width: 100%;
   overflow: hidden;
+  position: relative; // Container에 상대 위치 지정
 `;
 
 const Carousel = styled.div`
@@ -125,30 +104,38 @@ const Carousel = styled.div`
   justify-content: center;
   align-items: center;
   width: 80%;
-  height: 150%;
+  height: 100%;
   overflow: hidden;
 `;
 
 const CardSlider = styled.div`
   display: flex;
+  justify-content: center;  // 중앙 정렬 추가
   transition: transform 0.5s ease-in-out;
 `;
 
 const CarouselItem = styled.div`
-  display: inline-flex;
+  display: flex;
   flex-direction: column;
   align-items: center;
-  width: 20%;
-  margin:  5%;
+  width: 220px; // 카드 너비 설정
+  height: 300px; // 카드 높이 설정
+  margin: 0 10px;
   cursor: pointer;
   opacity: ${(props) => (props.active ? 1 : 0.5)};
   transform: ${(props) => (props.active ? "scale(1.2)" : "scale(1)")};
   transition: transform 0.3s ease, opacity 0.3s ease;
+
+  @media (max-width: 768px) {
+    width: 150px;
+    height: 175px;
+    margin: 0 5px;
+  }
 `;
 
 const IconWrapper = styled.div`
   width: 100%;
-  height: auto;
+  height: 80%; // 아이콘 래퍼 높이를 키움
   background-color: ${(props) => (props.active ? "#141F7B" : "#FAD23F")};
   border-radius: 10%;
   display: flex;
@@ -158,16 +145,21 @@ const IconWrapper = styled.div`
 `;
 
 const Icon = styled.img`
-  width: 150px;
-  height: 150px;
+  width: 70%; // 아이콘의 크기를 부모 요소에 맞게 조정
+  height: auto;
   object-fit: contain;
+
+  @media (max-width: 768px) {
+    width: 80px;
+    height: 80px;
+  }
 `;
 
 const Label = styled.span`
-  font-size: 30px;
+  font-size: 16px;
   color: black;
   @media (max-width: 768px) {
-    font-size: 15px;
+    font-size: 12px;
   }
 `;
 
@@ -178,9 +170,25 @@ const ArrowButton = styled.button`
   padding: 10px 20px;
   font-size: 24px;
   cursor: pointer;
-  margin: 0 10px;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
   border-radius: 5px;
+
   &:hover {
     background-color: #0F154B;
+  }
+
+  &:first-of-type {
+    left: 0;
+  }
+
+  &:last-of-type {
+    right: 0;
+  }
+
+  @media (max-width: 768px) {
+    font-size: 18px;
+    padding: 5px 10px;
   }
 `;
