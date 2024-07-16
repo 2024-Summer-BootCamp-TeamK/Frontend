@@ -7,6 +7,7 @@ import Fileupload from "./pages/Fileupload";
 import Fileuploadshare from "./pages/Fileuploadshare";
 import Urlentrance from "./pages/Urlentrance";
 import Reviewresult from "./pages/Reviewresult";
+import ContractShare from "./pages/ContractShare.jsx";
 function App() {
   return (
     <>
@@ -18,6 +19,7 @@ function App() {
           <Route path="/fileuploadshare" element={<Fileuploadshare />} />
           <Route path="/Urlentrance" element={<Urlentrance />} />
           <Route path="/Reviewresult" element={<Reviewresult />} />
+          <Route path="/ContractShare" element={<ContractShare />} />
         </Routes>
       </Router>
     </>
