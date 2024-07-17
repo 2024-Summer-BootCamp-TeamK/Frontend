@@ -28,6 +28,7 @@ const Button = styled.button`
   }
   svg {
     fill: rgba(255, 255, 255, 0.8); /* fill 속성에 투명도가 80%인 흰색 적용 */
+
     stroke: #141f7b; /* 기본 stroke 색상 */
     stroke-width: 2; /* stroke-width 속성 설정 */
   }
