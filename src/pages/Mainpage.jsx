@@ -22,15 +22,11 @@ import Orangebutton from "../components/Orangebutton";
 const Mainpage = () => {
   const [isScrolled, setIsScrolled] = useState(false);
 
-  const handleScroll = () => {
-    if (window.scrollY > 0) {
-      setIsScrolled(true);
-    } else {
-      setIsScrolled(false);
-    }
-  };
-
   useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 0);
+    };
+
     window.addEventListener("scroll", handleScroll);
     return () => {
       window.removeEventListener("scroll", handleScroll);
