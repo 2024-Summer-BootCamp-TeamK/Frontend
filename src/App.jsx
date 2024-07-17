@@ -10,7 +10,7 @@ import Reviewresult from "./pages/Reviewresult";
 import ContractShare from "./pages/ContractShare.jsx";
 import Key from "./pages/Key.jsx";
 import Keyinput from "./pages/Keyinput.jsx";
-import C from "./pages/C.jsx";
+import C from "./pages/Category.jsx";
 
 function App() {
   return (
@@ -24,7 +24,6 @@ function App() {
           <Route path="/Urlentrance" element={<Urlentrance />} />
           <Route path="/Reviewresult" element={<Reviewresult />} />
           <Route path="/ContractShare" element={<ContractShare />} />
-          <Route path="/C" element={<C />} />
           <Route path="/key" element={<Key />} />
           <Route path="/keyinput" element={<Keyinput />} />
         </Routes>

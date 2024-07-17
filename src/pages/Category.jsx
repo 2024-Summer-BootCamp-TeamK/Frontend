@@ -1,6 +1,9 @@
-import React from "react";
-import styled from "styled-components";
+import React, { useState, useEffect } from "react";
+import styled, { createGlobalStyle, keyframes, css } from "styled-components";
+import { useNavigate } from 'react-router-dom'; // useNavigate import 추가
 import Button from "../components/Button";
+import arrowLSrc from '../images/arrowL.svg';
+import arrowRSrc from '../images/arrowR.svg';
 import fileSrc from "../images/file.svg";
 import {
   Headerall,
@@ -10,6 +13,20 @@ import {
 } from "../components/Headerall";
 import logoSrc from "../images/logo.svg"; // logo.svg 파일 경로를 올바르게 설정
 
+const GlobalStyle = createGlobalStyle`
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  body {
+    width: 100%;
+    height: 100vh;
+    overflow: hidden;
+  }
+`;
+
 const items = [
   { id: 1, label: "계약서 1" },
   { id: 2, label: "계약서 2" },
@@ -17,18 +34,89 @@ const items = [
   { id: 4, label: "계약서 4" },
   { id: 5, label: "계약서 5" },
 ];
+
+// 카드 슬라이더 애니메이션
+const slideLeft = keyframes`
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-20%);
+  }
+`;
+
+const slideRight = keyframes`
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(20%);
+  }
+`;
+
+const SliderWrapper = styled.div`
+  overflow: hidden;
+  width: 100%;  // width를 100%로 유지
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+`;
+
+const Slider = styled.div`
+  display: flex;
+  ${({ direction }) =>
+    direction &&
+    css`
+      animation: ${direction === "left" ? slideLeft : slideRight} 0.5s ease-in-out;
+    `}
+`;
+
+const SlideItem = styled.div`
+  flex: 0 0 20%;
+  transition: transform 0.5s ease-in-out;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
 const Category = () => {
-  const [activeIndex, setActiveIndex] = React.useState(2);
+  const navigate = useNavigate(); // useNavigate 훅 사용
+  const [activeIndex, setActiveIndex] = useState(2);
+  const [itemsQueue, setItemsQueue] = useState(items);
+  const [direction, setDirection] = useState(null);
+
+  useEffect(() => {
+    if (direction) {
+      const timer = setTimeout(() => {
+        if (direction === "left") {
+          setItemsQueue((prevItems) => [...prevItems.slice(1), prevItems[0]]);
+        } else if (direction === "right") {
+          setItemsQueue((prevItems) => [prevItems[prevItems.length - 1], ...prevItems.slice(0, -1)]);
+        }
+        setDirection(null);
+      }, 400);
+      return () => clearTimeout(timer);
+    }
+  }, [direction]);
+
   const handlePrev = () => {
-    setActiveIndex(
-      (prevIndex) => (prevIndex - 1 + items.length) % items.length
-    );
+    setDirection("right");
   };
+
   const handleNext = () => {
-    setActiveIndex((prevIndex) => (prevIndex + 1) % items.length);
+    setDirection("left");
   };
+
+  const handleCardClick = (index) => {
+    if (index === activeIndex) {
+      navigate('/fileupload');
+    }
+  };
+
   return (
     <>
+      <GlobalStyle />
       <div>
         <Headerall>
           <LogoContainer>
@@ -41,112 +129,164 @@ const Category = () => {
         </Headerall>
       </div>
       <Title>계약서의 카테고리를 선택해주세요</Title>
-      <Container>
-        <ArrowButton onClick={handlePrev}>{"<"}</ArrowButton>
-        <Carousel>
-          <CarouselTrack activeIndex={activeIndex}>
-            {items.map((item, index) => (
-              <CarouselItem
-                key={item.id}
-                active={index === activeIndex}
-                onClick={() => setActiveIndex(index)}
-              >
-                <IconWrapper active={index === activeIndex}>
-                  <Icon src={fileSrc} /> {/* logoSrc를 올바르게 설정 */}
-                </IconWrapper>
-                <Label>{item.label}</Label>
-              </CarouselItem>
-            ))}
-          </CarouselTrack>
+      <Container style={{ height: 'calc(100vh - 120px)' }}>
+        <Carousel style={{ height: '70%' }}>
+          <SliderWrapper style={{ height: '100%' }}>
+            <Slider direction={direction} style={{ height: '100%' }}>
+              {itemsQueue.slice(0, 5).map((item, index) => (
+                <SlideItem key={item.id} style={{ height: '100%' }}>
+                  <CarouselItem
+                    active={index === activeIndex}
+                    style={{ height: '300px' }}
+                    onClick={() => handleCardClick(index)} // 클릭 핸들러 추가
+                  >
+                    <IconWrapper active={index === activeIndex} style={{ height: '100%' }}>
+                      <Icon src={fileSrc} alt={item.label} />
+                    </IconWrapper>
+                    <Label>{item.label}</Label>
+                  </CarouselItem>
+                </SlideItem>
+              ))}
+            </Slider>
+          </SliderWrapper>
+          <ButtonL onClick={handlePrev}><img src={arrowLSrc} alt="Previous" /></ButtonL>
+          <ButtonR onClick={handleNext}><img src={arrowRSrc} alt="Next" /></ButtonR>
         </Carousel>
-        <ArrowButton onClick={handleNext}>{">"}</ArrowButton>
       </Container>
     </>
   );
 };
+
 export default Category;
 
 // Styled-components
 const Title = styled.h1`
   text-align: center;
-  margin: 50px 0;
-  font-size: 24px;
-  color: #141F7B; 
+  margin: 20px 0 20px 0;
+  font-size: 35px;
+  color: #141F7B;
+  margin-top: 150px;
 `;
 
 const Container = styled.div`
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
-  height: 900px; /* 필요한 높이로 설정 */
   width: 100%;
-  overflow: hidden;
+  position: relative;
 `;
 
 const Carousel = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 80%;
-  height: 150%;
-  white-space: nowrap;
-  overflow: hidden;
+  width: 100%;
+  overflow: visible; // overflow visible로 변경
 `;
+
+const CardSlider = styled.div`
+  display: flex;
+  justify-content: center;
+  transition: transform 0.5s ease-in-out;
+`;
+
 const CarouselItem = styled.div`
-  display: inline-flex;
+  display: flex;
   flex-direction: column;
   align-items: center;
-  margin: 10px;
+  width: 220px;
+  margin: 0 100px;
   cursor: pointer;
   opacity: ${(props) => (props.active ? 1 : 0.5)};
   transform: ${(props) => (props.active ? "scale(1.2)" : "scale(1)")};
-  transition:
-    transform 0.3s ease,
-    opacity 0.3s ease;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+
+  @media (max-width: 768px) {
+    width: 150px;
+    height: 175px;
+    margin: 0 5px;
+  }
 `;
-const CarouselTrack = styled.div`
-  display: flex;
-  transition: transform 0.5s ease-in-out;
-  transform: ${({ activeIndex }) =>
-    `translateX(calc(50% - ${activeIndex * 246.73 + 123.365}px))`};
-`;
+
 const IconWrapper = styled.div`
-  width: 236.73px;
-  height: 276.43px;
+  width: 100%;
   background-color: ${(props) => (props.active ? "#141F7B" : "#FAD23F")};
   border-radius: 10%;
   display: flex;
   justify-content: center;
   align-items: center;
   margin-bottom: 10px;
+
+  ${(props) =>
+    props.active &&
+    css`
+      &:hover {
+        box-shadow: 0px 0px 10px 10px rgba(250, 210, 63, 0.5);
+      }
+    `}
+`;
+
+
+const Icon = styled.img`
+  width: 70%;
+  height: auto;
+  object-fit: contain;
+
   @media (max-width: 768px) {
-    width: 118.36px;
-    height: 138.21px;
+    width: 80px;
+    height: 80px;
   }
 `;
-const Icon = styled.img`
-  width: 150px;
-  height: 150px;
-  object-fit: contain;
-  margin-left: 20px; /* 오른쪽으로 이동 */
-`;
+
 const Label = styled.span`
-  font-size: 30px;
+  font-size: 16px;
   color: black;
   @media (max-width: 768px) {
-    font-size: 15px;
+    font-size: 12px;
   }
 `;
-const ArrowButton = styled.button`
-  background-color: #141F7B;
-  color: white;
+
+const ButtonL = styled.button`
+  background-color: transparent;
   border: none;
-  padding: 10px 20px;
-  font-size: 24px;
+  position: absolute;
+  left: calc(50% - 250px); // 원하는 위치로 조정
+  top: 50%;
+  transform: translateY(-50%);
   cursor: pointer;
-  margin: 0 10px;
-  border-radius: 5px;
+  padding: 0;
+  outline: none;
+
   &:hover {
-    background-color: #0F154B;
+    opacity: 0.8;
+  }
+
+  @media (max-width: 768px) {
+    left: calc(50% - 180px);
+  }
+`;
+
+const ButtonR = styled.button`
+  background-color: transparent;
+  border: none;
+  position: absolute;
+  right: calc(50% - 250px); // 원하는 위치로 조정
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  padding: 0;
+  outline: none;
+
+  &:hover {
+    opacity: 0.8;
+  }
+
+  &:focus {
+    outline: none;
+  }
+
+  @media (max-width: 768px) {
+    right: calc(50% - 180px);
   }
 `;
