@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import Buttonall from "../components/Buttonall";
+import Buttonall from "./Button";
 const PopupWrapper = styled.div`
   position: fixed;
   top: 50%;

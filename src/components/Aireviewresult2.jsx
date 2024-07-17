@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import aireviewedSrc from "../images/aireviewed.svg"; // aireviewed.svg 파일 경로
+import suggestcontract from "../images/suggestcontract.svg";
 
 const Aireviewresult = () => {
   const [content, setContent] = useState("");
@@ -21,38 +21,45 @@ const Aireviewresult = () => {
   }, []);
 
   return (
-    <>
-      <AireviewedIconWrapper>
-        <AireviewedIcon data={aireviewedSrc} type="image/svg+xml" />
-      </AireviewedIconWrapper>
+    <Wrapper>
       <Container>
+        <AireviewedIconWrapper>
+          <AireviewedIcon data={suggestcontract} type="image/svg+xml" />
+        </AireviewedIconWrapper>
         <Content>
-          <h2>Vertical Scroll Component</h2>
           <p>{content}</p>
         </Content>
       </Container>
-    </>
+    </Wrapper>
   );
 };
 
 export default Aireviewresult;
 
+// Styled-components
+const Wrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* 중앙 정렬 */
+  margin-top: 9vh; /* 헤더와의 간격 조정 */
+`;
+
 const AireviewedIconWrapper = styled.div`
-  position: relative;
-  width: 100%;
   display: flex;
   justify-content: center;
-  margin-top: 7vh; /* 헤더와의 간격 조정 */
+  margin-top: -20px; /* 아이콘과 컨테이너 사이의 간격 조정 */
+  margin-bottom: -40px;
 `;
 
 const AireviewedIcon = styled.object`
   width: 150px;
-  height: 100px;
+  height: 10vh;
+  border-radius: 20px;
 `;
 
 const Container = styled.div`
   width: 45vw;
-  height: 70vh; /* 뷰포트 높이를 가득 채움 */
+  height: 75vh; /* 뷰포트 높이를 가득 채움 */
   overflow-y: scroll;
   padding: 20px;
   box-sizing: border-box;
@@ -61,9 +68,12 @@ const Container = styled.div`
   background-color: #ffffff;
   border-radius: 20px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  color: #000000;
+
   &:hover {
     box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
   } /* 이미지와의 간격 조정 */
+  font-size: 12px;
 `;
 
 const Content = styled.div`
@@ -71,5 +81,4 @@ const Content = styled.div`
   padding: 20px;
   box-sizing: border-box;
   margin-top: 20px; /* 아이콘과 내용 사이에 여백 추가 */
-  color: #000000;
 `;
