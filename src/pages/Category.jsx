@@ -33,6 +33,7 @@ const items = [
 ];
 
 const Category = () => {
+
   const [activeIndex, setActiveIndex] = useState(2);
   const [itemsQueue, setItemsQueue] = useState(items);
 
@@ -43,6 +44,7 @@ const Category = () => {
   const handleNext = () => {
     setItemsQueue((prevItems) => [...prevItems.slice(1), prevItems[0]]);
   };
+
 
   return (
     <>
@@ -99,7 +101,9 @@ const Container = styled.div`
   position: relative; // Container에 상대 위치 지정
 `;
 
-const Carousel = styled.div`
+const CarouselWrapper = styled.div`
+  width: 80%;
+  overflow: visible;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -164,10 +168,11 @@ const Label = styled.span`
 `;
 
 const ArrowButton = styled.button`
-  background-color: #141F7B;
+  background-color: #141f7b;
   color: white;
   border: none;
-  padding: 10px 20px;
+  width: 50px; /* 원형 버튼의 너비와 높이를 설정 */
+  height: 50px; /* 원형 버튼의 너비와 높이를 설정 */
   font-size: 24px;
   cursor: pointer;
   position: absolute;
@@ -191,4 +196,11 @@ const ArrowButton = styled.button`
     font-size: 18px;
     padding: 5px 10px;
   }
+  &:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+  }
+  margin-left: 50vh;
+  margin-right: 60vh;
+  z-index: 1;
 `;

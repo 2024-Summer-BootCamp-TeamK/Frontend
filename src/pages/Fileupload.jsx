@@ -2,7 +2,7 @@ import React, { useCallback } from "react";
 import { useDropzone } from "react-dropzone";
 import styled from "styled-components";
 import Button from "../components/Button";
-import Buttonall from "../components/Buttonall";
+import Buttonall from "../components/Button";
 import {
   Headerall,
   LogoContainer,

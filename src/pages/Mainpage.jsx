@@ -59,20 +59,18 @@ const Mainpage = () => {
             border: "none",
           }}
         >
-          <object
-            data={main1Src}
-            type="image/svg+xml"
+          <img
+            src={main1Src}
+            alt="main1"
             style={{
               width: "100%",
-              height: "auto",
+              height: "90vh",
               objectFit: "cover",
               objectPosition: "center",
               margin: 0,
               border: "none",
             }}
-          >
-            Your browser does not support SVGs
-          </object>
+          />
         </div>
         <div
           style={{
@@ -84,9 +82,9 @@ const Mainpage = () => {
             border: "none",
           }}
         >
-          <object
-            data={main2Src}
-            type="image/svg+xml"
+          <img
+            src={main2Src}
+            alt="main2"
             style={{
               width: "100%",
               height: "auto",
@@ -95,9 +93,7 @@ const Mainpage = () => {
               margin: 0,
               border: "none",
             }}
-          >
-            Your browser does not support SVGs
-          </object>
+          />
         </div>
         {/* 5개의 SVG 파일을 한 행에 배치 */}
         <div
@@ -106,57 +102,57 @@ const Mainpage = () => {
             justifyContent: "space-around",
             alignItems: "center",
             padding: "2vh 0",
+            marginRight: "10px",
+            marginTop: "-130px",
           }}
         >
-          <object
-            data={main1_1Src}
-            type="image/svg+xml"
+          <img
+            src={main1_1Src}
+            alt="main1_1"
             style={{
-              width: "20%",
+              width: "270px",
               height: "auto",
               filter: "drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25))",
             }}
-          >
-            Your browser does not support SVGs
-          </object>
-          <object
-            data={arrowSrc}
-            type="image/svg+xml"
+          />
+          <img
+            src={arrowSrc}
+            alt="arrow1"
             style={{ width: "5%", height: "auto" }}
-          >
-            Your browser does not support SVGs
-          </object>
-          <object
-            data={main1_2Src}
-            type="image/svg+xml"
+          />
+          <img
+            src={main1_2Src}
+            alt="main1_2"
             style={{
-              width: "21%",
+              width: "270px",
               height: "auto",
               filter: "drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25))",
             }}
-          >
-            Your browser does not support SVGs
-          </object>
-          <object
-            data={arrowSrc}
-            type="image/svg+xml"
+          />
+          <img
+            src={arrowSrc}
+            alt="arrow2"
             style={{ width: "5%", height: "auto" }}
-          >
-            Your browser does not support SVGs
-          </object>
-          <object
-            data={main1_3Src}
-            type="image/svg+xml"
+          />
+          <img
+            src={main1_3Src}
+            alt="main1_3"
             style={{
-              width: "21%",
+              width: "270px",
               height: "auto",
               filter: "drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25))",
             }}
-          >
-            Your browser does not support SVGs
-          </object>
+          />
         </div>
-        <div style={{ display: "flex", justifyContent: "flex-end" }}>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "flex-end",
+            marginTop: "-5vh",
+            padding: "5vh",
+            marginRight: "1.5vh",
+          }}
+        >
           <Orangebutton>계약서 검토 받으러 가기</Orangebutton>
         </div>
         <div
@@ -167,60 +163,58 @@ const Mainpage = () => {
             padding: "2vh 0",
           }}
         >
-          <object
-            data={main2_1Src}
-            type="image/svg+xml"
+          <img
+            src={main2_1Src}
+            alt="main2_1"
             style={{
-              width: "20%",
+              width: "270px",
               height: "auto",
               filter: "drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25))",
             }}
-          >
-            Your browser does not support SVGs
-          </object>
-          <object
-            data={arrowSrc}
-            type="image/svg+xml"
+          />
+          <img
+            src={arrowSrc}
+            alt="arrow3"
             style={{ width: "5%", height: "auto" }}
-          >
-            Your browser does not support SVGs
-          </object>
-          <object
-            data={main2_2Src}
-            type="image/svg+xml"
+          />
+          <img
+            src={main2_2Src}
+            alt="main2_2"
             style={{
-              width: "20%",
+              width: "270px",
               height: "auto",
               filter: "drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25))",
             }}
-          >
-            Your browser does not support SVGs
-          </object>
-          <object
-            data={arrowSrc}
-            type="image/svg+xml"
+          />
+          <img
+            src={arrowSrc}
+            alt="arrow4"
             style={{ width: "5%", height: "auto" }}
-          >
-            Your browser does not support SVGs
-          </object>
-          <object
-            data={main2_3Src}
-            type="image/svg+xml"
+          />
+          <img
+            src={main2_3Src}
+            alt="main2_3"
             style={{
-              width: "20%",
+              width: "270px",
               height: "auto",
               filter: "drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25))",
             }}
-          >
-            Your browser does not support SVGs
-          </object>
+          />
         </div>
-        <div style={{ display: "flex", justifyContent: "flex-end" }}>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "flex-end",
+            marginRight: "1vh",
+            padding: "5vh",
+            marginTop: "-5vh",
+          }}
+        >
           <Orangebutton>상대방과 계약서 검토하러 가기</Orangebutton>
         </div>
-        <object
-          data={mainendSrc}
-          type="image/svg+xml"
+        <img
+          src={mainendSrc}
+          alt="mainend"
           style={{
             width: "100%",
             height: "auto",
@@ -229,9 +223,7 @@ const Mainpage = () => {
             margin: 0,
             border: "none",
           }}
-        >
-          Your browser does not support SVGs
-        </object>
+        />
       </div>
     </>
   );
