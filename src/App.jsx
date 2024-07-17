@@ -13,12 +13,7 @@ import Sign from "./pages/Sign";
 import ContractShare from "./pages/ContractShare.jsx";
 import Key from "./pages/Key.jsx";
 import Keyinput from "./pages/Keyinput.jsx";
-<<<<<<< HEAD
 import Popupexplain from "./components/Popupexlain.jsx";
-import C from "./pages/C.jsx";
-=======
-import C from "./pages/Category.jsx";
->>>>>>> design/카테고리-페이지-기능구현
 
 function App() {
   return (
@@ -36,10 +31,7 @@ function App() {
           <Route path="/Resultcompare" element={<Resultcompare />} />
           <Route path="/Sign" element={<Sign />} />
           <Route path="/ContractShare" element={<ContractShare />} />
-<<<<<<< HEAD
           <Route path="/explain" element={<Popupexplain />} />
-=======
->>>>>>> design/카테고리-페이지-기능구현
           <Route path="/key" element={<Key />} />
           <Route path="/keyinput" element={<Keyinput />} />
 

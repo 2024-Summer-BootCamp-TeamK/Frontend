@@ -1,9 +1,6 @@
 import React, { useState, useEffect } from "react";
 import styled, { createGlobalStyle, keyframes, css } from "styled-components";
-<<<<<<< HEAD
-=======
 import { useNavigate } from 'react-router-dom'; // useNavigate import 추가
->>>>>>> design/카테고리-페이지-기능구현
 import Button from "../components/Button";
 import arrowLSrc from '../images/arrowL.svg';
 import arrowRSrc from '../images/arrowR.svg';
@@ -38,21 +35,6 @@ const items = [
   { id: 5, label: "계약서 5" },
 ];
 
-<<<<<<< HEAD
-const Category = () => {
-
-  const [activeIndex, setActiveIndex] = useState(2);
-  const [itemsQueue, setItemsQueue] = useState(items);
-
-  const handlePrev = () => {
-    setItemsQueue((prevItems) => [prevItems[prevItems.length - 1], ...prevItems.slice(0, -1)]);
-  };
-
-  const handleNext = () => {
-    setItemsQueue((prevItems) => [...prevItems.slice(1), prevItems[0]]);
-  };
-
-=======
 // 카드 슬라이더 애니메이션
 const slideLeft = keyframes`
   0% {
@@ -131,7 +113,6 @@ const Category = () => {
       navigate('/fileupload');
     }
   };
->>>>>>> design/카테고리-페이지-기능구현
 
   return (
     <>
@@ -148,21 +129,6 @@ const Category = () => {
         </Headerall>
       </div>
       <Title>계약서의 카테고리를 선택해주세요</Title>
-<<<<<<< HEAD
-      <Container>
-        <ArrowButton onClick={handlePrev}>{"<"}</ArrowButton>
-        <Carousel>
-          <CardSlider>
-            {itemsQueue.slice(0, 5).map((item, index) => (
-              <CarouselItem key={item.id} active={index === activeIndex}>
-                <IconWrapper active={index === activeIndex}>
-                  <Icon src={fileSrc} alt={item.label} />
-                </IconWrapper>
-                <Label>{item.label}</Label>
-              </CarouselItem>
-            ))}
-          </CardSlider>
-=======
       <Container style={{ height: 'calc(100vh - 120px)' }}>
         <Carousel style={{ height: '70%' }}>
           <SliderWrapper style={{ height: '100%' }}>
@@ -185,7 +151,6 @@ const Category = () => {
           </SliderWrapper>
           <ButtonL onClick={handlePrev}><img src={arrowLSrc} alt="Previous" /></ButtonL>
           <ButtonR onClick={handleNext}><img src={arrowRSrc} alt="Next" /></ButtonR>
->>>>>>> design/카테고리-페이지-기능구현
         </Carousel>
       </Container>
     </>
@@ -197,11 +162,6 @@ export default Category;
 // Styled-components
 const Title = styled.h1`
   text-align: center;
-<<<<<<< HEAD
-  margin: 120px 0 50px 0;
-  font-size: 24px;
-  color: #141F7B;
-=======
   margin: 20px 0 20px 0;
   font-size: 35px;
   color: #141F7B;
@@ -214,15 +174,10 @@ const Container = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-<<<<<<< HEAD
   height: calc(100vh - 120px);
   width: 100%;
   overflow: hidden;
   position: relative; // Container에 상대 위치 지정
-=======
-  width: 100%;
-  position: relative;
->>>>>>> design/카테고리-페이지-기능구현
 `;
 
 const CarouselWrapper = styled.div`
@@ -231,38 +186,22 @@ const CarouselWrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-<<<<<<< HEAD
   width: 80%;
   height: 100%;
   overflow: hidden;
-=======
-  width: 100%;
-  overflow: visible; // overflow visible로 변경
->>>>>>> design/카테고리-페이지-기능구현
 `;
 
 const CardSlider = styled.div`
   display: flex;
-<<<<<<< HEAD
   justify-content: center;  // 중앙 정렬 추가
-=======
-  justify-content: center;
->>>>>>> design/카테고리-페이지-기능구현
-  transition: transform 0.5s ease-in-out;
 `;
 
 const CarouselItem = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-<<<<<<< HEAD
-  width: 220px; // 카드 너비 설정
-  height: 300px; // 카드 높이 설정
-  margin: 0 10px;
-=======
   width: 220px;
   margin: 0 100px;
->>>>>>> design/카테고리-페이지-기능구현
   cursor: pointer;
   opacity: ${(props) => (props.active ? 1 : 0.5)};
   transform: ${(props) => (props.active ? "scale(1.2)" : "scale(1)")};
@@ -277,22 +216,12 @@ const CarouselItem = styled.div`
 
 const IconWrapper = styled.div`
   width: 100%;
-<<<<<<< HEAD
-  height: 80%; // 아이콘 래퍼 높이를 키움
-=======
->>>>>>> design/카테고리-페이지-기능구현
   background-color: ${(props) => (props.active ? "#141F7B" : "#FAD23F")};
   border-radius: 10%;
   display: flex;
   justify-content: center;
   align-items: center;
   margin-bottom: 10px;
-<<<<<<< HEAD
-`;
-
-const Icon = styled.img`
-  width: 70%; // 아이콘의 크기를 부모 요소에 맞게 조정
-=======
 
   ${(props) =>
     props.active &&
@@ -324,20 +253,6 @@ const Label = styled.span`
   }
 `;
 
-<<<<<<< HEAD
-const ArrowButton = styled.button`
-  background-color: #141f7b;
-  color: white;
-  border: none;
-  width: 50px; /* 원형 버튼의 너비와 높이를 설정 */
-  height: 50px; /* 원형 버튼의 너비와 높이를 설정 */
-  font-size: 24px;
-  cursor: pointer;
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  border-radius: 5px;
-=======
 const ButtonL = styled.button`
   background-color: transparent;
   border: none;
