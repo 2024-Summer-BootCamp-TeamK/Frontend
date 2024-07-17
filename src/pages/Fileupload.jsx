@@ -1,8 +1,8 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import styled from "styled-components";
 import Button from "../components/Button";
-import Buttonall from "../components/Buttonall";
+import ReviewStartButtonComponent from "../components/ReviewStartButtonComponent";
 import {
   Headerall,
   LogoContainer,
@@ -10,10 +10,14 @@ import {
   ButtonContainer,
 } from "../components/Headerall";
 import logoSrc from "../images/logo.svg";
-import uploadSrc from "../images/upload.svg";
+import uploadIconSrc from "../images/upload-icon.svg";
+import fileIconSrc from "../images/file-icon-white.svg";
 
 const Fileupload = () => {
+  const [fileName, setFileName] = useState(null);
+
   const onDrop = useCallback((acceptedFiles) => {
+    setFileName(acceptedFiles[0].name);
     console.log(acceptedFiles);
     // 파일 처리 로직을 추가할 수 있습니다.
   }, []);
@@ -36,19 +40,22 @@ const Fileupload = () => {
       <Wrapper>
         <DropZone {...getRootProps()}>
           <input {...getInputProps()} />
-          <DropZoneBackground data={uploadSrc} type="image/svg+xml" />
-          <DropZoneText>
-            {isDragActive ? (
-              <p>파일을 여기에 놓으세요 ...</p>
-            ) : (
-              <p>AI 검토 받을 파일을 올려주세요</p>
-            )}
+          <DropZoneText isFileUploaded={!!fileName}>
+              <YellowBox>
+                <Icon src={uploadIconSrc} alt="upload-file-icon"/>
+              </YellowBox> 
+              <h3>Upload a file</h3>
+              {isDragActive ? (
+                <p>파일을 여기에 놓으세요 ...</p>
+              ) : (
+                <p>{fileName ? `업로드된 파일: ${fileName}` : '검토 받을 파일을 올려주세요'}</p>
+              )}
           </DropZoneText>
         </DropZone>
       </Wrapper>
-      <ButtonWrapper>
-        <Buttonall>검토 시작하기</Buttonall>
-      </ButtonWrapper>
+      <ButtonContainerStyled>
+        <ReviewStartButtonComponent >검토 시작하기</ReviewStartButtonComponent>
+      </ButtonContainerStyled>
     </>
   );
 };
@@ -68,11 +75,11 @@ const Wrapper = styled.div`
 
 const DropZone = styled.div`
   position: absolute;
-  width: 613px;
-  height: 419px;
-  left: calc(50% - 613px / 2 + 0.5px);
-  top: calc(50% - 419px / 2 - 14.5px);
-  background: rgba(255, 255, 255, 0.5);
+  width: 780px;
+  height: 490px;
+  left: 50%;
+  top: 50%;
+  background: #ffffff;
   mix-blend-mode: normal;
   border: 3px dashed #e5b401;
   border-radius: 30px;
@@ -81,35 +88,65 @@ const DropZone = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  padding-bottom: 20px; /* 문구를 아래쪽으로 배치 */
-  position: relative;
-`;
-
-const DropZoneBackground = styled.object`
-  width: 200px;
-  height: 200px;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  padding-bottom: 50px; /* 문구를 아래쪽으로 배치 */
+  transform: translate(-50%, -50%); /* 중앙 정렬을 위한 transform */
 `;
 
 const DropZoneText = styled.div`
+  display: flex;
+  align-items:center;
+  justify-content: center;
+  flex-direction: column;
+
+  h3 {
+    font-size: 28px;
+    font-weight: 600;
+    margin-top: 15px;
+  }
+
   p {
     margin: 0;
-    font-size: 20px;
-    color: #a6a6a6;
-    font-weight: 600; /* 세미볼드 */
+    font-size: ${(props)=> (props.ifFileUploaded ? '28px': '22px')};
+    color: ${(props) => (props.isFileUploaded ? '#000000' : '#a6a6a6')}; /* 파일이 업로드된 경우 검정색, 아니면 회색 */
+    font-weight: 600;
     position: absolute;
-    bottom: 20px; /* 텍스트를 아래쪽으로 배치 */
+    bottom: 25px; /* 텍스트를 아래쪽으로 배치 */
     left: 50%;
     transform: translateX(-50%);
+    white-space: nowrap; /* 텍스트를 한 줄로 표시 */
+    overflow: hidden; /* 넘치는 텍스트 숨기기 */
+    text-overflow: ellipsis; /* 넘치는 텍스트를 말줄임표(...)로 표시 */
+    max-width: 90%; /* 최대 너비 설정 */
+  }
+
+  img {
+    width: 4vw; /* 이미지의 너비를 줄임 */
+    height: auto; /* 이미지의 높이를 줄임 */
+    background: transparent; /* 이미지 배경 투명하게 설정 */
   }
 `;
 
-const ButtonWrapper = styled.div`
+const ButtonContainerStyled = styled.div`
   position: absolute;
   bottom: 40px;
-  left: 50%;
-  transform: translateX(-50%);
+  right: 3%;
+  transform: translateX(0%);
 `;
+
+const YellowBox = styled.div`
+  width: 130px;
+  height: 150px;
+  background-color: #FFD700; /* 노란색 */
+  border-radius: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2); /* 그림자 */
+`;
+
+const Icon = styled.img`
+  width: 3vw;
+  height: auto;
+  
+`;
+
