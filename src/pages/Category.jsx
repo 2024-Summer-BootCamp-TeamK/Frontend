@@ -166,7 +166,6 @@ const Title = styled.h1`
   font-size: 35px;
   color: #141F7B;
   margin-top: 150px;
->>>>>>> design/카테고리-페이지-기능구현
 `;
 
 const Container = styled.div`
@@ -174,26 +173,22 @@ const Container = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  height: calc(100vh - 120px);
   width: 100%;
-  overflow: hidden;
-  position: relative; // Container에 상대 위치 지정
+  position: relative;
 `;
 
-const CarouselWrapper = styled.div`
-  width: 80%;
-  overflow: visible;
+const Carousel = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 80%;
-  height: 100%;
-  overflow: hidden;
+  width: 100%;
+  overflow: visible; // overflow visible로 변경
 `;
 
 const CardSlider = styled.div`
   display: flex;
-  justify-content: center;  // 중앙 정렬 추가
+  justify-content: center;
+  transition: transform 0.5s ease-in-out;
 `;
 
 const CarouselItem = styled.div`
@@ -235,7 +230,6 @@ const IconWrapper = styled.div`
 
 const Icon = styled.img`
   width: 70%;
->>>>>>> design/카테고리-페이지-기능구현
   height: auto;
   object-fit: contain;
 
@@ -263,7 +257,6 @@ const ButtonL = styled.button`
   cursor: pointer;
   padding: 0;
   outline: none;
->>>>>>> design/카테고리-페이지-기능구현
 
   &:hover {
     opacity: 0.8;
@@ -296,24 +289,4 @@ const ButtonR = styled.button`
   @media (max-width: 768px) {
     right: calc(50% - 180px);
   }
-
-  &:first-of-type {
-    left: 0;
-  }
-
-  &:last-of-type {
-    right: 0;
-  }
-
-  @media (max-width: 768px) {
-    font-size: 18px;
-    padding: 5px 10px;
-  }
-  &:disabled {
-    background-color: #cccccc;
-    cursor: not-allowed;
-  }
-  margin-left: 50vh;
-  margin-right: 60vh;
-  z-index: 1;
 `;
