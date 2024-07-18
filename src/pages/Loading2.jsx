@@ -11,6 +11,7 @@ import {
 } from "../components/Headerall";
 import logoSrc from "../images/logo.svg";
 
+// 전역 스타일 정의
 const GlobalStyle = createGlobalStyle`
   * {
     margin: 0;
@@ -25,160 +26,50 @@ const GlobalStyle = createGlobalStyle`
   }
 `;
 
-const bgColor = '#DFDFDF';
-const foldColor = '#F7F7F6';
-const activeColor = '#868686';
-
-const loadingAnimation = keyframes`
-  from {
-    width: 0%;
-  }
-  to {
-    width: 100%;
-  }
-`;
-
-
-const Document = styled.div`
-  width: 15em;
-  height: 25em;
-  position: relative;
-  cursor: pointer;
-
-  &.loading .bottom .bar:nth-child(2)::before {
-    animation: ${loadingAnimation} 1s infinite;
-  }
-
-  &.loading .bottom .bar:nth-child(3)::before {
-    animation: ${loadingAnimation} 1s 0.1s infinite;
-  }
-
-  &.loading .bottom .bar:nth-child(4)::before {
-    animation: ${loadingAnimation} 1s 0.2s infinite;
-  }
-
-  &:hover .bottom .bar, &:hover .bottom .icon {
-    background: ${activeColor};
-  }
-
-  &:hover .bottom .icon.fa {
-    color: ${activeColor};
-  }
-
-  .name {
-    color: ${bgColor};
-    width: 100%;
-    text-align: center;
-    font-size: 1.5em;
-    line-height: 2em;
-    padding: 1em 0;
-  }
-
-  .bottom {
-    width: 15em;
-    height: 15em;
-    background-color: ${bgColor};
-    padding-top: 5em;
-    box-sizing: border-box;
-
-    .icon {
-      position: absolute;
-      width: 5em;
-      height: 5em;
-      background: #ccc;
-      margin: 0 auto;
-      border-radius: 0.5em;
-      top: 4em;
-      left: 3em;
-      padding: 0.5em;
-      box-sizing: border-box;
-      text-align: center;
-
-      span {
-        font-size: 3.5em;
-        font-weight: bold;
-        color: ${bgColor};
-        line-height: 1.25em;
-      }
-    }
-
-    .bar, .icon {
-      transition: all 0.5s;
-    }
-
-    .fa.icon {
-      background-color: transparent;
-      color: #ccc;
-      font-size: 5em;
-      top: 0.25em;
-      left: 0em;
-      text-align: left;
-    }
-
-    .bar {
-      width: 10em;
-      height: 1em;
-      border-radius: 0.5em;
-      background: #ccc;
-      margin: 1.25em auto;
-      position: relative;
-
-      &::before {
-        content: '';
-        position: absolute;
-        left: 0;
-        top: 10%;
-        height: 80%;
-        width: 0%;
-        background-color: ${activeColor};
-      }
-    }
-  }
-
-  .top {
-    width: 10em;
-    height: 5em;
-    background-color: ${bgColor};
-
-    &::before {
-      content: '';
-      position: absolute;
-      width: 0;
-      height: 0;
-      right: 0;
-      border-top: solid 5em transparent;
-      border-left: 5em solid ${foldColor};
-      box-shadow: -0.5em 0.5em 0.5em #ccc;
-    }
-  }
-`;
-
 const Container = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   height: 100vh;
-  padding-top: 10em; // 여기서 상단 패딩을 추가합니다.
+  padding-top: 37.5em; // 여기서 상단 패딩을 추가합니다.
 
 `;
 
-
-const animationDuration = '10s'; // 원하는 애니메이션 지속 시간 설정
-
+// 로딩 바 애니메이션 키 프레임
 const loaderAnimation = keyframes`
   from { width: 0%; }
   to { width: 100%; }
 `;
 
+// 카운터 애니메이션 키 프레임
 const counterAnimation = keyframes`
   from { left: -25px; }
   to { left: 323px; }
 `;
 
+const animationDuration = '10s'; // 원하는 애니메이션 지속 시간 설정
+
 const Wrapper = styled.div`
   width: 370px;
   margin: 100px auto;
+  position: relative; /* Add this to position the description box */
+
+  .description-box {
+    position: absolute;
+    top: -300px; /* Adjust this value to position it correctly */
+    left: 50%; /* Position 50% from the left */
+    transform: translate(-50%, -50%); /* Center horizontally and vertically */
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 550px;
+    text-align: center;
+    font-size: 14px;
+    color: #333333;
+    z-index: 1; /* Ensure it's above the loading bar */
+  }
 
   .load-bar {
     width: 100%;
@@ -249,6 +140,21 @@ const Wrapper = styled.div`
     border-radius: 0 0 3px 0;
   }
 
+  h2 {
+      font-size: 34px;
+      padding: 10px 0 8px 0;
+      color: #141F7B;
+      text-align: center;
+    }
+
+  subtitle {
+    font-size: 15px;
+    padding: 30px 0 8px 0;
+    color: #141F7B;
+    text-align: center;
+  }
+
+
   h1 {
     font-size: 34px;
     padding: 30px 0 8px 0;
@@ -260,8 +166,7 @@ const Wrapper = styled.div`
     font-size: 13px;
   }
 `;
-
-const Loading = () => {
+const Loading2 = () => {
   useEffect(() => {
     let interval = setInterval(increment, 100); // 15초 동안 100%로 증가하도록 수정
     let current = 0;
@@ -297,15 +202,6 @@ const Loading = () => {
     };
   }, []);
 
-
-  const defaultOptions2 = {
-    loop: true,
-    autoplay: true,
-    animationData: animationData2,
-    rendererSettings: {
-      preserveAspectRatio: "xMidYMid slice"
-    }
-  };
   return (
     <>
       <GlobalStyle />
@@ -321,23 +217,37 @@ const Loading = () => {
         </Headerall>
       </div>
       <Container>
-        <Lottie 
-            options={defaultOptions2} 
-            loop
-            autoplay
-            height={400} 
-            width={400} />
-        <Wrapper>
-          <div className="load-bar">
-            <div className="load-bar-inner" data-loading="0">
-                <span id="counter"></span>
-            </div>
+      <Wrapper>
+        <div className="description-box">
+          <h2>LawBot</h2>
+          <br></br>
+          <subtitle>LawBot은 학습되어 있는 법률 데이터로 사용자의 계약서를 면밀히 검토해줍니다.</subtitle>
+          <br></br>
+          <br></br>
+          <p>검토 내용은 2가지 항목입니다 [ 주요 | 독소 ] </p>
+          <p>주요: 사용자가 꼭 인지하고 있어야 할 계약서 내 주요 조항들을 대상으로 합니다.</p>
+          <p>독소: 사용자에게 불리하게 작용할 수 있는 계약서 내 독소 조항들을 대상으로 합니다.</p>
+          <br></br>
+          <p>검토결과</p>
+          <p>검토 결과로 '원문 / 이유 / 법 조항 / 대체 문장' 을 제시 해줍니다.</p>
+          <br></br>
+          <p>계약서 수정</p>
+          <p>사용자는 검토 결과 중 원하는 문장들을 선택하여 대체 문장으로의 수정을 요청할 수 있습니다. </p>
+          <br></br>
+          <p>계약서 저장</p>
+          <p>☑️수정된 계약서는 사용자에게 PDF파일로 제공됩니다.</p>
+          <p>☑️사용자의 계약서는 7일 뒤 데이터베이스에서 자동으로 삭제됩니다.</p>
+        </div>
+        <div className="load-bar">
+          <div className="load-bar-inner" data-loading="0">
+            <span id="counter"></span>
           </div>
-          <h1>계약서를 검토중입니다...</h1>
-        </Wrapper>
+        </div>
+        <h1>계약서를 검토중입니다...</h1>
+      </Wrapper>
       </Container>
     </>
   );
 };
 
-export default Loading;
+export default Loading2;

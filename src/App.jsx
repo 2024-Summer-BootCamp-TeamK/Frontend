@@ -16,13 +16,16 @@ import Keyinput from "./pages/Keyinput.jsx";
 import Popupexplain from "./components/Popupexlain.jsx";
 import Carousel from "./pages/Carousel";
 import Loading from "./pages/Loading.jsx";
+import Loading2 from "./pages/Loading2.jsx"
+import Loading3 from "./pages/Loading3.jsx"
 
 function App() {
   return (
     <>
       <Router>
         <Routes>
-
+          <Route path="/loading2" element={<Loading2/>} />
+          <Route path="/loading3" element={<Loading3/>} />
           <Route path="/category" element={<Category />} />
           <Route path="/loading" element={<Loading/>} />
           <Route path="/" element={<Mainpage />} />
