@@ -14,3 +14,5 @@ COPY . .
 
 # 개발 서버를 실행하는 명령어
 CMD ["npm", "run", "dev"]
+
+EXPOSE 5173
