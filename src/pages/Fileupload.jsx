@@ -44,11 +44,11 @@ const Fileupload = () => {
               <YellowBox>
                 <Icon src={uploadIconSrc} alt="upload-file-icon"/>
               </YellowBox> 
-              <h3>Upload a file</h3>
+              <h3>계약서 파일을 올려주세요</h3>
               {isDragActive ? (
                 <p>파일을 여기에 놓으세요 ...</p>
               ) : (
-                <p>{fileName ? `업로드된 파일: ${fileName}` : '검토 받을 파일을 올려주세요'}</p>
+                <p>{fileName ? `업로드된 파일: ${fileName}` : ''}</p>
               )}
           </DropZoneText>
         </DropZone>
@@ -99,9 +99,11 @@ const DropZoneText = styled.div`
   flex-direction: column;
 
   h3 {
-    font-size: 28px;
+    font-size: 26px;
     font-weight: 600;
     margin-top: 15px;
+    color: #000;
+
   }
 
   p {
@@ -120,7 +122,7 @@ const DropZoneText = styled.div`
   }
 
   img {
-    width: 4vw; /* 이미지의 너비를 줄임 */
+    width: 4.5vw; /* 이미지의 너비를 줄임 */
     height: auto; /* 이미지의 높이를 줄임 */
     background: transparent; /* 이미지 배경 투명하게 설정 */
   }
@@ -134,14 +136,15 @@ const ButtonContainerStyled = styled.div`
 `;
 
 const YellowBox = styled.div`
-  width: 130px;
-  height: 150px;
+  width: 140px;
+  height: 170px;
   background-color: #FFD700; /* 노란색 */
   border-radius: 20px;
   display: flex;
   justify-content: center;
   align-items: center;
   box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2); /* 그림자 */
+  margin-bottom: 10px;
 `;
 
 const Icon = styled.img`
