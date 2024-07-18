@@ -12,6 +12,8 @@ import Key from "./pages/Key.jsx";
 import Keyinput from "./pages/Keyinput.jsx";
 import Popupexplain from "./components/Popupexlain.jsx";
 import C from "./pages/C.jsx";
+import Carousel from "./pages/Carousel";
+import WebViewer from "./pages/webviewr.jsx";
 
 function App() {
   return (
@@ -29,6 +31,7 @@ function App() {
           <Route path="/explain" element={<Popupexplain />} />
           <Route path="/key" element={<Key />} />
           <Route path="/keyinput" element={<Keyinput />} />
+          <Route path="/carousel" element={<Carousel />} />
         </Routes>
       </Router>
     </>
