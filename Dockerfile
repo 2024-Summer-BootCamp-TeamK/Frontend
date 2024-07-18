@@ -1,16 +1,13 @@
-# node 이미지 기반 Docker 이미지
-from node
+FROM node:20-alpine 
 
-# 작업 디렉토리 설정
-WORKDIR /app
+# 컨테이터 내부 현 디렉토리를 frontend로 설정
+WORKDIR /frontend
 
-# package.json 작업 디렉토리에 복사
+# package.json을 복사 (dependencies를 설치하기 위함)
 COPY package.json .
 
-# 의존성 설치
-Run npm install
+# package.json에 있는 dependencies를 설치
+RUN npm install
 
+# /frontend에 있는 모든 파일들을 복사 (소스 코드)
 COPY . ./
-
-# npm start 스크립트 실행
-CMD ["npm","run","dev"]
