@@ -49,7 +49,8 @@ const EmailInput = styled.input`
   flex: 1; /* 남은 공간 채우기 */
   padding: 10px;
   border: 1px solid #ccc;
-  border-radius: 5px;
+  border-radius: 10px;
+  background-color: white;
   font-size: 13px;
 `;
 const ConfirmButton = styled.button`
@@ -65,7 +66,7 @@ const ConfirmButton = styled.button`
   color: white; /* 글자 색상 */
   text-align: center;
   border-radius: 100px;
-  margin-top : 150px;
+  margin-top : 50px;
 
   &:hover {
     box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
@@ -104,7 +105,7 @@ const Popupkeycreate = ({ closePopup }) => {
         화면 공유 링크와 접속 비밀번호를 <br /> 전달받을 이메일을 입력해주세요
       </PopupTitle>
       <FormGroup>
-        <Emailform>이메일 입력:</Emailform>
+        <Emailform>이메일 :</Emailform>
         <EmailInput
           type="email"
           placeholder="이메일 주소를 입력해주세요."
