@@ -6,8 +6,6 @@ import SignatureCanvas from 'react-signature-canvas';
 import { PDFDocument, rgb } from 'pdf-lib';
 import Draggable from 'react-draggable';
 import Button from "../components/Button";
-import ComPDFKitViewer from '@compdfkit_pdf_sdk/webviewer';
-
 import {
   Headerall,
   LogoContainer,
@@ -35,7 +33,6 @@ const ContractShare = () => {
   const canvasRef = useRef(null);
   const containerRef = useRef(null);
   const sigCanvas = useRef(null);
-  const viewerRef = useRef(null)
 
   useEffect(() => {
     if (ws) {
@@ -64,19 +61,13 @@ const ContractShare = () => {
   };
 
   useEffect(() => {
-    let docViewer = null;
-
-    ComPDFKitViewer.init({
-      path: '/',
-      pdfUrl: 'https://lawbotttt.s3.ap-northeast-2.amazonaws.com/contracts/08d30cec-df41-4808-9465-ee5f4cfba229.pdf',
-      license: 'ca1d327bc2de6daa4c8af95ae788e841'
-    }, viewerRef.current).then((instance) => {
-      docViewer = instance.docViewer;
-      docViewer.addEvent('documentloaded', async () => {
-        console.log('ComPDFKit Web Demo loaded');
-      });
+    const url = "https://lawbotttt.s3.ap-northeast-2.amazonaws.com/contracts/08d30cec-df41-4808-9465-ee5f4cfba229.pdf"
+    const loadingTask = pdfjsLib.getDocument(url);
+    loadingTask.promise.then((pdf) => {
+      setPdfDoc(pdf);
+      setPageNumber(1); // PDF가 로드될 때 페이지 번호를 1로 설정
     });
-}, []);
+  }, []);
 
   useEffect(() => {
     if (pdfDoc) {
@@ -221,14 +212,15 @@ const ContractShare = () => {
       ) : (
         <MainContainer>
           <ContentWrapper>
-            <LeftLobotWrapper>
-              <LobotIcon src={shareLobotIcon} alt="Lobot Icon"/>
-              온라인
-             </LeftLobotWrapper>
+         
+            
             <NavigationButton onClick={handlePreviousPage} disabled={pageNumber <= 1}>
               Previous
             </NavigationButton>
-            <PDFWrapper ref={viewerRef}/>
+            <PDFWrapper ref={containerRef} onMouseMove={handleMouseMove}>
+              <PDFCanvasWrapper>
+                <PDFCanvas ref={canvasRef} onClick={handleSign}></PDFCanvas>
+              </PDFCanvasWrapper>
                 {signatureImage && (
                 <Draggable onStop={handleDragStop}>
                   <SignatureImage src={signatureImage} alt="Signature" />
@@ -242,15 +234,11 @@ const ContractShare = () => {
                   />
                 )
               ))}
-      
+            </PDFWrapper>
             <NavigationButton onClick={handleNextPage} disabled={pageNumber >= (pdfDoc && pdfDoc.numPages)}>
               Next
             </NavigationButton>
-            <RightLobotWrapper>
-              <LobotIcon src={shareLobotIcon} alt="Lobot Icon"/>
-              온라인
-            </RightLobotWrapper>
-            
+           
           </ContentWrapper>
           <Footer>
             <FooterText>
@@ -349,8 +337,8 @@ const ContentWrapper = styled.div`
 
 const PDFWrapper = styled.div`
   position: relative;
-  width: 100%; 
-  height: 100vh; 
+  width: 50%; 
+  height: 90%; 
   border-radius: 20px;
   margin-top: 20px;
   padding: 0;
