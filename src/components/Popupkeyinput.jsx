@@ -53,6 +53,7 @@ const PWInput = styled.input`
   border: 1px solid #ccc;
   border-radius: 5px;
   margin-top: 20px;
+  background-color: white;
   font-size: 16px;
 `;
 
