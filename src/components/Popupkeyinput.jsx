@@ -61,7 +61,7 @@ const ConfirmButton = styled.button`
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 30%;
+  width: 20%;
   margin-top: 20px;
   padding: 10px;
   font-size: 16px;
