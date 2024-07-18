@@ -13,7 +13,6 @@ const Header = styled.header`
   width: 100%;
   z-index: 1000;
 `;
-
 const LogoContainer = styled.div`
   height: 90%; /* 로고 이미지 높이를 헤더 높이에 맞춤 */
   display: flex;

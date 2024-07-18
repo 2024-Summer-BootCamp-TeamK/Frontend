@@ -3,6 +3,7 @@ import { useDropzone } from "react-dropzone";
 import styled from "styled-components";
 import Button from "../components/Button";
 import ReviewStartButtonComponent from "../components/ReviewStartButtonComponent";
+import Buttonall from "../components/Button";
 import {
   Headerall,
   LogoContainer,
