@@ -15,7 +15,7 @@ import Key from "./pages/Key.jsx";
 import Keyinput from "./pages/Keyinput.jsx";
 import Popupexplain from "./components/Popupexlain.jsx";
 import Carousel from "./pages/Carousel";
-
+import Loading from "./pages/Loading.jsx";
 
 function App() {
   return (
@@ -24,7 +24,7 @@ function App() {
         <Routes>
 
           <Route path="/category" element={<Category />} />
-
+          <Route path="/loading" element={<Loading/>} />
           <Route path="/" element={<Mainpage />} />
           <Route path="/fileupload" element={<Fileupload />} />
           <Route path="/fileuploadshare" element={<Fileuploadshare />} />
