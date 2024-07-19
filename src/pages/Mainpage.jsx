@@ -143,10 +143,9 @@ const Mainpage = () => {
         <div
           style={{
             display: "flex",
-            justifyContent: "flex-end",
+            justifyContent: "center",
             marginTop: "-5vh",
             padding: "5vh",
-            marginRight: "1.5vh",
           }}
         >
           <Orangebutton>계약서 검토 받으러 가기</Orangebutton>
@@ -200,8 +199,8 @@ const Mainpage = () => {
         <div
           style={{
             display: "flex",
-            justifyContent: "flex-end",
-            marginRight: "1vh",
+            justifyContent: "center",
+
             padding: "5vh",
             marginTop: "-5vh",
           }}
