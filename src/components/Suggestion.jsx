@@ -67,10 +67,11 @@ const Suggestion = () => {
       }, 500); // 스크롤 애니메이션 시간과 일치하도록 설정
     }
   };
-
-  // 텍스트 파일을 토글하는 함수
   const toggleText = () => {
     const newText = currentText === "text1" ? "text2" : "text1";
+    console.log(
+      `currentText가 ${currentText}에서 ${newText}로 변경되었습니다.`
+    );
     setCurrentText(newText);
     setCurrentSection(0);
     if (contentRef.current) {
@@ -97,11 +98,11 @@ const Suggestion = () => {
   useEffect(() => {
     const contentEl = contentRef.current;
     if (contentEl) {
-      contentEl.addEventListener('wheel', handleScroll);
+      contentEl.addEventListener("wheel", handleScroll);
     }
     return () => {
       if (contentEl) {
-        contentEl.removeEventListener('wheel', handleScroll);
+        contentEl.removeEventListener("wheel", handleScroll);
       }
     };
   }, [currentSection]);
@@ -110,11 +111,15 @@ const Suggestion = () => {
     <Container>
       <GlobalStyle />
       <ToggleswitchContainer>
-        <Toggleswitch onChange={toggleText} /> {/* 텍스트 파일을 토글하는 스위치 */}
+        <Toggleswitch onChange={toggleText} />{" "}
+        {/* 텍스트 파일을 토글하는 스위치 */}
       </ToggleswitchContainer>
       <Content ref={contentRef}>
         {sections.map((section, index) => (
-          <Section key={index} className={index === currentSection ? "active" : ""}>
+          <Section
+            key={index}
+            className={index === currentSection ? "active" : ""}
+          >
             <SectionContent className="slider__content">
               <SectionTitle className="slider__title">{section}</SectionTitle>
               <SectionText className="slider__text">...</SectionText>
@@ -152,7 +157,7 @@ const Container = styled.div`
   padding: 20px;
   margin-top: 30px; /* 수정 */
   border-radius: 20px;
-  background-color: #FEFDF6;
+  background-color: #fefdf6;
   flex-direction: column;
 `;
 
