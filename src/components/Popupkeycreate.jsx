@@ -28,6 +28,7 @@ const PopupTitle = styled.h2`
   margin-top: 0;
   color: #a6a6a6;
   font-size: 23px;
+  text-align: center; /* 텍스트 중앙 정렬 추가 */
 `;
 
 const FormGroup = styled.div`
@@ -57,7 +58,7 @@ const ConfirmButton = styled.button`
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 40%;
+  width: 30%;
   padding: 10px;
   font-size: 16px;
   cursor: pointer;

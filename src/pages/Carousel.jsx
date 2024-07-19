@@ -152,7 +152,7 @@ const ContractShare = () => {
     const dataURL = sigCanvas.current.toDataURL();
     setSignatureImage(dataURL);
     handleModalClose();
-    console.log(dataURL); 
+    console.log(dataURL);
   };
 
   const handleSavePDF = async () => {
@@ -212,8 +212,8 @@ const ContractShare = () => {
       ) : (
         <MainContainer>
           <ContentWrapper>
-         
-            
+
+
             <NavigationButton onClick={handlePreviousPage} disabled={pageNumber <= 1}>
               Previous
             </NavigationButton>
@@ -221,11 +221,11 @@ const ContractShare = () => {
               <PDFCanvasWrapper>
                 <PDFCanvas ref={canvasRef} onClick={handleSign}></PDFCanvas>
               </PDFCanvasWrapper>
-                {signatureImage && (
+              {signatureImage && (
                 <Draggable onStop={handleDragStop}>
                   <SignatureImage src={signatureImage} alt="Signature" />
                 </Draggable>
-                )}
+              )}
               {Object.entries(mousePositions).map(([user, position]) => (
                 user !== username && (
                   <MousePointer
@@ -238,7 +238,7 @@ const ContractShare = () => {
             <NavigationButton onClick={handleNextPage} disabled={pageNumber >= (pdfDoc && pdfDoc.numPages)}>
               Next
             </NavigationButton>
-           
+
           </ContentWrapper>
           <Footer>
             <FooterText>
@@ -249,15 +249,15 @@ const ContractShare = () => {
               <SignButton onClick={handleModalOpen}>서명하기</SignButton>
               <SaveButton onClick={handleSavePDF}>저장하기</SaveButton>
             </ButtonGroup>
-        </Footer>
+          </Footer>
         </MainContainer>
       )}
-     {modalOpen && (
+      {modalOpen && (
         <Modal>
-         <ModalContent>
+          <ModalContent>
             <h3> 서명하기</h3>
             <SignatureWrapper>
-                {!isSigned && <PlaceholderText> 이곳에 서명해주세요</PlaceholderText>}
+              {!isSigned && <PlaceholderText> 이곳에 서명해주세요</PlaceholderText>}
               <SignatureCanvas
                 ref={sigCanvas}
                 penColor="black"
