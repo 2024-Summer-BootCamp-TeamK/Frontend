@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import styled, { createGlobalStyle } from "styled-components";
 import Orangebutton from "./Orangebutton";
 import Toggleswitch from "./Toggleswitch";
@@ -29,36 +29,26 @@ const GlobalStyle = createGlobalStyle`
 const Suggestion = () => {
   const [currentSection, setCurrentSection] = useState(0); // 현재 섹션 상태
   const [currentText, setCurrentText] = useState("text1"); // 현재 텍스트 파일 상태
-  const isScrolling = useRef(false); // 스크롤 중인지 여부를 확인하는 플래그
-  const contentRef = useRef(null);
 
   const text1Sections = ["주요조항 1", "주요조항 2", "주요조항 3"];
-  const text2Sections = ["주의조항 1", "주의조항 2", "주의조항 3"];
+  const text2Sections = ["주의조항 1", "주의조항 2", "주의조항 3", "주의조항 4"];
   const sections = currentText === "text1" ? text1Sections : text2Sections;
 
-  const handleScroll = (event) => {
-    if (isScrolling.current) return;
-
-    if (event.deltaY > 0) {
-      scrollToSection(currentSection + 1);
-    } else if (event.deltaY < 0) {
-      scrollToSection(currentSection - 1);
+  const handlePrevClick = () => {
+    if (currentSection > 0) {
+      setCurrentSection((prev) => {
+        console.log(`현재 인덱스: ${prev - 1}, 텍스트: ${sections[prev - 1]}`);
+        return prev - 1;
+      });
     }
   };
 
-  const scrollToSection = (index) => {
-    if (index < 0 || index >= sections.length) return;
-
-    if (contentRef.current) {
-      isScrolling.current = true;
-      contentRef.current.scrollTo({
-        top: contentRef.current.clientHeight * index,
-        behavior: "smooth",
+  const handleNextClick = () => {
+    if (currentSection < sections.length - 1) {
+      setCurrentSection((prev) => {
+        console.log(`현재 인덱스: ${prev + 1}, 텍스트: ${sections[prev + 1]}`);
+        return prev + 1;
       });
-      setTimeout(() => {
-        isScrolling.current = false;
-        setCurrentSection(index);
-      }, 500);
     }
   };
 
@@ -66,39 +56,14 @@ const Suggestion = () => {
     setCurrentText((prevText) => {
       const newText = prevText === "text1" ? "text2" : "text1";
       console.log(`currentText가 ${prevText}에서 ${newText}로 변경되었습니다.`);
+      setCurrentSection(0); // 텍스트 파일 변경 시 섹션을 첫 번째 섹션으로 이동
       return newText;
     });
-    setCurrentSection(0);
-    if (contentRef.current) {
-      isScrolling.current = true;
-      contentRef.current.scrollTo({ top: 0, behavior: "smooth" });
-      setTimeout(() => {
-        isScrolling.current = false;
-      }, 500);
-    }
   };
 
   useEffect(() => {
-    if (contentRef.current) {
-      isScrolling.current = true;
-      contentRef.current.scrollTo({ top: 0, behavior: "smooth" });
-      setTimeout(() => {
-        isScrolling.current = false;
-      }, 500);
-    }
-  }, [sections]);
-
-  useEffect(() => {
-    const contentEl = contentRef.current;
-    if (contentEl) {
-      contentEl.addEventListener("wheel", handleScroll);
-    }
-    return () => {
-      if (contentEl) {
-        contentEl.removeEventListener("wheel", handleScroll);
-      }
-    };
-  }, [currentSection]);
+    console.log(`현재 인덱스: ${currentSection}, 텍스트: ${sections[currentSection]}`);
+  }, [currentSection, sections]);
 
   return (
     <Container>
@@ -106,19 +71,25 @@ const Suggestion = () => {
       <ToggleswitchContainer>
         <Toggleswitch onChange={toggleText} /> {/* 텍스트 파일을 토글하는 스위치 */}
       </ToggleswitchContainer>
-      <Content ref={contentRef}>
-        {sections.map((section, index) => (
-          <Section key={index} className={index === currentSection ? "active" : ""}>
+      <ContentWrapper>
+        <NavButton onClick={handlePrevClick} disabled={currentSection === 0}>
+          이전
+        </NavButton>
+        <Content>
+          <Section className="active">
             <SectionContent className="slider__content">
-              <SectionTitle className="slider__title">{section}</SectionTitle>
+              <SectionTitle className="slider__title">{sections[currentSection]}</SectionTitle>
               <SectionText className="slider__text">내용을 여기에 추가하십시오...</SectionText>
             </SectionContent>
           </Section>
-        ))}
-      </Content>
+        </Content>
+        <NavButton onClick={handleNextClick} disabled={currentSection === sections.length - 1}>
+          다음
+        </NavButton>
+      </ContentWrapper>
       <ProgressContainer>
         {sections.map((_, index) => (
-          <ProgressDot key={index} active={index === currentSection} onClick={() => scrollToSection(index)} />
+          <ProgressDot key={index} active={index === currentSection} onClick={() => setCurrentSection(index)} />
         ))}
       </ProgressContainer>
       <StyledOrangebutton>
@@ -146,6 +117,27 @@ const Container = styled.div`
   flex-direction: column;
 `;
 
+const ContentWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+`;
+
+const NavButton = styled.button`
+  background-color: #e7470a;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  margin: 0 10px;
+  cursor: pointer;
+  border-radius: 5px;
+  &:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+  }
+`;
+
 const Content = styled.div`
   display: flex;
   flex-direction: column;
@@ -170,7 +162,7 @@ const Section = styled.div`
   scroll-snap-align: start;
   flex: none;
   width: 100%;
-  height: 100%; /* 각 섹션의 높이를 부모 컨테이너 높이로 설정 */
+  height: 100%;
   background-color: #ffffff;
   display: flex;
   justify-content: center;
@@ -208,7 +200,7 @@ const SectionText = styled.div`
 
 const ProgressContainer = styled.div`
   position: absolute;
-  bottom: 20px; /* 수정: 위치 변경 */
+  bottom: 20px;
   width: 90%;
   display: flex;
   justify-content: center;
