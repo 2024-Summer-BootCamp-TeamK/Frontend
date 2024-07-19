@@ -1,8 +1,8 @@
 import styled from "styled-components";
 
-const ReviewStartButtonComponent = ({ children}) => (
+const ReviewStartButtonComponent = ({ children, onClick}) => (
    <ButtonWrapper>
-   <StyledButton>
+   <StyledButton onClick={onClick}>
      <span className="text">{children}
      </span>
      <div className="icon-container">

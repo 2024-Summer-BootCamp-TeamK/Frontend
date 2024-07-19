@@ -53,6 +53,7 @@ const ContractShare = () => {
     }
   }, [ws]);
 
+  // 웹소켓 서버연결
   const handleJoinRoom = () => {
     if (roomName && username) {
       const websocket = new WebSocket(`ws://localhost:8000/ws/documents/${roomName}/`);
@@ -97,30 +98,33 @@ const ContractShare = () => {
     });
   };
 
+  // 페이지 연동 웹소켓
   const handlePreviousPage = () => {
     const newPageNumber = Math.max(pageNumber - 1, 1);
     setPageNumber(newPageNumber);
     ws.send(JSON.stringify({ type: 'scroll', payload: { pageNumber: newPageNumber } }));
   };
-
+  
+  // 페이지 연동 웹소켓
   const handleNextPage = () => {
     const newPageNumber = Math.min(pageNumber + 1, pdfDoc.numPages);
     setPageNumber(newPageNumber);
     ws.send(JSON.stringify({ type: 'scroll', payload: { pageNumber: newPageNumber } }));
   };
-
+  
   const handleSign = (event) => {
     const canvas = canvasRef.current;
     const ctx = canvas.getContext('2d');
     const rect = canvas.getBoundingClientRect();
     const x = event.clientX - rect.left;
     const y = event.clientY - rect.top;
-
+    
     ctx.fillStyle = 'red';
     ctx.font = '20px Arial';
     ctx.fillText('Signature', x, y);
   };
-
+  
+  // 마우스 포인터 연동 웹소켓
   const handleMouseMove = (event) => {
     const canvas = canvasRef.current;
     const rect = canvas.getBoundingClientRect();
