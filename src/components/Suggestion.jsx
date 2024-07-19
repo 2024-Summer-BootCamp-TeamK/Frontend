@@ -26,13 +26,13 @@ const GlobalStyle = createGlobalStyle`
   }
 `;
 
-const Suggestion = () => {
+const Suggestion = ({ contractMain, contractToxin }) => {
   const [currentSection, setCurrentSection] = useState(0); // 현재 섹션 상태
-  const [currentText, setCurrentText] = useState("text1"); // 현재 텍스트 파일 상태
+  const [currentText, setCurrentText] = useState("main"); // 현재 텍스트 파일 상태
 
-  const text1Sections = ["주요조항 1", "주요조항 2", "주요조항 3"];
-  const text2Sections = ["주의조항 1", "주의조항 2", "주의조항 3", "주의조항 4"];
-  const sections = currentText === "text1" ? text1Sections : text2Sections;
+  const mainSections = contractMain.articles.map((article, index) => `주요조항 ${index + 1}`);
+  const toxinSections = contractToxin.articles.map((article, index) => `주의조항 ${index + 1}`);
+  const sections = currentText === "main" ? mainSections : toxinSections;
 
   const handlePrevClick = () => {
     if (currentSection > 0) {
@@ -54,7 +54,7 @@ const Suggestion = () => {
 
   const toggleText = () => {
     setCurrentText((prevText) => {
-      const newText = prevText === "text1" ? "text2" : "text1";
+      const newText = prevText === "main" ? "toxin" : "main";
       console.log(`currentText가 ${prevText}에서 ${newText}로 변경되었습니다.`);
       setCurrentSection(0); // 텍스트 파일 변경 시 섹션을 첫 번째 섹션으로 이동
       return newText;
@@ -64,6 +64,8 @@ const Suggestion = () => {
   useEffect(() => {
     console.log(`현재 인덱스: ${currentSection}, 텍스트: ${sections[currentSection]}`);
   }, [currentSection, sections]);
+
+  const currentArticle = currentText === "main" ? contractMain.articles[currentSection] : contractToxin.articles[currentSection];
 
   return (
     <Container>
@@ -79,7 +81,18 @@ const Suggestion = () => {
           <Section className="active">
             <SectionContent className="slider__content">
               <SectionTitle className="slider__title">{sections[currentSection]}</SectionTitle>
-              <SectionText className="slider__text">내용을 여기에 추가하십시오...</SectionText>
+              <SectionText className="slider__text">
+                {currentArticle ? (
+                  <>
+                    <p>문장: {currentArticle.sentence}</p>
+                    <p>법: {currentArticle.law}</p>
+                    <p>설명: {currentArticle.description}</p>
+                    {currentArticle.recommend && <p>추천: {currentArticle.recommend}</p>}
+                  </>
+                ) : (
+                  <p>데이터를 불러오는 중입니다...</p>
+                )}
+              </SectionText>
             </SectionContent>
           </Section>
         </Content>
