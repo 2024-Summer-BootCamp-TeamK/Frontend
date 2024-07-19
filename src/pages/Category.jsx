@@ -110,7 +110,8 @@ const Category = () => {
 
   const handleCardClick = (index) => {
     if (index === activeIndex) {
-      navigate('/fileupload');
+      const selectedCategory = itemsQueue[activeIndex].label;
+      navigate('/fileupload', { state: { category: selectedCategory } });
     }
   };
 
@@ -235,7 +236,6 @@ const Icon = styled.img`
   height: auto;
   margin: 0 0 10px 20px;
   object-fit: contain;
-
   @media (max-width: 768px) {
     width: 80px;
     height: 80px;

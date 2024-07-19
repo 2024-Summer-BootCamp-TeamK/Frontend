@@ -3,7 +3,9 @@ import { useDropzone } from "react-dropzone";
 import styled from "styled-components";
 import Button from "../components/Button";
 import ReviewStartButtonComponent from "../components/ReviewStartButtonComponent";
-import Buttonall from "../components/Button";
+import { useLocation } from 'react-router-dom';
+import contractUpload from '../services/fileupload_API';
+
 import {
   Headerall,
   LogoContainer,
@@ -12,18 +14,40 @@ import {
 } from "../components/Headerall";
 import logoSrc from "../images/logo.svg";
 import uploadIconSrc from "../images/upload-icon.svg";
-import fileIconSrc from "../images/file-icon-white.svg";
 
 const Fileupload = () => {
   const [fileName, setFileName] = useState(null);
+  const [file, setFile] = useState(null);
+  const location = useLocation();
+  const category = location.state?.category;
 
   const onDrop = useCallback((acceptedFiles) => {
     setFileName(acceptedFiles[0].name);
+    setFile(acceptedFiles[0]);
     console.log(acceptedFiles);
-    // 파일 처리 로직을 추가할 수 있습니다.
   }, []);
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
+
+  const handleUpload = async () => {
+    if (!file) {
+      alert('파일을 선택해 주세요.');
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('pdf_file', file);
+    formData.append('category', category);
+
+    try {
+      const response = await contractUpload(formData);
+      console.log('계약서 업로드 성공:', response.data);
+      alert('계약서 업로드 성공! 계약서 ID: ' + response.data);
+    } catch (error) {
+      console.error('계약서 업로드 에러:', error.message);
+      alert('계약서 업로드에 실패했습니다.');
+    }
+  };
 
   return (
     <>
@@ -42,20 +66,20 @@ const Fileupload = () => {
         <DropZone {...getRootProps()}>
           <input {...getInputProps()} />
           <DropZoneText isFileUploaded={!!fileName}>
-              <YellowBox>
-                <Icon src={uploadIconSrc} alt="upload-file-icon"/>
-              </YellowBox> 
-              <h3>계약서 파일을 올려주세요</h3>
-              {isDragActive ? (
-                <p>파일을 여기에 놓으세요 ...</p>
-              ) : (
-                <p>{fileName ? `업로드된 파일: ${fileName}` : ''}</p>
-              )}
+            <YellowBox>
+              <Icon src={uploadIconSrc} alt="upload-file-icon" />
+            </YellowBox>
+            <h3>{category ? `선택된 카테고리: ${category}` : '계약서 파일을 올려주세요'}</h3>
+            {isDragActive ? (
+              <p>파일을 여기에 놓으세요 ...</p>
+            ) : (
+              <p>{fileName ? `업로드된 파일: ${fileName}` : ''}</p>
+            )}
           </DropZoneText>
         </DropZone>
       </Wrapper>
       <ButtonContainerStyled>
-        <ReviewStartButtonComponent >검토 시작하기</ReviewStartButtonComponent>
+        <ReviewStartButtonComponent onClick={handleUpload}>검토 시작하기</ReviewStartButtonComponent>
       </ButtonContainerStyled>
     </>
   );
@@ -104,12 +128,11 @@ const DropZoneText = styled.div`
     font-weight: 600;
     margin-top: 15px;
     color: #000;
-
   }
 
   p {
     margin: 0;
-    font-size: ${(props)=> (props.ifFileUploaded ? '28px': '22px')};
+    font-size: ${(props) => (props.isFileUploaded ? '28px' : '22px')};
     color: ${(props) => (props.isFileUploaded ? '#000000' : '#a6a6a6')}; /* 파일이 업로드된 경우 검정색, 아니면 회색 */
     font-weight: 600;
     position: absolute;
@@ -151,6 +174,4 @@ const YellowBox = styled.div`
 const Icon = styled.img`
   width: 3vw;
   height: auto;
-  
 `;
-
