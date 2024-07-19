@@ -15,6 +15,7 @@ import Key from "./pages/Key.jsx";
 import Keyinput from "./pages/Keyinput.jsx";
 import Popupexplain from "./components/Popupexlain.jsx";
 import Carousel from "./pages/Carousel";
+import ContractDetails from "./pages/ContractDetails.jsx";
 
 
 function App() {
@@ -35,6 +36,7 @@ function App() {
           <Route path="/key" element={<Key />} />
           <Route path="/keyinput" element={<Keyinput />} />
           <Route path="/carousel" element={<Carousel />} />
+          <Route path="/contract/:contractId" element={<ContractDetails />} />
         </Routes>
       </Router>
     </>
