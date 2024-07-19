@@ -2,23 +2,14 @@ import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import aireviewedSrc from "../images/aireviewed.svg"; // aireviewed.svg 파일 경로
 
-const Aireviewresult = () => {
+const Aireviewresult = ({ contractData }) => {
   const [content, setContent] = useState("");
 
   useEffect(() => {
-    // 텍스트 파일을 불러오는 함수
-    const fetchContent = async () => {
-      try {
-        const response = await fetch("/path/to/textfile.txt"); // 텍스트 파일 경로
-        const text = await response.text();
-        setContent(text);
-      } catch (error) {
-        console.error("Error fetching content:", error);
-      }
-    };
-
-    fetchContent();
-  }, []);
+    if (contractData && contractData.contract) {
+      setContent(contractData.contract);
+    }
+  }, [contractData]);
 
   return (
     <>
@@ -27,8 +18,7 @@ const Aireviewresult = () => {
       </AireviewedIconWrapper>
       <Container>
         <Content>
-          <h2>Vertical Scroll Component</h2>
-          <p>{content}</p>
+          <div dangerouslySetInnerHTML={{ __html: content }} />
         </Content>
       </Container>
     </>
