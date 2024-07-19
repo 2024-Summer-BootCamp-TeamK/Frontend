@@ -1,4 +1,5 @@
 import React from 'react';
+import { useLocation } from 'react-router-dom';
 import styled from "styled-components";
 import Button from "../components/Button";
 import Suggestion from "../components/Suggestion";
@@ -12,6 +13,9 @@ import {
 import logoSrc from "../images/logo.svg";
 
 const Reviewresult = () => {
+  const location = useLocation();
+  const { contractMain, contractToxin } = location.state || {};
+
   return (
     <>
       <PageWrapper>
@@ -29,10 +33,10 @@ const Reviewresult = () => {
         <ContentWrapper>
           <Container>
             <ComponentWrapper>
-              <Aireviewresult />
+              <Aireviewresult contractData={contractMain} />
             </ComponentWrapper>
             <ComponentWrapper>
-              <Suggestion />
+              <Suggestion contractMain={contractMain} contractToxin={contractToxin} />
             </ComponentWrapper>
           </Container>
         </ContentWrapper>
