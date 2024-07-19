@@ -30,71 +30,64 @@ const Suggestion = () => {
   const [currentSection, setCurrentSection] = useState(0); // 현재 섹션 상태
   const [currentText, setCurrentText] = useState("text1"); // 현재 텍스트 파일 상태
   const isScrolling = useRef(false); // 스크롤 중인지 여부를 확인하는 플래그
-
   const contentRef = useRef(null);
 
-  // 각 텍스트 파일의 섹션들
   const text1Sections = ["주요조항 1", "주요조항 2", "주요조항 3"];
   const text2Sections = ["주의조항 1", "주의조항 2", "주의조항 3"];
-
-  // 현재 선택된 텍스트 파일의 섹션들
   const sections = currentText === "text1" ? text1Sections : text2Sections;
 
-  // 스크롤 이벤트 핸들러
   const handleScroll = (event) => {
-    if (isScrolling.current) return; // 프로그래밍적으로 스크롤 중이면 실행하지 않음
+    if (isScrolling.current) return;
 
     if (event.deltaY > 0) {
-      scrollToSection(currentSection + 1); // 아래로 스크롤 시 다음 섹션으로 이동
+      scrollToSection(currentSection + 1);
     } else if (event.deltaY < 0) {
-      scrollToSection(currentSection - 1); // 위로 스크롤 시 이전 섹션으로 이동
+      scrollToSection(currentSection - 1);
     }
   };
 
-  // 특정 섹션으로 스크롤하는 함수
   const scrollToSection = (index) => {
-    if (index < 0 || index >= sections.length) return; // 인덱스가 유효 범위를 벗어나면 실행하지 않음
+    if (index < 0 || index >= sections.length) return;
 
     if (contentRef.current) {
-      isScrolling.current = true; // 프로그래밍적 스크롤 시작
+      isScrolling.current = true;
       contentRef.current.scrollTo({
         top: contentRef.current.clientHeight * index,
         behavior: "smooth",
       });
       setTimeout(() => {
-        isScrolling.current = false; // 프로그래밍적 스크롤 종료
-        setCurrentSection(index); // 현재 섹션 상태 업데이트
-      }, 500); // 스크롤 애니메이션 시간과 일치하도록 설정
-    }
-  };
-  const toggleText = () => {
-    const newText = currentText === "text1" ? "text2" : "text1";
-    console.log(
-      `currentText가 ${currentText}에서 ${newText}로 변경되었습니다.`
-    );
-    setCurrentText(newText);
-    setCurrentSection(0);
-    if (contentRef.current) {
-      isScrolling.current = true; // 프로그래밍적 스크롤 시작
-      contentRef.current.scrollTo({ top: 0, behavior: "smooth" });
-      setTimeout(() => {
-        isScrolling.current = false; // 프로그래밍적 스크롤 종료
-      }, 500); // 스크롤 애니메이션 시간과 일치하도록 설정
+        isScrolling.current = false;
+        setCurrentSection(index);
+      }, 500);
     }
   };
 
-  // 섹션이 변경될 때마다 스크롤을 맨 위로 이동
-  useEffect(() => {
+  const toggleText = () => {
+    setCurrentText((prevText) => {
+      const newText = prevText === "text1" ? "text2" : "text1";
+      console.log(`currentText가 ${prevText}에서 ${newText}로 변경되었습니다.`);
+      return newText;
+    });
+    setCurrentSection(0);
     if (contentRef.current) {
-      isScrolling.current = true; // 프로그래밍적 스크롤 시작
+      isScrolling.current = true;
       contentRef.current.scrollTo({ top: 0, behavior: "smooth" });
       setTimeout(() => {
-        isScrolling.current = false; // 프로그래밍적 스크롤 종료
-      }, 500); // 스크롤 애니메이션 시간과 일치하도록 설정
+        isScrolling.current = false;
+      }, 500);
+    }
+  };
+
+  useEffect(() => {
+    if (contentRef.current) {
+      isScrolling.current = true;
+      contentRef.current.scrollTo({ top: 0, behavior: "smooth" });
+      setTimeout(() => {
+        isScrolling.current = false;
+      }, 500);
     }
   }, [sections]);
 
-  // 스크롤 이벤트 리스너 추가
   useEffect(() => {
     const contentEl = contentRef.current;
     if (contentEl) {
@@ -111,29 +104,21 @@ const Suggestion = () => {
     <Container>
       <GlobalStyle />
       <ToggleswitchContainer>
-        <Toggleswitch onChange={toggleText} />{" "}
-        {/* 텍스트 파일을 토글하는 스위치 */}
+        <Toggleswitch onChange={toggleText} /> {/* 텍스트 파일을 토글하는 스위치 */}
       </ToggleswitchContainer>
       <Content ref={contentRef}>
         {sections.map((section, index) => (
-          <Section
-            key={index}
-            className={index === currentSection ? "active" : ""}
-          >
+          <Section key={index} className={index === currentSection ? "active" : ""}>
             <SectionContent className="slider__content">
               <SectionTitle className="slider__title">{section}</SectionTitle>
-              <SectionText className="slider__text">...</SectionText>
+              <SectionText className="slider__text">내용을 여기에 추가하십시오...</SectionText>
             </SectionContent>
           </Section>
         ))}
       </Content>
       <ProgressContainer>
         {sections.map((_, index) => (
-          <ProgressDot
-            key={index}
-            active={index === currentSection}
-            onClick={() => scrollToSection(index)}
-          /> // 프로그레스 도트
+          <ProgressDot key={index} active={index === currentSection} onClick={() => scrollToSection(index)} />
         ))}
       </ProgressContainer>
       <StyledOrangebutton>
@@ -153,9 +138,9 @@ const Container = styled.div`
   display: flex;
   align-items: center;
   position: relative;
-  overflow: hidden; /* 오버플로우 숨기기 */
+  overflow: hidden;
   padding: 20px;
-  margin-top: 30px; /* 수정 */
+  margin-top: 30px;
   border-radius: 20px;
   background-color: #fefdf6;
   flex-direction: column;
@@ -163,10 +148,10 @@ const Container = styled.div`
 
 const Content = styled.div`
   display: flex;
-  flex-direction: column; /* 세로 방향으로 스크롤 */
+  flex-direction: column;
   height: 100%;
-  overflow-x: hidden; /* 가로 스크롤바 숨기기 */
-  overflow-y: hidden; /* 세로 스크롤바 숨기기 */
+  overflow-x: hidden;
+  overflow-y: hidden;
   scroll-snap-type: y mandatory;
   scroll-behavior: smooth;
   flex: 1;
@@ -185,13 +170,13 @@ const Section = styled.div`
   scroll-snap-align: start;
   flex: none;
   width: 100%;
-  height: 100%;
+  height: 100%; /* 각 섹션의 높이를 부모 컨테이너 높이로 설정 */
   background-color: #ffffff;
   display: flex;
   justify-content: center;
   align-items: center;
   font-size: 24px;
-  box-sizing: border-box; /* 수정 */
+  box-sizing: border-box;
   padding: 20px;
   color: #000000;
   opacity: 0;
@@ -223,7 +208,7 @@ const SectionText = styled.div`
 
 const ProgressContainer = styled.div`
   position: absolute;
-  bottom: 150px; /* 수정 */
+  bottom: 20px; /* 수정: 위치 변경 */
   width: 90%;
   display: flex;
   justify-content: center;
@@ -243,7 +228,7 @@ const ToggleswitchContainer = styled.div`
   display: flex;
   justify-content: center;
   width: 100%;
-  margin-bottom: 10px; /* 수정 */
+  margin-bottom: 10px;
   z-index: 1;
 `;
 

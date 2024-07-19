@@ -22,9 +22,7 @@ function App() {
     <>
       <Router>
         <Routes>
-
           <Route path="/category" element={<Category />} />
-
           <Route path="/" element={<Mainpage />} />
           <Route path="/fileupload" element={<Fileupload />} />
           <Route path="/fileuploadshare" element={<Fileuploadshare />} />
@@ -37,7 +35,6 @@ function App() {
           <Route path="/key" element={<Key />} />
           <Route path="/keyinput" element={<Keyinput />} />
           <Route path="/carousel" element={<Carousel />} />
-
         </Routes>
       </Router>
     </>
