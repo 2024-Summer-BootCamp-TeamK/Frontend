@@ -3,14 +3,14 @@
 <path d="M4 47C4 30.4315 17.4315 17 34 17H324C340.569 17 354 30.4315 354 47V397C354 413.569 340.569 427 324 427H34C17.4315 427 4 413.569 4 397V47Z" fill="#FFFEF3"/>
 </g>
 <path d="M4 286H354V398C354 414.569 340.569 428 324 428H34C17.4315 428 4 414.569 4 398V286Z" fill="#141F7B"/>
-<text fill="#FCFBEC" xml:space="preserve" style="white-space: pre" font-family="Inter" font-size="20" font-weight="800" letter-spacing="0em"><tspan x="102" y="397.273">&#xcca0;&#xc800;&#xd788; &#xac80;&#xd1a0;&#xd569;&#xb2c8;&#xb2e4;</tspan></text>
-<text fill="#FCFBEC" xml:space="preserve" style="white-space: pre" font-family="Inter" font-size="20" font-weight="900" letter-spacing="0em"><tspan x="162" y="365.273">&#xc774; &#xb2f9;&#xc2e0;&#xc758; &#xacc4;&#xc57d;&#xc11c;&#xb97c;</tspan></text>
+<text fill="#FCFBEC" xml:space="preserve" style="white-space: pre" font-family="Inter" font-size="20" font-weight="900" letter-spacing="0em"><tspan x="164" y="367.273">&#xc774; &#xb2f9;&#xc2e0;&#xc758; &#xacc4;&#xc57d;&#xc11c;&#xb97c;</tspan></text>
+<text fill="#FCFBEC" xml:space="preserve" style="white-space: pre" font-family="Inter" font-size="20" font-weight="900" letter-spacing="0em"><tspan x="49" y="336.273">&#xb2f9;&#xc2e0;&#xc740; &#xacc4;&#xc57d;&#xc11c; &#xc5c5;&#xb85c;&#xb4dc;&#xb9cc; &#xd574;&#xc8fc;&#xc138;&#xc694;</tspan></text>
+<rect x="43" y="347" width="120" height="25.2823" fill="url(#pattern0_1010_533)"/>
+<text fill="#FCFBEC" xml:space="preserve" style="white-space: pre" font-family="Inter" font-size="20" font-weight="800" letter-spacing="0em"><tspan x="103" y="400.273">&#xcca0;&#xc800;&#xd788; &#xac80;&#xd1a0;&#xd569;&#xb2c8;&#xb2e4;</tspan></text>
 <g filter="url(#filter1_d_1010_533)">
 <path d="M188.869 9.29936L183.734 5.65526C180.223 3.16157 178.468 1.91757 176.917 2.54704C175.368 3.17627 174.977 5.2939 174.195 9.52794L173.666 12.3941C173.457 13.5229 173.352 14.0875 173.072 14.5586C172.946 14.7699 172.795 14.9654 172.623 15.1406C172.238 15.5304 171.719 15.7725 170.681 16.2583C168.34 17.3543 167.168 17.9025 166.841 18.7849C166.7 19.1668 166.663 19.5794 166.734 19.9803C166.898 20.9072 167.953 21.6551 170.061 23.1525L172.513 24.8914L167.017 32.6489C166.852 32.8972 166.79 33.2003 166.844 33.4937C166.899 33.7871 167.065 34.0477 167.309 34.2203C167.552 34.393 167.853 34.4639 168.148 34.4181C168.443 34.3724 168.708 34.2135 168.888 33.9752L174.382 26.218L176.921 28.0213C179.044 29.5268 180.106 30.2811 181.04 30.1222C181.432 30.0554 181.801 29.889 182.109 29.6355C182.842 29.0343 182.971 27.7391 183.232 25.1471C183.346 24.0085 183.403 23.4399 183.642 22.947C183.747 22.7326 183.877 22.5308 184.03 22.3449C184.377 21.9234 184.871 21.6352 185.859 21.059L188.413 19.569C192.104 17.418 193.949 16.3411 194.022 14.6764C194.096 13.01 192.355 11.7729 188.869 9.29936Z" fill="#E7320A"/>
 </g>
-<rect x="42" y="345" width="120" height="25.2823" fill="url(#pattern0_1010_533)"/>
-<rect x="65" y="45" width="200" height="200" fill="url(#pattern1_1010_533)"/>
-<text fill="#FCFBEC" xml:space="preserve" style="white-space: pre" font-family="Inter" font-size="20" font-weight="900" letter-spacing="0em"><tspan x="42" y="333.273">&#xb2f9;&#xc2e0;&#xc740; &#xacc4;&#xc57d;&#xc11c; &#xc5c5;&#xb85c;&#xb4dc;&#xb9cc; &#xd574;&#xc8fc;&#xc138;&#xc694;</tspan></text>
+<rect x="72" y="60" width="200" height="200" fill="url(#pattern1_1010_533)"/>
 <defs>
 <filter id="filter0_d_1010_533" x="0" y="17" width="358" height="418" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
 <feFlood flood-opacity="0" result="BackgroundImageFix"/>
@@ -22,6 +22,9 @@
 <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_1010_533"/>
 <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_1010_533" result="shape"/>
 </filter>
+<pattern id="pattern0_1010_533" patternContentUnits="objectBoundingBox" width="1" height="1">
+<use xlink:href="#image0_1010_533" transform="scale(0.000504032 0.00239234)"/>
+</pattern>
 <filter id="filter1_d_1010_533" x="162.699" y="2.38477" width="35.3242" height="40.0469" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
 <feFlood flood-opacity="0" result="BackgroundImageFix"/>
 <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
@@ -32,9 +35,6 @@
 <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_1010_533"/>
 <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_1010_533" result="shape"/>
 </filter>
-<pattern id="pattern0_1010_533" patternContentUnits="objectBoundingBox" width="1" height="1">
-<use xlink:href="#image0_1010_533" transform="scale(0.000504032 0.00239234)"/>
-</pattern>
 <pattern id="pattern1_1010_533" patternContentUnits="objectBoundingBox" width="1" height="1">
 <use xlink:href="#image1_1010_533" transform="scale(0.000488281)"/>
 </pattern>
