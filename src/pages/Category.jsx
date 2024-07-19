@@ -233,6 +233,7 @@ const IconWrapper = styled.div`
 const Icon = styled.img`
   width: 70%;
   height: auto;
+  margin: 0 0 10px 20px;
   object-fit: contain;
 
   @media (max-width: 768px) {

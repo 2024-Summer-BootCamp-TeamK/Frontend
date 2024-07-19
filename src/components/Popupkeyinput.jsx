@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import keySrc from "../images/key.svg"; // 이미지 경로가 맞는지 확인하세요
+import eyeOnSrc from "../images/Eye_on.svg"; // 보기 아이콘 경로
+import eyeOffSrc from "../images/Eye_off.svg"; // 숨기기 아이콘 경로
 
 const PopupWrapper = styled.div`
   position: fixed;
@@ -47,14 +49,44 @@ const PopupTitle = styled.h2`
   text-align: center;
 `;
 
-const PWInput = styled.input`
+const PWInputWrapper = styled.div`
   width: 80%;
+  position: relative;
+`;
+
+const PWInput = styled.input`
+  width: 100%;
   padding: 10px;
   border: 1px solid #ccc;
   border-radius: 5px;
   margin-top: 20px;
   background-color: white;
+  color: black; /* 텍스트 색상을 검정으로 설정 */
   font-size: 16px;
+`;
+
+const ToggleButton = styled.button`
+  position: absolute;
+  top: 70%;
+  right: 10px;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  color: #141F7B;
+  outline: none; /* 포커스 시 outline 제거 */
+
+  &:focus,
+  &:active {
+    outline: none;
+    box-shadow: none;
+  }
+`;
+
+const ToggleIcon = styled.img`
+  width: 20px;
+  height: 20px;
 `;
 
 const ConfirmButton = styled.button`
@@ -85,9 +117,14 @@ const ConfirmButton = styled.button`
 
 const Popupkeyinput = () => {
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
 
   const handlePasswordChange = (e) => {
     setPassword(e.target.value);
+  };
+
+  const handleTogglePassword = () => {
+    setShowPassword(!showPassword);
   };
 
   const handleConfirm = () => {
@@ -102,12 +139,17 @@ const Popupkeyinput = () => {
       <PopupTitle>
         계약서의 보안을 위해 설정된 비밀번호를 입력해주세요.
       </PopupTitle>
-      <PWInput
-        type="password"
-        placeholder="비밀번호를 입력해주세요."
-        value={password}
-        onChange={handlePasswordChange}
-      />
+      <PWInputWrapper>
+        <PWInput
+          type={showPassword ? "text" : "password"}
+          placeholder="비밀번호를 입력해주세요."
+          value={password}
+          onChange={handlePasswordChange}
+        />
+        <ToggleButton onClick={handleTogglePassword}>
+          <ToggleIcon src={showPassword ? eyeOffSrc : eyeOnSrc} alt="Toggle Password Visibility" />
+        </ToggleButton>
+      </PWInputWrapper>
       <ConfirmButton onClick={handleConfirm}>확인</ConfirmButton>
     </PopupWrapper>
   );
