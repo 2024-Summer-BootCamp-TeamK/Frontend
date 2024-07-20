@@ -1,5 +1,4 @@
 import styled from "styled-components";
-import logoSrc from "../images/logo.svg";
 
 const Headerall = styled.header`
   position: fixed; /* 상단에 고정 */
@@ -15,7 +14,7 @@ const Headerall = styled.header`
   font-size: 24px;
   z-index: 1000; /* 다른 요소보다 위에 표시되도록 함 */
   justify-content: space-between; /* 왼쪽 끝에 로고, 오른쪽 끝에 버튼들 */
-  gap: 10px; /* 버튼 간의 간격 */
+
 
   /* 구분선 추가 */
   &::after {
@@ -42,6 +41,7 @@ const Logo = styled.object`
 
 const ButtonContainer = styled.div`
   display: flex;
-  gap: 10px; /* 버튼 간의 간격 */
+  gap: 20px; /* 버튼 간의 간격 */
+  margin-right: calc(100vw - 101%); /* 스크롤바 공간을 제거하기 위한 여백 추가 */  
 `;
 export { Headerall, LogoContainer, Logo, ButtonContainer };

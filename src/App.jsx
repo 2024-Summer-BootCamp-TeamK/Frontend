@@ -4,8 +4,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 import Mainpage from "./pages/Mainpage";
 import Fileupload from "./pages/Fileupload";
-import FileUploadShare from "./pages/Fileuploadshare";
-import Urlentrance from "./pages/Urlentrance";
+import Fileuploadshare from "./pages/Fileuploadshare";
 import Reviewresult from "./pages/Reviewresult";
 import Resultcompare from "./pages/Resultcompare";
 import Category from "./pages/Category";
@@ -26,8 +25,7 @@ function App() {
           <Route path="/loading" element={<Loading/>} />
           <Route path="/" element={<Mainpage />} />
           <Route path="/fileupload" element={<Fileupload />} />
-          <Route path="/fileuploadShare" element={<FileUploadShare />} />
-          <Route path="/Urlentrance" element={<Urlentrance />} />
+          <Route path="/fileuploadshare" element={<Fileuploadshare />} />
           <Route path="/Reviewresult" element={<Reviewresult />} />
           <Route path="/Resultcompare" element={<Resultcompare />} />
           <Route path="/Sign" element={<Sign />} />
