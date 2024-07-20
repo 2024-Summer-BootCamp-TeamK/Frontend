@@ -1,10 +1,9 @@
 import React, { useCallback, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import styled from "styled-components";
+import { useNavigate } from "react-router-dom";
 import Button from "../components/Button";
 import ReviewStartButtonComponent from "../components/ReviewStartButtonComponent";
-import { useNavigate } from 'react-router-dom';
-
 import {
   Headerall,
   LogoContainer,
@@ -14,7 +13,7 @@ import {
 import logoSrc from "../images/logo.svg";
 import uploadIconSrc from "../images/upload-icon.svg";
 
-const Fileuploadshare = () => {
+const FileUploadShare = () => {
   const [fileName, setFileName] = useState(null);
   const [file, setFile] = useState(null);
   const navigate = useNavigate();
@@ -66,13 +65,13 @@ const Fileuploadshare = () => {
         </DropZone>
       </Wrapper>
       <ButtonContainerStyled>
-        <ReviewStartButtonComponent onClick={handleUpload}>검토 시작하기</ReviewStartButtonComponent>
+        <ReviewStartButtonComponent onClick={handleUpload}>공유 시작하기</ReviewStartButtonComponent>
       </ButtonContainerStyled>
     </>
   );
 };
 
-export default Fileuploadshare;
+export default FileUploadShare;
 
 // 스타일 컴포넌트 정의
 const Wrapper = styled.div`
@@ -111,7 +110,7 @@ const DropZoneText = styled.div`
   flex-direction: column;
 
   h3 {
-    font-size: 26px;
+    font-size: 24px;
     font-weight: 600;
     margin-top: 15px;
     color: #000;
@@ -119,7 +118,7 @@ const DropZoneText = styled.div`
 
   p {
     margin: 0;
-    font-size: ${(props) => (props.isFileUploaded ? '28px' : '22px')};
+    font-size: ${(props) => (props.isFileUploaded ? '28px' : '18px')};
     color: ${(props) => (props.isFileUploaded ? '#000000' : '#a6a6a6')}; /* 파일이 업로드된 경우 검정색, 아니면 회색 */
     font-weight: 600;
     position: absolute;
