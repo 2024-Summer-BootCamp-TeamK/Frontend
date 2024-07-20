@@ -1,4 +1,4 @@
-import React, { createRef, useEffect, useState } from 'react';
+import React, { createRef, useEffect, useState, useCallback } from 'react';
 import { DragActions } from '../entities';
 import { getMovePosition } from '../utils/helpers';
 import { Drawing as DrawingComponent } from '../components/PdfEditorComponent/Drawing';
@@ -41,7 +41,7 @@ export const Drawing = ({
       svg.setAttribute('viewBox', `0 0 ${currentWidth} ${currentHeight}`);
     }
   }, [svgRef]);
-  
+
   const handleMousedown = (event: React.MouseEvent<HTMLDivElement>) => {
     event.preventDefault();
     setMouseDown(true);
@@ -52,12 +52,12 @@ export const Drawing = ({
       setOperation(DragActions.SCALE);
     }
   };
-  
+
   const handleMouseMove = (event: React.MouseEvent<HTMLDivElement>) => {
     event.preventDefault();
-    
+
     if (mouseDown && operation === DragActions.MOVE) {
-      requestAnimationFrame(()=> {
+      requestAnimationFrame(() => {
         const { top, left } = getMovePosition(
           positionLeft,
           positionTop,
@@ -68,17 +68,17 @@ export const Drawing = ({
           pageWidth,
           pageHeight
         );
-   
+
         setPositionTop(top);
         setPositionLeft(left);
       });
     }
   };
-      
+
   const handleMouseUp = (event: React.MouseEvent<HTMLDivElement>) => {
     event.preventDefault();
     setMouseDown(false);
-    
+
     if (operation === DragActions.MOVE) {
       const { top, left } = getMovePosition(
         positionLeft,
@@ -90,14 +90,13 @@ export const Drawing = ({
         pageWidth,
         pageHeight
       );
-      
+
       updateDrawingAttachment({
         x: positionLeft,
         y: positionTop
       });
     }
-      
-    // 얘는 실행 안되는듯 ( 지워도 되겠지만.. 혹시)
+
     if (operation === DragActions.SCALE) {
       updateDrawingAttachment({
         x: positionLeft,
@@ -110,60 +109,58 @@ export const Drawing = ({
 
     setOperation(DragActions.NO_MOVEMENT);
   };
-  
+
   const handleMouseOut = (event: React.MouseEvent<HTMLDivElement>) => {
     if (operation === DragActions.MOVE) {
       handleMouseUp(event);
     }
   };
-  
+
   const handleResizeMouseMove = (event: React.MouseEvent<HTMLDivElement>) => {
     event.preventDefault();
-    if (mouseDown  ) {
-      requestAnimationFrame(()=> {
-      if (direction.includes('left')) {
-        setPositionLeft(positionLeft + event.movementX);
-        setCurrentWidth(currentWidth - event.movementX);
-      }
-      
-      if (direction.includes('top')) {
-        setPositionTop(positionTop + event.movementY);
-        setCurrentHeight(currentHeight - event.movementY);
-      }
-      
-      if (direction.includes('right')) {
-        setCurrentWidth(currentWidth + event.movementX);
-      }
-      
-      if (direction.includes('bottom')) {
-        setCurrentHeight(currentHeight + event.movementY);
-      }
-    });
+    if (mouseDown) {
+      requestAnimationFrame(() => {
+        if (direction.includes('left')) {
+          setPositionLeft(positionLeft + event.movementX);
+          setCurrentWidth(currentWidth - event.movementX);
+        }
 
+        if (direction.includes('top')) {
+          setPositionTop(positionTop + event.movementY);
+          setCurrentHeight(currentHeight - event.movementY);
+        }
+
+        if (direction.includes('right')) {
+          setCurrentWidth(currentWidth + event.movementX);
+        }
+
+        if (direction.includes('bottom')) {
+          setCurrentHeight(currentHeight + event.movementY);
+        }
+      });
     }
   };
-  
+
   const handleClick = () => setDimmerActive(true);
   const cancelDelete = () => setDimmerActive(false);
-  
+
   const confirmDelete = () => {
     cancelDelete();
     removeDrawing();
   };
-  
+
   useEffect(() => {
     const svg = svgRef.current;
     if (svg) {
       svg.setAttribute('viewBox', `0 0 ${currentWidth} ${currentHeight}`);
-      
-      // scale 변경
+
       const scaleX = currentWidth / width;
       const scaleY = currentHeight / height;
       const paths = svg.getElementsByTagName('path');
       for (let i = 0; i < paths.length; i++) {
         paths[i].setAttribute('transform', `scale(${scaleX}, ${scaleY})`);
       }
-      // 변경된 scale값으로 저장 -> pdf저장에도 넘겨야함.
+
       updateDrawingAttachment({
         x: positionLeft,
         y: positionTop,
@@ -171,32 +168,65 @@ export const Drawing = ({
         scaleY,
       });
     }
+  }, [currentWidth, currentHeight, width, height]);
 
+  const handleKeyDown = useCallback((event: KeyboardEvent) => {
+    const step = 5; // 이동 간격
+    let newTop = positionTop;
+    let newLeft = positionLeft;
 
-  }, [currentWidth, currentHeight, width, height ]);
+    switch (event.key) {
+      case 'ArrowUp':
+        newTop = Math.max(0, positionTop - step);
+        break;
+      case 'ArrowDown':
+        newTop = Math.min(pageHeight - currentHeight, positionTop + step);
+        break;
+      case 'ArrowLeft':
+        newLeft = Math.max(0, positionLeft - step);
+        break;
+      case 'ArrowRight':
+        newLeft = Math.min(pageWidth - currentWidth, positionLeft + step);
+        break;
+      default:
+        return;
+    }
 
- 
+    setPositionTop(newTop);
+    setPositionLeft(newLeft);
 
-  
+    updateDrawingAttachment({
+      x: newLeft,
+      y: newTop,
+    });
+  }, [positionTop, positionLeft, pageWidth, pageHeight, currentWidth, currentHeight, updateDrawingAttachment]);
+
+  useEffect(() => {
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [handleKeyDown]);
+
   return (
     <DrawingComponent
-    stroke={stroke}
-    strokeWidth={strokeWidth}
-    path={path || undefined }
-    width={currentWidth}
-    svgRef={svgRef}
-    height={currentHeight}
-    onClick={handleClick}
-    cancelDelete={cancelDelete}
-    dimmerActive={dimmerActive}
-    deleteDrawing={confirmDelete}
-    handleMouseDown={handleMousedown}
-    handleMouseMove={handleMouseMove}
-    handleMouseOut={handleMouseOut}
-    handleMouseUp={handleMouseUp}
-    handleResizeMouseMove={handleResizeMouseMove}
-    positionLeft={positionLeft}
-    positionTop={positionTop}
+      stroke={stroke}
+      strokeWidth={strokeWidth}
+      path={path || undefined}
+      width={currentWidth}
+      svgRef={svgRef}
+      height={currentHeight}
+      onClick={handleClick}
+      cancelDelete={cancelDelete}
+      dimmerActive={dimmerActive}
+      deleteDrawing={confirmDelete}
+      handleMouseDown={handleMousedown}
+      handleMouseMove={handleMouseMove}
+      handleMouseOut={handleMouseOut}
+      handleMouseUp={handleMouseUp}
+      handleResizeMouseMove={handleResizeMouseMove}
+      positionLeft={positionLeft}
+      positionTop={positionTop}
     />
   );
 };
