@@ -110,22 +110,6 @@ const PdfEditor = () => {
     afterUploadAttachment: addAttachment,
   });
 
-  const addText = () => {
-    const newTextAttachment = {
-      id: ggID(),
-      type: AttachmentTypes.TEXT,
-      x: 0,
-      y: 0,
-      width: 120,
-      height: 25,
-      size: 16,
-      lineHeight: 1.4,
-      fontFamily: 'Times-Roman',
-      text: 'Enter Text Here',
-    };
-    addAttachment(newTextAttachment);
-  };
-
   const addDrawing = (drawing) => {
     if (!drawing) return;
 
@@ -145,7 +129,7 @@ const PdfEditor = () => {
   const handleSavePdf = () => savePdf(allPageAttachments);
 
   return (
-    <Container style={{ margin: 30 }}>
+    <Container style={{ margin: 30, backgroundColor: "#fefdf6" , paddingBottom: 30}}>
         <Headerall>
             <LogoContainer>
                 <Logo data={logoSrc} type="image/svg+xml" />

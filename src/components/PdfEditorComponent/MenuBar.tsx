@@ -63,6 +63,7 @@ const FooterText = styled.div`
   margin-bottom: 5px; 
   display: flex;
   align-items: center;
+  backgroud-color: var(--background-color);
 `;
 
 
@@ -71,6 +72,7 @@ const ButtonGroup = styled.div`
   gap: 150px;
   align-items: center;
   justify-content: center;
+  background-color: var(--background-color);
 `;
 
 const SignButton = styled.button`
