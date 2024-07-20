@@ -4,7 +4,6 @@ import { getMovePosition } from '../utils/helpers';
 import { Drawing as DrawingComponent } from '../components/PdfEditorComponent/Drawing';
 
 interface Props {
-  id: string; // id 추가
   pageWidth: number;
   pageHeight: number;
   removeDrawing: () => void;
@@ -12,7 +11,6 @@ interface Props {
 }
 
 export const Drawing = ({
-  id, // id 추가
   x,
   y,
   width,
@@ -94,7 +92,6 @@ export const Drawing = ({
       );
 
       updateDrawingAttachment({
-        id, // id 추가
         x: positionLeft,
         y: positionTop
       });
@@ -102,7 +99,6 @@ export const Drawing = ({
 
     if (operation === DragActions.SCALE) {
       updateDrawingAttachment({
-        id, // id 추가
         x: positionLeft,
         y: positionTop,
         width: currentWidth,
@@ -166,7 +162,6 @@ export const Drawing = ({
       }
 
       updateDrawingAttachment({
-        id, // id 추가
         x: positionLeft,
         y: positionTop,
         scaleX,
@@ -201,7 +196,6 @@ export const Drawing = ({
     setPositionLeft(newLeft);
 
     updateDrawingAttachment({
-      id, // id 추가
       x: newLeft,
       y: newTop,
     });
@@ -216,7 +210,6 @@ export const Drawing = ({
 
   return (
     <DrawingComponent
-      id={id} // id 추가
       stroke={stroke}
       strokeWidth={strokeWidth}
       path={path || undefined}
@@ -234,7 +227,6 @@ export const Drawing = ({
       handleResizeMouseMove={handleResizeMouseMove}
       positionLeft={positionLeft}
       positionTop={positionTop}
-      updateDrawing={updateDrawingAttachment} // updateDrawing 전달
     />
   );
 };

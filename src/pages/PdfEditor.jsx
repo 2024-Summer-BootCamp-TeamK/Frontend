@@ -113,23 +113,7 @@ const PdfEditor = () => {
       scale: 1,
     };
     addAttachment(newDrawingAttachment);
-    if (ws) {
-      ws.send(JSON.stringify({
-        type: 'drawing_add',
-        payload: newDrawingAttachment
-      }));
-    }
-  };
-
-  const updateDrawingAttachment = (drawing) => {
-    update(drawing);
-    if (ws) {
-      ws.send(JSON.stringify({
-        type: 'drawing_update',
-        payload: drawing
-      }));
-    }
-  };
+  }
 
   const handleSavePdf = () => savePdf(allPageAttachments);
 
@@ -154,12 +138,6 @@ const PdfEditor = () => {
         }
         if (message.type === 'page_change') {
           setPageIndex(message.payload.pageIndex); // 서버에서 전달된 페이지 인덱스로 페이지 변경
-        }
-        if (message.type === 'drawing_add') {
-          addAttachment(message.payload);
-        }
-        if (message.type === 'drawing_update') {
-          update(message.payload);
         }
       };
       websocket.onerror = (error) => {
@@ -222,7 +200,7 @@ const PdfEditor = () => {
                       <Attachments
                         pdfName={name}
                         removeAttachment={remove}
-                        updateAttachment={updateDrawingAttachment} // 수정된 함수 전달
+                        updateAttachment={update}
                         pageDimensions={dimensions}
                         attachments={pageAttachments}
                       />
