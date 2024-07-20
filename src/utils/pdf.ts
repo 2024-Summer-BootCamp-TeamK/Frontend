@@ -19,6 +19,10 @@ export async function save(
   };
 
   try {
+    // File 객체가 제대로 전달되는지 확인
+    if (!(pdfFile instanceof Blob)) {
+      throw new Error('The provided pdfFile is not a Blob');
+    }
     pdfDoc = await PDFLib.PDFDocument.load(await readAsArrayBuffer(pdfFile));
   } catch (e) {
     console.log('Failed to load PDF.');
@@ -27,13 +31,15 @@ export async function save(
 
   const pagesProcesses = pdfDoc.getPages().map(async (page, pageIndex) => {
     const pageObjects = objects[pageIndex];
-    // 'y' starts from bottom in PDFLib, use this to calculate y
     const pageHeight = page.getHeight();
     const embedProcesses = pageObjects.map(async (object: Attachment) => {
       if (object.type === 'image') {
         const { file, x, y, width, height } = object as ImageAttachment;
         let img: any;
         try {
+          if (!(file instanceof Blob)) {
+            throw new Error('The provided file is not a Blob');
+          }
           if (file.type === 'image/jpeg') {
             img = await pdfDoc.embedJpg(await readAsArrayBuffer(file));
           } else {

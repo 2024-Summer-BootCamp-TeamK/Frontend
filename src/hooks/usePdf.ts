@@ -36,6 +36,9 @@ export const usePdf = () => {
   };
 
   const initialize = ({ name, file, pages: _pages }: Pdf) => {
+    if (!(file instanceof File)) {
+      throw new Error('The provided file is not of type File');
+    }
     const multi = _pages.length > 1;
     setName(name);
     setFile(file);

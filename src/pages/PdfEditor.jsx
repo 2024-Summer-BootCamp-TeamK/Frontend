@@ -1,4 +1,4 @@
-import React, { useState, useLayoutEffect, useEffect } from 'react';
+import React, { useState, useLayoutEffect } from 'react';
 import 'semantic-ui-css/semantic.min.css';
 import { Container, Grid, Segment } from 'semantic-ui-react';
 import styled from 'styled-components';
@@ -11,9 +11,9 @@ import { useAttachments } from '../hooks/useAttachments';
 import { useUploader, UploadTypes } from '../hooks/useUploader';
 import { Page } from '../components/PdfEditorComponent/Page';
 import { Attachments } from '../components/PdfEditorComponent/Attachments';
-import { useLocation } from 'react-router-dom';
 import { getAsset } from '../utils/prepareAssets';
 import * as pdfjsLib from 'pdfjs-dist';
+import axios from 'axios';
 
 import Button from "../components/Button";
 import {
@@ -29,64 +29,112 @@ import BorderStyle from 'pdf-lib/cjs/core/annotation/BorderStyle';
 pdfjsLib.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/2.6.347/pdf.worker.min.js`;
 
 const PdfEditor = () => {
-    const [drawingModalOpen, setDrawingModalOpen] = useState(false);
-    const [file, setFile] = useState(null);
+  const [drawingModalOpen, setDrawingModalOpen] = useState(false);
+  const [pdfDocument, setPdfDocument] = useState(null);
 
-    const { initialize, pageIndex, isMultiPage, isFirstPage, isLastPage, currentPage, isSaving, savePdf, previousPage, nextPage, setDimensions, name, dimensions } = usePdf();
-    const { add: addAttachment, allPageAttachments, pageAttachments, reset: resetAttachments, update, remove, setPageIndex } = useAttachments();
+  const {
+    initialize,
+    pageIndex,
+    isMultiPage,
+    isFirstPage,
+    isLastPage,
+    currentPage,
+    isSaving,
+    savePdf,
+    previousPage,
+    nextPage,
+    setDimensions,
+    name,
+    dimensions
+  } = usePdf();
+  
+  const {
+    add: addAttachment,
+    allPageAttachments,
+    pageAttachments,
+    reset: resetAttachments,
+    update,
+    remove,
+    setPageIndex
+  } = useAttachments();
+  
+  const initializePageAndAttachments = (file, pdfDocument) => {
+    const numberOfPages = pdfDocument.numPages;
+    const pages = Array.from({ length: numberOfPages }, (_, index) => pdfDocument.getPage(index + 1));
     
-    const initializePageAndAttachments = (pdfDetails) => {
-        initialize(pdfDetails);
-        const numberOfPages = pdfDetails.pages.length;
-        resetAttachments(numberOfPages);
+    initialize({
+      name: file.name,
+      file: file,
+      pages: pages
+    });
+    resetAttachments(numberOfPages);
+  };
+
+  useLayoutEffect(() => {
+    const loadPdf = async () => {
+      try {
+        const documentId = 11;
+        const password = '4KoxLn';
+        const url = `http://localhost/api/v1/encryption/test/${documentId}`;
+        const pdfjsLib = await getAsset('pdfjsLib');
+
+        // Fetch the PDF file from the server
+        const response = await axios.get(url, { 
+          responseType: 'blob',
+          headers: {
+            'X-Password': password
+          }
+        });
+        const blob = new Blob([response.data], { type: 'application/pdf' });
+        const file = new File([blob], "document.pdf", { type: "application/pdf" });
+
+        const loadingTask = pdfjsLib.getDocument({ data: await blob.arrayBuffer() });
+        const pdfDocument = await loadingTask.promise;
+        setPdfDocument(pdfDocument);
+
+        initializePageAndAttachments(file, pdfDocument);
+      } catch (error) {
+        console.error('Error loading PDF:', error);
+      }
     };
+    loadPdf();
+  }, []);
 
-   //   const pdfjsLib = await getAsset('pdfjsLib');  라이브러리 가져오는 방법!!
+  const { inputRef: pdfInput, handleClick: handlePdfClick, isUploading, onClick, upload: uploadPdf } = useUploader({ 
+    use: UploadTypes.PDF,
+    afterUploadPdf: initializePageAndAttachments,
+  });
+  const { inputRef: imageInput, handleClick: handleImageClick, onClick: onImageClick, upload: uploadImage  } = useUploader({ 
+    use: UploadTypes.IMAGE,
+    afterUploadAttachment: addAttachment,
+  });
 
-   
-    useLayoutEffect(() => {
-        const loadPdf = async () => {
-            try {
-                const url = "https://lawbotttt.s3.ap-northeast-2.amazonaws.com/contracts/08d30cec-df41-4808-9465-ee5f4cfba229.pdf";
-                const pdfjsLib = await getAsset('pdfjsLib');
-                const loadingTask = pdfjsLib.getDocument(url);
-                const pdfDocument = await loadingTask.promise;
-                setFile(pdfDocument);
-                initializePageAndAttachments({
-                    file: pdfDocument,
-                    pages: Array(pdfDocument.numPages).fill(0).map((_, index) => pdfDocument.getPage(index +1)),
-                });
-            } catch (error) {
-                console.error('Error loading PDF:', error);
-            }
-        };
+  const addText = () => {
+    const newTextAttachment = {
+      id: ggID(),
+      type: AttachmentTypes.TEXT,
+      x: 0,
+      y: 0,
+      width: 120,
+      height: 25,
+      size: 16,
+      lineHeight: 1.4,
+      fontFamily: 'Times-Roman',
+      text: 'Enter Text Here',
+    };
+    addAttachment(newTextAttachment);
+  };
 
-        loadPdf();
-    }, []);
+  const addDrawing = (drawing) => {
+    if (!drawing) return;
 
-    
-    const { inputRef: pdfInput, handleClick: handlePdfClick, isUploading, onClick, upload: uploadPdf } = useUploader({ 
-        use: UploadTypes.PDF,
-        afterUploadPdf: initializePageAndAttachments,
-    });
-    const { inputRef: imageInput, handleClick: handleImageClick, onClick: onImageClick, upload: uploadImage  } = useUploader({ 
-        use: UploadTypes.IMAGE,
-        afterUploadAttachment: addAttachment,
-    });
-
-
-    const addDrawing = (drawing) => {
-        if (!drawing) return;
-
-        const newDrawingAttachment = {
-            id: ggID(),
-            type: AttachmentTypes.DRAWING,
-            ...drawing,
-            x: 0,
-            y: 0,
-            scale: 1,
-        }
-        addAttachment(newDrawingAttachment);
+    const newDrawingAttachment = {
+      id: ggID(),
+      type: AttachmentTypes.DRAWING,
+      ...drawing,
+      x: 0,
+      y: 0,
+      scale: 1,
     }
 
     useLayoutEffect(() => setPageIndex(pageIndex), [pageIndex, setPageIndex]);
