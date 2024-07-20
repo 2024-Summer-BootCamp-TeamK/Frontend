@@ -73,8 +73,8 @@ const PdfEditor = () => {
   useLayoutEffect(() => {
     const loadPdf = async () => {
       try {
-        const documentId = 11;
-        const password = '4KoxLn';
+        const documentId = 5;
+        const password = 'bBk7J4';
         const url = `http://localhost/api/v1/encryption/test/${documentId}`;
         const pdfjsLib = await getAsset('pdfjsLib');
 
@@ -185,11 +185,8 @@ const PdfEditor = () => {
         )}
         <MenuBar
             savePdf={handleSavePdf}
-            addText={addText}
-            addImage={handleImageClick}
             addDrawing={() => setDrawingModalOpen(true)}
             savingPdfStatus={isSaving}
-            uploadNewPdf={handlePdfClick}
             isPdfLoaded={!!pdfDocument}
         />
         <DrawingModal 
@@ -214,8 +211,6 @@ const NavigationButton = styled.button`
   border: none;
   padding: 10px 20px;
   cursor: pointer;
-  margin-left: 20px;
-  margin-right: 20px;
   &:disabled {
     background-color: #ccc;
     cursor: not-allowed;
