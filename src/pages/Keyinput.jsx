@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import { useParams, useNavigate } from 'react-router-dom';
 import Popupkeyinput from '../components/Popupkeyinput';
 import Button from '../components/Button';
 import {
@@ -8,9 +9,16 @@ import {
     Logo,
     ButtonContainer,
 } from '../components/Headerall';
-import logoSrc from '../images/logo.svg'; // logo.svg 파일 경로를 올바르게 설정
+import logoSrc from '../images/logo.svg';
 
 const Keyinput = () => {
+    const { documentId } = useParams();
+    const navigate = useNavigate();
+
+    const handleSuccess = (password) => {
+        navigate(`/pdf-editor`, { state: { documentId, password } });
+    };
+
     return (
         <>
             <Headerall>
@@ -23,7 +31,7 @@ const Keyinput = () => {
                 </ButtonContainer>
             </Headerall>
             <div>
-                <Popupkeyinput />
+                <Popupkeyinput documentId={documentId} onSuccess={handleSuccess} />
             </div>
         </>
     );

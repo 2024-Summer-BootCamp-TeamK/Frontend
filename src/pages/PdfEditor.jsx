@@ -11,10 +11,7 @@ import { useAttachments } from '../hooks/useAttachments';
 import { useUploader, UploadTypes } from '../hooks/useUploader';
 import { Page } from '../components/PdfEditorComponent/Page';
 import { Attachments } from '../components/PdfEditorComponent/Attachments';
-import { getAsset } from '../utils/prepareAssets';
-import * as pdfjsLib from 'pdfjs-dist';
-import axios from 'axios';
-
+import { fetchPdfDocument } from '../services/pdfService';
 import Button from "../components/Button";
 import {
   Headerall,
@@ -23,14 +20,17 @@ import {
   ButtonContainer 
 } from "../components/Headerall";
 import logoSrc from "../images/logo.svg";
-import BorderStyle from 'pdf-lib/cjs/core/annotation/BorderStyle';
+import { useLocation } from 'react-router-dom';
 
 // PDF.js worker 설정
+import * as pdfjsLib from 'pdfjs-dist';
 pdfjsLib.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/2.6.347/pdf.worker.min.js`;
 
 const PdfEditor = () => {
   const [drawingModalOpen, setDrawingModalOpen] = useState(false);
   const [pdfDocument, setPdfDocument] = useState(null);
+  const location = useLocation();
+  const { documentId, password } = location.state || {}; // 이전 페이지에서 전달된 상태 사용
 
   const {
     initialize,
@@ -73,33 +73,18 @@ const PdfEditor = () => {
   useLayoutEffect(() => {
     const loadPdf = async () => {
       try {
-        const documentId = 5;
-        const password = 'bBk7J4';
-        const url = `http://localhost/api/v1/encryption/test/${documentId}`;
-        const pdfjsLib = await getAsset('pdfjsLib');
-
-        // Fetch the PDF file from the server
-        const response = await axios.get(url, { 
-          responseType: 'blob',
-          headers: {
-            'X-Password': password
-          }
-        });
-        const blob = new Blob([response.data], { type: 'application/pdf' });
-        const file = new File([blob], "document.pdf", { type: "application/pdf" });
-
-        const loadingTask = pdfjsLib.getDocument({ data: await blob.arrayBuffer() });
-        const pdfDocument = await loadingTask.promise;
+        const { pdfDocument, file } = await fetchPdfDocument(documentId, password);
         setPdfDocument(pdfDocument);
-
         initializePageAndAttachments(file, pdfDocument);
       } catch (error) {
         console.error('Error loading PDF:', error);
       }
     };
 
-    loadPdf();
-  }, []);
+    if (documentId && password) {
+      loadPdf();
+    }
+  }, [documentId, password]);
 
   const { inputRef: pdfInput, handleClick: handlePdfClick, isUploading, onClick, upload: uploadPdf } = useUploader({ 
     use: UploadTypes.PDF,

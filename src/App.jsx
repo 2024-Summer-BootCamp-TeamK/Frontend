@@ -31,7 +31,7 @@ function App() {
           <Route path="/Sign" element={<Sign />} />
           <Route path="/explain" element={<Popupexplain />} />
           <Route path="/key" element={<Key />} />
-          <Route path="/keyinput" element={<Keyinput />} />
+          <Route path="/keyinput/:documentId" element={<Keyinput />} />
           <Route path="/carousel" element={<Carousel />} />
           <Route path="/pdf-editor" element={<PdfEditor />} />
         </Routes>
