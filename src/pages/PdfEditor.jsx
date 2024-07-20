@@ -1,7 +1,8 @@
 import React, { useState, useLayoutEffect } from 'react';
 import 'semantic-ui-css/semantic.min.css';
-import { Container, Grid, Button, Segment } from 'semantic-ui-react';
-import MenuBar from '../components/PdfEditorComponent/MenuBar';
+import { Container, Grid, Segment } from 'semantic-ui-react';
+import styled from 'styled-components';
+import  MenuBar from '../components/PdfEditorComponent/MenuBar';
 import { DrawingModal } from '../components/modals/DrawingModal';
 import { usePdf } from '../hooks/usePdf';
 import { AttachmentTypes } from '../entities';
@@ -13,6 +14,16 @@ import { Attachments } from '../components/PdfEditorComponent/Attachments';
 import { getAsset } from '../utils/prepareAssets';
 import * as pdfjsLib from 'pdfjs-dist';
 import axios from 'axios';
+
+import Button from "../components/Button";
+import {
+  Headerall,
+  LogoContainer,
+  Logo,
+  ButtonContainer 
+} from "../components/Headerall";
+import logoSrc from "../images/logo.svg";
+import BorderStyle from 'pdf-lib/cjs/core/annotation/BorderStyle';
 
 // PDF.js worker 설정
 pdfjsLib.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/2.6.347/pdf.worker.min.js`;
@@ -86,7 +97,6 @@ const PdfEditor = () => {
         console.error('Error loading PDF:', error);
       }
     };
-
     loadPdf();
   }, []);
 
@@ -126,77 +136,130 @@ const PdfEditor = () => {
       y: 0,
       scale: 1,
     }
-    addAttachment(newDrawingAttachment);
-  }
 
-  useLayoutEffect(() => setPageIndex(pageIndex), [pageIndex, setPageIndex]);
+    useLayoutEffect(() => setPageIndex(pageIndex), [pageIndex, setPageIndex]);
 
-  const handleSavePdf = () => savePdf(allPageAttachments);
+    // const hiddenInputs = (
+    //     <>
+    //         <input
+    //             data-testid="pdf-input"
+    //             ref={pdfInput}
+    //             type="file"
+    //             name="pdf"
+    //             id="pdf"
+    //             accept="application/pdf"
+    //             onChange={uploadPdf}
+    //             onClick={onClick}
+    //             style={{ display: 'none' }} 
+    //         />
+    //         <input
+    //             ref={imageInput}
+    //             type="file"
+    //             id="image"
+    //             name="image"
+    //             accept="image/*"
+    //             onClick={onImageClick}
+    //             style={{ display: 'none' }}
+    //             onChange={uploadImage} 
+    //         />
+    //     </>
+    // )
 
-  return (
-    <Container style={{ margin: 30 }}>
-      <MenuBar
-        openHelp={() => setHelpModalOpen(true)}
-        savePdf={handleSavePdf}
-        addText={addText}
-        addImage={handleImageClick}
-        addDrawing={() => setDrawingModalOpen(true)}
-        savingPdfStatus={isSaving}
-        uploadNewPdf={handlePdfClick}
-        isPdfLoaded={!!pdfDocument}
-      />
+    const handleSavePdf = () => savePdf(allPageAttachments);
 
-      { currentPage ? (
-        <Grid>
-          <Grid.Row>
-            <Grid.Column width={3} verticalAlign="middle" textAlign="left">
-              {isMultiPage && !isFirstPage && (
-                <Button circular icon="angle left" onClick={previousPage} />
-              )}
-            </Grid.Column>
-            <Grid.Column width={10}>
-              { currentPage && (
-                <Segment
-                  data-testid="page"
-                  compact
-                  stacked={isMultiPage && !isLastPage}
-                >
-                  <div style={{ position: 'relative' }}>
-                    <Page
-                      dimensions={dimensions}
-                      updateDimensions={setDimensions}
-                      page={currentPage}
-                    />
-                    { dimensions && (
-                      <Attachments
-                        pdfName={name}
-                        removeAttachment={remove}
-                        updateAttachment={update}
-                        pageDimensions={dimensions}
-                        attachments={pageAttachments}
-                      />
-                    )}
-                  </div>
-                </Segment>
-              )}
-            </Grid.Column>
-            <Grid.Column width={3} verticalAlign="middle" textAlign="right">
-              {isMultiPage && !isLastPage && (
-                <Button circular icon="angle right" onClick={nextPage}/>
-              )}
-            </Grid.Column>
-          </Grid.Row>
-        </Grid>
-      ) : (
-        <div>Loading PDF...</div>
-      )}
-      <DrawingModal 
-        open={drawingModalOpen} 
-        dismiss={() => setDrawingModalOpen(false)}
-        confirm={addDrawing}
-      />
-    </Container>
-  );
+    return (
+        <Container style={{ margin: 30 }}>
+            
+            <Headerall>
+                <LogoContainer>
+                    <Logo data={logoSrc} type="image/svg+xml" />
+                </LogoContainer>
+                <ButtonContainer>
+                    <Button>AI 검토 받으러 가기</Button>
+                    <Button>상대방과 계약서 검토하기</Button>
+                </ButtonContainer>
+            </Headerall>
+            { currentPage ? (
+                
+                <Grid>
+                    <Grid.Row>
+                        <Grid.Column width={3} verticalAlign="middle" textAlign="left">
+                            {isMultiPage && !isFirstPage && (
+                                <NavigationButton onClick={previousPage}> previous
+                                </NavigationButton>
+                            )}
+                        </Grid.Column>
+                        <Grid.Column width={10}>
+                            { currentPage && (
+                                <StyledSegment style={{ marginTop: '80px'}}
+                                    data-testid="page"
+                                    compact
+                                    stacked={isMultiPage && !isLastPage}
+                                >
+                                    <div style={{ position: 'relative' }}>
+                                        <Page
+                                            dimensions={dimensions}
+                                            updateDimensions={setDimensions}
+                                            page={currentPage} 
+                                        />
+                                        { dimensions && (
+                                            <Attachments
+                                                pdfName={name}
+                                                removeAttachment={remove}
+                                                updateAttachment={update}
+                                                pageDimensions={dimensions}
+                                                attachments={pageAttachments}
+                                            /> 
+                                        )}
+                                    </div>
+                                </StyledSegment>
+                            )}
+                        </Grid.Column>
+                        <Grid.Column width={3} verticalAlign="middle" textAlign="right">
+                            {isMultiPage && !isLastPage && (
+                               
+                                <NavigationButton onClick={nextPage}> Next
+                                 </NavigationButton>
+                            )}
+                        </Grid.Column>
+                    </Grid.Row>
+                </Grid>
+             ) : (
+                <div>Loading PDF...</div>
+            )}
+             <MenuBar
+                savePdf={handleSavePdf}
+                addDrawing={() => setDrawingModalOpen(true)}
+                savingPdfStatus={isSaving}
+                isPdfLoaded={!!file}
+            />
+            <DrawingModal 
+                open={drawingModalOpen} 
+                dismiss={() => setDrawingModalOpen(false)}
+                confirm={addDrawing}
+            />
+        </Container>
+    );
 }
 
 export default PdfEditor;
+
+const StyledSegment = styled(Segment)`
+    margin-top: 80px;
+`;
+
+
+const NavigationButton = styled.button`
+  height: 40px; 
+  background-color: #141F7B;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  margin-left: 20px;
+  margin-right: 20px;
+  &:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+  }
+`;

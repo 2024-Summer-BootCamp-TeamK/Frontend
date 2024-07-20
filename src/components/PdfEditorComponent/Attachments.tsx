@@ -29,19 +29,6 @@ export const Attachments: React.FC<Props> = ({
         ? attachments.map((attachment, index) => {
             const key = `${pdfName}-${index}`;
 
-            if (attachment.type === AttachmentTypes.IMAGE) {
-              return (
-                <Image
-                  key={key}
-                  pageWidth={pageDimensions.width}
-                  pageHeight={pageDimensions.height}
-                  removeImage={() => removeAttachment(index)}
-                  updateImageAttachment={handleAttachmentUpdate(index)}
-                  {...(attachment as ImageAttachment)}
-                />
-              );
-            }
-
             if (attachment.type === AttachmentTypes.DRAWING) {
               return (
                 <Drawing
@@ -55,17 +42,6 @@ export const Attachments: React.FC<Props> = ({
               );
             }
 
-            if (attachment.type === AttachmentTypes.TEXT) {
-              return (
-                <Text
-                  key={key}
-                  pageWidth={pageDimensions.width}
-                  pageHeight={pageDimensions.height}
-                  updateTextAttachment={handleAttachmentUpdate(index)}
-                  {...(attachment as TextAttachment)}
-                />
-              );
-            }
             return null;
           })
         : null}

@@ -83,32 +83,3 @@ const fonts: FontsType = {
   },
 };
 
-// Available fonts
-export const Fonts = {
-  ...fonts,
-  標楷體: {
-    src: '/CK.ttf', // 9.9 MB
-    correction(size: number, lineHeight: number) {
-      return (size * lineHeight - size) / 2;
-    },
-  },
-};
-
-export const fetchFont = (name: string) => {
-  if (fonts[name as any]) return fonts[name as any];
-
-  const font = Fonts[name as keyof typeof Fonts];
-  if (!font) throw new Error(`Font '${name}' not exists.`);
-
-  fonts[name] = fetch(font.src)
-    .then((r) => r.arrayBuffer())
-    .then((fontBuffer) => {
-      const fontFace = new (window as any).FontFace(name, fontBuffer);
-      fontFace.display = 'swap';
-      fontFace.load().then(() => (document as any).fonts.add(fontFace));
-      return {
-        ...font,
-        buffer: fontBuffer,
-      };
-    });
-};
