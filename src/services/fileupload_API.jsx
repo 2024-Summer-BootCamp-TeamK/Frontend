@@ -7,7 +7,7 @@ const contractUpload = async (formData) => {
                 'Content-Type': 'multipart/form-data'
             }
         });
-        console.log('계약서 업로드 성공:', response.data);
+        console.log('계약서 업로드 성공:', response.data.contractId);
         return response.data; // contract ID 돌려줌
     } catch (error) {
         console.error('계약서 업로드 에러:', error.response?.data || error.message);

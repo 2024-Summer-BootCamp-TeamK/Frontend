@@ -210,12 +210,12 @@ const Popupkeycreate = ({ closePopup, pdfFile }) => {
     formData.append('email', email);
     formData.append('pdfFile', pdfFile);
     try {
-      const response = await contractShare(formData);
-      console.log('공유계약서 업로드 성공:', response.data);
+      const data = await contractShare(formData);
+      console.log('공유계약서 업로드 성공:', data);
       setShowAlert(true); // Show the custom alert
       // 성공 시 추가 작업
     } catch (error) {
-      console.error('공유계약서 업로드 에러:', error.response?.data || error.message);
+      console.error('공유계약서 업로드 에러:', error.data?.data || error.message);
       alert('계약서 공유에 실패했습니다.');
       // 에러 처리 추가
     } finally {

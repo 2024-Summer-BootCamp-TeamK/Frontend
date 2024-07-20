@@ -44,8 +44,8 @@ const FileUpload = () => {
 
     try {
       const response = await contractUpload(formData);
-      console.log('계약서 업로드 성공:', response.data);
-      alert('계약서 업로드 성공! 계약서 ID: ' + response.data);
+      console.log('계약서 업로드 성공:', response);
+      alert('계약서 업로드 성공! 계약서 ID: ' + response.contractId);
     } catch (error) {
       console.error('계약서 업로드 에러:', error.message);
       alert('계약서 업로드에 실패했습니다.');
