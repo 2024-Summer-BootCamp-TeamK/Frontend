@@ -1,10 +1,10 @@
 import styled from "styled-components";
 
 const Orangebutton = styled.button`
-  background-color: #e7470a;
-  color: #ffffff;
+  background-color: #ffffff;
+  color: #e7470a;
   padding: 10px 20px;
-  border: none;
+  border: 2px solid #e7470a;
   border-radius: 20px;
   font-size: 17px;
   cursor: pointer;
@@ -16,8 +16,8 @@ const Orangebutton = styled.button`
   }
   &:active,
   &:focus {
-    background-color: #ffffff; /* 눌렸을 때 배경색 */
-    color: #e7470a; /* 눌렸을 때 글씨색 */
+    background-color: #e7470a; /* 눌렸을 때 배경색 */
+    color: #ffffff; /* 눌렸을 때 글씨색 */
     outline: none; /* 포커스 시 outline 제거 */
 
     svg {

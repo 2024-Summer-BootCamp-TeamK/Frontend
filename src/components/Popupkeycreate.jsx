@@ -28,6 +28,7 @@ const PopupTitle = styled.h2`
   margin-top: 0;
   color: #a6a6a6;
   font-size: 23px;
+  text-align: center; /* 텍스트 중앙 정렬 추가 */
 `;
 
 const FormGroup = styled.div`
@@ -52,12 +53,13 @@ const EmailInput = styled.input`
   border-radius: 10px;
   background-color: white;
   font-size: 13px;
+  color: black
 `;
 const ConfirmButton = styled.button`
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 40%;
+  width: 30%;
   padding: 10px;
   font-size: 16px;
   cursor: pointer;
@@ -76,13 +78,12 @@ const ConfirmButton = styled.button`
     background-color: #fefdf6; /* 눌렸을 때 배경색 */
     color: #141F7B; /* 눌렸을 때 글씨색 */
     outline: none; /* 포커스 시 outline 제거 */
-
+  }
   svg {
     fill: rgba(255, 255, 255, 0.8); /* fill 속성에 투명도가 80%인 흰색 적용 */
     stroke: #edeac5; /* stroke 속성 설정 */
     stroke-width: 1; /* stroke-width 속성 설정 */
   }
-
 `;
 
 const Popupkeycreate = ({ closePopup }) => {
