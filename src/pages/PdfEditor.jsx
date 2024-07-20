@@ -1,6 +1,7 @@
 import React, { useState, useLayoutEffect, useEffect } from 'react';
 import 'semantic-ui-css/semantic.min.css';
-import { Container, Grid, Button, Segment } from 'semantic-ui-react';
+import { Container, Grid, Segment } from 'semantic-ui-react';
+import styled from 'styled-components';
 import  MenuBar from '../components/PdfEditorComponent/MenuBar';
 import { DrawingModal } from '../components/modals/DrawingModal';
 import { usePdf } from '../hooks/usePdf';
@@ -13,6 +14,16 @@ import { Attachments } from '../components/PdfEditorComponent/Attachments';
 import { useLocation } from 'react-router-dom';
 import { getAsset } from '../utils/prepareAssets';
 import * as pdfjsLib from 'pdfjs-dist';
+
+import Button from "../components/Button";
+import {
+  Headerall,
+  LogoContainer,
+  Logo,
+  ButtonContainer 
+} from "../components/Headerall";
+import logoSrc from "../images/logo.svg";
+import BorderStyle from 'pdf-lib/cjs/core/annotation/BorderStyle';
 
 // PDF.js worker 설정
 pdfjsLib.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/2.6.347/pdf.worker.min.js`;
@@ -63,21 +74,6 @@ const PdfEditor = () => {
         afterUploadAttachment: addAttachment,
     });
 
-    const addText = () => {
-        const newTextAttachment = {
-            id: ggID(),
-            type: AttachmentTypes.TEXT,
-            x: 0,
-            y: 0,
-            width: 120,
-            height: 25,
-            size: 16,
-            lineHeight: 1.4,
-            fontFamily: 'Times-Roman',
-            text: 'Enter Text Here',
-        };
-        addAttachment(newTextAttachment);
-    };
 
     const addDrawing = (drawing) => {
         if (!drawing) return;
@@ -125,29 +121,29 @@ const PdfEditor = () => {
 
     return (
         <Container style={{ margin: 30 }}>
-            <MenuBar
-                openHelp={() => setHelpModalOpen(true)}
-                savePdf={handleSavePdf}
-                addText={addText}
-                addImage={handleImageClick}
-                addDrawing={() => setDrawingModalOpen(true)}
-                savingPdfStatus={isSaving}
-                uploadNewPdf={handlePdfClick}
-                isPdfLoaded={!!file}
-            />
-
+            
+            <Headerall>
+                <LogoContainer>
+                    <Logo data={logoSrc} type="image/svg+xml" />
+                </LogoContainer>
+                <ButtonContainer>
+                    <Button>AI 검토 받으러 가기</Button>
+                    <Button>상대방과 계약서 검토하기</Button>
+                </ButtonContainer>
+            </Headerall>
             { currentPage ? (
                 
                 <Grid>
                     <Grid.Row>
                         <Grid.Column width={3} verticalAlign="middle" textAlign="left">
                             {isMultiPage && !isFirstPage && (
-                                <Button circular icon="angle left" onClick={previousPage} />
+                                <NavigationButton onClick={previousPage}> previous
+                                </NavigationButton>
                             )}
                         </Grid.Column>
                         <Grid.Column width={10}>
                             { currentPage && (
-                                <Segment
+                                <StyledSegment style={{ marginTop: '80px'}}
                                     data-testid="page"
                                     compact
                                     stacked={isMultiPage && !isLastPage}
@@ -168,12 +164,14 @@ const PdfEditor = () => {
                                             /> 
                                         )}
                                     </div>
-                                </Segment>
+                                </StyledSegment>
                             )}
                         </Grid.Column>
                         <Grid.Column width={3} verticalAlign="middle" textAlign="right">
                             {isMultiPage && !isLastPage && (
-                                <Button circular icon="angle right" onClick={nextPage}/>
+                               
+                                <NavigationButton onClick={nextPage}> Next
+                                 </NavigationButton>
                             )}
                         </Grid.Column>
                     </Grid.Row>
@@ -181,6 +179,12 @@ const PdfEditor = () => {
              ) : (
                 <div>Loading PDF...</div>
             )}
+             <MenuBar
+                savePdf={handleSavePdf}
+                addDrawing={() => setDrawingModalOpen(true)}
+                savingPdfStatus={isSaving}
+                isPdfLoaded={!!file}
+            />
             <DrawingModal 
                 open={drawingModalOpen} 
                 dismiss={() => setDrawingModalOpen(false)}
@@ -191,3 +195,23 @@ const PdfEditor = () => {
 }
 
 export default PdfEditor;
+
+const StyledSegment = styled(Segment)`
+    margin-top: 80px;
+`;
+
+
+const NavigationButton = styled.button`
+  height: 40px; 
+  background-color: #141F7B;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  margin-left: 20px;
+  margin-right: 20px;
+  &:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+  }
+`;

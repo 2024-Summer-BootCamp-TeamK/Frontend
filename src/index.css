@@ -1,11 +1,14 @@
 :root {
+  --background-color: #fefdf6; /* 원하는 배경색 */
+  --color: rgba(255, 255, 255, 0.87); /* 원하는 글자색 */
+  
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
 
   color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #FEFDF6;
+  background-color: var(--background-color); /* 변경된 부분 */
+  color: var(--color); /* 변경된 부분 */
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -23,7 +26,7 @@ html,
 body,
 #root {
   width: 100%;
-  height: 100%;
+  height: 120%;
   background-color: #fefdf6; /* 배경색 설정 */
 }
 
@@ -31,7 +34,7 @@ body {
   display: flex;
   flex-direction: column;
   margin: 0;
-  min-height: 100vh;
+  
   background-color: #fefdf6; /* 배경색 설정 */
 }
 
