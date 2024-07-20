@@ -13,7 +13,7 @@ import {
 import logoSrc from "../images/logo.svg";
 import uploadIconSrc from "../images/upload-icon.svg";
 
-const Fileuploadshare = () => {
+const FileUploadShare = () => {
   const [fileName, setFileName] = useState(null);
   const [file, setFile] = useState(null);
   const navigate = useNavigate();
@@ -33,7 +33,6 @@ const Fileuploadshare = () => {
     }
 
     navigate('/key', { state: { pdfFile: file } }); // navigate to key.jsx page with pdfFile data
-
   };
 
   return (
@@ -60,7 +59,6 @@ const Fileuploadshare = () => {
             {isDragActive ? (
               <p>파일을 여기에 놓으세요 ...</p>
             ) : (
-
               <p>{fileName ? `업로드된 파일: ${fileName}` : ''}</p>
             )}
           </DropZoneText>
@@ -72,7 +70,6 @@ const Fileuploadshare = () => {
     </>
   );
 };
-
 
 export default FileUploadShare;
 
