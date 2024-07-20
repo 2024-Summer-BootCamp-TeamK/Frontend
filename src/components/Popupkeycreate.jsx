@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import styled, { keyframes } from 'styled-components';
 import axios from 'axios';
-import Buttonall from '../components/Buttonall';
 import contractShare from '../services/share_API';
 
 const PopupWrapper = styled.div`
