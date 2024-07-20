@@ -1,6 +1,7 @@
 import React, { useCallback, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import styled from "styled-components";
+import { useNavigate } from "react-router-dom";
 import Button from "../components/Button";
 import ReviewStartButtonComponent from "../components/ReviewStartButtonComponent";
 import { useLocation } from 'react-router-dom';
@@ -15,13 +16,15 @@ import {
 import logoSrc from "../images/logo.svg";
 import uploadIconSrc from "../images/upload-icon.svg";
 
-const Fileupload = () => {
-  const [fileName, setFileName] = useState(null);
+const FileUpload = () => {
   const [file, setFile] = useState(null);
+  const [fileName, setFileName] = useState(null);
+  const navigate = useNavigate();
   const location = useLocation();
   const category = location.state?.category;
 
   const onDrop = useCallback((acceptedFiles) => {
+    setFile(acceptedFiles[0]);
     setFileName(acceptedFiles[0].name);
     setFile(acceptedFiles[0]);
     console.log(acceptedFiles);
@@ -85,7 +88,7 @@ const Fileupload = () => {
   );
 };
 
-export default Fileupload;
+export default FileUpload;
 
 // 스타일 컴포넌트 정의
 const Wrapper = styled.div`
@@ -113,13 +116,13 @@ const DropZone = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  padding-bottom: 50px; /* 문구를 아래쪽으로 배치 */
-  transform: translate(-50%, -50%); /* 중앙 정렬을 위한 transform */
+  padding-bottom: 50px;
+  transform: translate(-50%, -50%);
 `;
 
 const DropZoneText = styled.div`
   display: flex;
-  align-items:center;
+  align-items: center;
   justify-content: center;
   flex-direction: column;
 
@@ -136,19 +139,19 @@ const DropZoneText = styled.div`
     color: ${(props) => (props.isFileUploaded ? '#000000' : '#a6a6a6')}; /* 파일이 업로드된 경우 검정색, 아니면 회색 */
     font-weight: 600;
     position: absolute;
-    bottom: 25px; /* 텍스트를 아래쪽으로 배치 */
+    bottom: 25px;
     left: 50%;
     transform: translateX(-50%);
-    white-space: nowrap; /* 텍스트를 한 줄로 표시 */
-    overflow: hidden; /* 넘치는 텍스트 숨기기 */
-    text-overflow: ellipsis; /* 넘치는 텍스트를 말줄임표(...)로 표시 */
-    max-width: 90%; /* 최대 너비 설정 */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 90%;
   }
 
   img {
-    width: 4.5vw; /* 이미지의 너비를 줄임 */
-    height: auto; /* 이미지의 높이를 줄임 */
-    background: transparent; /* 이미지 배경 투명하게 설정 */
+    width: 4.5vw;
+    height: auto;
+    background: transparent;
   }
 `;
 
@@ -162,12 +165,12 @@ const ButtonContainerStyled = styled.div`
 const YellowBox = styled.div`
   width: 140px;
   height: 170px;
-  background-color: #FFD700; /* 노란색 */
+  background-color: #ffd700;
   border-radius: 20px;
   display: flex;
   justify-content: center;
   align-items: center;
-  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2); /* 그림자 */
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
   margin-bottom: 10px;
 `;
 
