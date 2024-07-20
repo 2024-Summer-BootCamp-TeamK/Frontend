@@ -4,6 +4,9 @@ import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import Button from "../components/Button";
 import ReviewStartButtonComponent from "../components/ReviewStartButtonComponent";
+import { useLocation } from 'react-router-dom';
+import contractUpload from '../services/fileupload_API';
+
 import {
   Headerall,
   LogoContainer,
@@ -17,16 +20,38 @@ const FileUpload = () => {
   const [file, setFile] = useState(null);
   const [fileName, setFileName] = useState(null);
   const navigate = useNavigate();
+  const location = useLocation();
+  const category = location.state?.category;
 
   const onDrop = useCallback((acceptedFiles) => {
     setFile(acceptedFiles[0]);
     setFileName(acceptedFiles[0].name);
+    setFile(acceptedFiles[0]);
     console.log(acceptedFiles);
-  }, [navigate]);
+  }, []);
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
 
- 
+  const handleUpload = async () => {
+    if (!file) {
+      alert('파일을 선택해 주세요.');
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('pdf_file', file);
+    formData.append('category', category);
+
+    try {
+      const response = await contractUpload(formData);
+      console.log('계약서 업로드 성공:', response.data);
+      alert('계약서 업로드 성공! 계약서 ID: ' + response.data);
+    } catch (error) {
+      console.error('계약서 업로드 에러:', error.message);
+      alert('계약서 업로드에 실패했습니다.');
+    }
+  };
+
   return (
     <>
       <div>
@@ -47,7 +72,7 @@ const FileUpload = () => {
             <YellowBox>
               <Icon src={uploadIconSrc} alt="upload-file-icon" />
             </YellowBox>
-            <h3>계약서 파일을 올려주세요</h3>
+            <h3>{category ? `선택된 카테고리: ${category}` : '계약서 파일을 올려주세요'}</h3>
             {isDragActive ? (
               <p>파일을 여기에 놓으세요 ...</p>
             ) : (
@@ -57,7 +82,7 @@ const FileUpload = () => {
         </DropZone>
       </Wrapper>
       <ButtonContainerStyled>
-        <ReviewStartButtonComponent>검토 시작하기</ReviewStartButtonComponent>
+        <ReviewStartButtonComponent onClick={handleUpload}>검토 시작하기</ReviewStartButtonComponent>
       </ButtonContainerStyled>
     </>
   );
@@ -111,7 +136,7 @@ const DropZoneText = styled.div`
   p {
     margin: 0;
     font-size: ${(props) => (props.isFileUploaded ? '28px' : '22px')};
-    color: ${(props) => (props.isFileUploaded ? '#000000' : '#a6a6a6')};
+    color: ${(props) => (props.isFileUploaded ? '#000000' : '#a6a6a6')}; /* 파일이 업로드된 경우 검정색, 아니면 회색 */
     font-weight: 600;
     position: absolute;
     bottom: 25px;

@@ -1,5 +1,5 @@
 import "./App.css";
-import { useReducer, useRef, createContext } from "react";
+// import { useReducer, useRef, createContext } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 import Mainpage from "./pages/Mainpage";
@@ -16,7 +16,7 @@ import Keyinput from "./pages/Keyinput.jsx";
 import Popupexplain from "./components/Popupexlain.jsx";
 import Carousel from "./pages/Carousel";
 import PdfEditor from "./pages/PdfEditor.jsx";
-
+import Loading from "./pages/Loading.jsx";
 
 function App() {
   return (
@@ -24,6 +24,7 @@ function App() {
       <Router>
         <Routes>
           <Route path="/category" element={<Category />} />
+          <Route path="/loading" element={<Loading/>} />
           <Route path="/" element={<Mainpage />} />
           <Route path="/fileupload" element={<Fileupload />} />
           <Route path="/fileuploadShare" element={<FileUploadShare />} />

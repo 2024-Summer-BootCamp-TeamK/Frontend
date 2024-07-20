@@ -13,27 +13,27 @@ import {
 import logoSrc from "../images/logo.svg";
 import uploadIconSrc from "../images/upload-icon.svg";
 
-const FileUploadShare = () => {
-  const [file, setFile] = useState(null);
+const Fileuploadshare = () => {
   const [fileName, setFileName] = useState(null);
+  const [file, setFile] = useState(null);
   const navigate = useNavigate();
 
   const onDrop = useCallback((acceptedFiles) => {
-    setFile(acceptedFiles[0]);
     setFileName(acceptedFiles[0].name);
+    setFile(acceptedFiles[0]);
     console.log(acceptedFiles);
-  }, [navigate]);
+  }, []);
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
 
-  const handleStartReview = () => {
-    console.log('실행');
-    if(file) {
-      navigate("/pdf-editor", {state: {file}});
+  const handleUpload = () => {
+    if (!file) {
+      alert('파일을 선택해 주세요.');
+      return;
     }
-    else {
-      alert('파일을 업로드해주세요.');
-    }
+
+    navigate('/key', { state: { pdfFile: file } }); // navigate to key.jsx page with pdfFile data
+
   };
 
   return (
@@ -60,13 +60,14 @@ const FileUploadShare = () => {
             {isDragActive ? (
               <p>파일을 여기에 놓으세요 ...</p>
             ) : (
-              <p>{fileName ? `업로드된 파일: ${fileName}` : '상대방과 화면공유할 파일을 업로드 해주세요'}</p>
+
+              <p>{fileName ? `업로드된 파일: ${fileName}` : ''}</p>
             )}
           </DropZoneText>
         </DropZone>
       </Wrapper>
       <ButtonContainerStyled>
-        <ReviewStartButtonComponent onClick={handleStartReview}> 공유 시작하기</ReviewStartButtonComponent>
+        <ReviewStartButtonComponent onClick={handleUpload}>공유 시작하기</ReviewStartButtonComponent>
       </ButtonContainerStyled>
     </>
   );
@@ -101,13 +102,13 @@ const DropZone = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  padding-bottom: 50px;
-  transform: translate(-50%, -50%);
+  padding-bottom: 50px; /* 문구를 아래쪽으로 배치 */
+  transform: translate(-50%, -50%); /* 중앙 정렬을 위한 transform */
 `;
 
 const DropZoneText = styled.div`
   display: flex;
-  align-items: center;
+  align-items:center;
   justify-content: center;
   flex-direction: column;
 
@@ -120,42 +121,42 @@ const DropZoneText = styled.div`
 
   p {
     margin: 0;
-    font-size: 18px; /*{(props) => (props.isFileUploaded ? '28px' : '22px')};*/
-    color: #000;
+    font-size: ${(props) => (props.isFileUploaded ? '28px' : '18px')};
+    color: ${(props) => (props.isFileUploaded ? '#000000' : '#a6a6a6')}; /* 파일이 업로드된 경우 검정색, 아니면 회색 */
     font-weight: 600;
     position: absolute;
-    bottom: 25px;
+    bottom: 25px; /* 텍스트를 아래쪽으로 배치 */
     left: 50%;
     transform: translateX(-50%);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    max-width: 90%;
+    white-space: nowrap; /* 텍스트를 한 줄로 표시 */
+    overflow: hidden; /* 넘치는 텍스트 숨기기 */
+    text-overflow: ellipsis; /* 넘치는 텍스트를 말줄임표(...)로 표시 */
+    max-width: 90%; /* 최대 너비 설정 */
   }
 
   img {
-    width: 4.5vw;
-    height: auto;
-    background: transparent;
+    width: 4.5vw; /* 이미지의 너비를 줄임 */
+    height: auto; /* 이미지의 높이를 줄임 */
+    background: transparent; /* 이미지 배경 투명하게 설정 */
   }
 `;
 
 const ButtonContainerStyled = styled.div`
   position: absolute;
   bottom: 40px;
-  right: 4%;
+  right: 3%;
   transform: translateX(0%);
 `;
 
 const YellowBox = styled.div`
   width: 140px;
   height: 170px;
-  background-color: #ffd700;
+  background-color: #FFD700; /* 노란색 */
   border-radius: 20px;
   display: flex;
   justify-content: center;
   align-items: center;
-  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2); /* 그림자 */
   margin-bottom: 10px;
 `;
 

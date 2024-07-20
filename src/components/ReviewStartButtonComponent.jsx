@@ -24,6 +24,7 @@ const ReviewStartButtonComponent = ({ children, onClick}) => (
      </symbol>
    </svg>
  </ButtonWrapper>
+
 );
 
 export default ReviewStartButtonComponent;

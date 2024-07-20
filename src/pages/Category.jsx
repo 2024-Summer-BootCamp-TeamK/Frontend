@@ -110,7 +110,8 @@ const Category = () => {
 
   const handleCardClick = (index) => {
     if (index === activeIndex) {
-      navigate('/fileupload');
+      const selectedCategory = itemsQueue[activeIndex].label;
+      navigate('/fileupload', { state: { category: selectedCategory } });
     }
   };
 
@@ -165,7 +166,7 @@ const Title = styled.h1`
   margin: 20px 0 20px 0;
   font-size: 35px;
   color: #141F7B;
-  margin-top: 150px;
+  margin-top: 200px;
 `;
 
 const Container = styled.div`
@@ -182,6 +183,8 @@ const Carousel = styled.div`
   justify-content: center;
   align-items: center;
   width: 100%;
+  height: calc(100vh - 200px); // 150px을 뺀 높이 설정
+  margin-top: -80px; // 상단 마진 설정
   overflow: visible; // overflow visible로 변경
 `;
 
@@ -231,8 +234,8 @@ const IconWrapper = styled.div`
 const Icon = styled.img`
   width: 70%;
   height: auto;
+  margin: 0 0 10px 20px;
   object-fit: contain;
-
   @media (max-width: 768px) {
     width: 80px;
     height: 80px;
@@ -252,7 +255,7 @@ const ButtonL = styled.button`
   border: none;
   position: absolute;
   left: calc(50% - 250px); // 원하는 위치로 조정
-  top: 50%;
+  top: 45%;
   transform: translateY(-50%);
   cursor: pointer;
   padding: 0;
@@ -272,7 +275,7 @@ const ButtonR = styled.button`
   border: none;
   position: absolute;
   right: calc(50% - 250px); // 원하는 위치로 조정
-  top: 50%;
+  top: 45%;
   transform: translateY(-50%);
   cursor: pointer;
   padding: 0;
