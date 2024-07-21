@@ -23,3 +23,4 @@ export const getContractToxinById = async (contractId) => {
     throw error;
   }
 };
+

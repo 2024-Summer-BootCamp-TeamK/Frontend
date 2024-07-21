@@ -84,12 +84,7 @@ const Suggestion = ({ contractMain, contractToxin }) => {
         <Content>
           <Section className="active">
             <SectionContent className="slider__content">
-              <SectionTitle    className="slider__title"
-                style={{
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}>
+              <SectionTitle>
                 {sections[currentSection]}
               </SectionTitle>
               <SectionText className="slider__text">
@@ -144,6 +139,11 @@ const Suggestion = ({ contractMain, contractToxin }) => {
                   <p>데이터를 불러오는 중입니다...</p>
                 )}
               </SectionText>
+              {currentText === "toxin" && ( // 각 세션에 버튼 표시
+                <StyledOrangebutton>
+                  추천안으로 수정하기
+                </StyledOrangebutton>
+              )}
             </SectionContent>
           </Section>
         </Content>
@@ -176,7 +176,7 @@ export default Suggestion;
 // 스타일드 컴포넌트 정의
 const Container = styled.div`
   width: 100%;
-  height: 80vh;
+  height: 85vh;
   display: flex;
   align-items: center;
   position: relative;
@@ -270,6 +270,9 @@ const SectionText = styled.div`
   color: #4e4a67;
   margin-bottom: 30px;
   line-height: 1.5em;
+  height: 300px; /* 고정된 높이 설정 */
+  overflow-y: auto; /* 내부 스크롤 활성화 */
+  
 `;
 
 const ProgressContainer = styled.div`
@@ -301,11 +304,18 @@ const ToggleswitchContainer = styled.div`
 const StyledOrangebutton = styled(Orangebutton)`
   display: flex;
   align-items: center;
-  justify-content: space-around;
+  justify-content: center;
   position: relative;
   left: 50%;
   transform: translateX(-50%);
   margin-top: 20px;
+  padding: 10px 20px; /* 버튼 패딩 추가 */
+  background-color: #e7470a; /* 버튼 배경색 추가 */
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+
   img {
     width: 20px;
     height: 20px;
