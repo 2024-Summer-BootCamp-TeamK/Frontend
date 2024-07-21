@@ -10,9 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-
     "@compdfkit_pdf_sdk/webviewer": "^2.2.2",
-
     "axios": "^1.7.2",
     "gsap": "^3.12.5",
     "pdf-lib": "^1.17.1",
@@ -26,6 +24,7 @@
     "react-pdf": "^9.1.0",
     "react-router-dom": "^6.25.1",
     "react-signature-canvas": "^1.0.6",
+    "rollup": "^4.19.0",
     "semantic-ui-css": "^2.5.0",
     "semantic-ui-react": "^2.1.5",
     "splitting": "^1.1.0",

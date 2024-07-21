@@ -1,8 +1,9 @@
 import axios from 'axios';
+import api from "./api";
 
 const docuShare = async (formData) => {
     try {
-        const response = await axios.post('http://localhost/api/v1/documents/', formData, {
+        const response = await api.post('/documents/', formData, {
             headers: {
                 'Content-Type': 'multipart/form-data'
             }

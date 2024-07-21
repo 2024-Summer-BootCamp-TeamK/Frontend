@@ -1,8 +1,9 @@
 import axios from 'axios';
+import api from "./api";
 
 const accessDocument = async (documentId, password) => {
   try {
-    const response = await axios.post(`http://localhost/api/v1/documents/${documentId}/access`, {
+    const response = await api.post(`/documents/${documentId}/access`, {
       password: password,
     });
     return response.data;

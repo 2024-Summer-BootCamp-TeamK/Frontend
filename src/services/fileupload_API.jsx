@@ -1,8 +1,9 @@
 import axios from 'axios';
+import api from "./api";
 
 const contractUpload = async (formData) => {
     try {
-        const response = await axios.post('http://localhost/api/v1/contracts', formData, {
+        const response = await api.post('/contracts', formData, {
             headers: {
                 'Content-Type': 'multipart/form-data'
             }

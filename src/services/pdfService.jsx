@@ -1,13 +1,15 @@
 import axios from 'axios';
 import { getAsset } from '../utils/prepareAssets';
+import api from "./api";
+
 
 export const fetchPdfDocument = async (documentId, password) => {
   try {
-    const url = `http://localhost/api/v1/encryption/test/${documentId}`;
+    const url = `/encryption/test/${documentId}`;
     const pdfjsLib = await getAsset('pdfjsLib');
 
     // Fetch the PDF file from the server
-    const response = await axios.get(url, { 
+    const response = await api.get(url, { 
       responseType: 'blob',
       headers: {
         'X-Password': password
