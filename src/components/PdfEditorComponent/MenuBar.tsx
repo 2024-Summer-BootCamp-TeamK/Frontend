@@ -3,9 +3,7 @@ import styled from 'styled-components';
 import shareInfoIcon from '../../images/share-info-icon.svg';
 
 interface Props {
- // uploadNewPdf: () => void;
- // addText: () => void;
- // addImage: () => void;
+
   addDrawing: () => void;
   isPdfLoaded: boolean;
   savingPdfStatus: boolean;
@@ -13,17 +11,14 @@ interface Props {
 }
 
 const MenuBar: React.FC<Props> = ({
-//  uploadNewPdf,
   addDrawing,
-//  addText,
-//  addImage,
   isPdfLoaded,
   savingPdfStatus,
   savePdf,
 }) => {
 
   return (
-    <Footer>
+    <Container>
         <FooterText>
           <InfoIcon src={shareInfoIcon} alt="Info icon" />
           자세한 설명이 필요하다면?
@@ -32,20 +27,19 @@ const MenuBar: React.FC<Props> = ({
           <SignButton onClick={addDrawing}>서명하기</SignButton>
           <SaveButton onClick={savePdf}>저장하기</SaveButton>
         </ButtonGroup>
-  </Footer>
+    </Container>
   );
 };
 
 export default MenuBar;
 
-const Footer = styled.div`
+const Container = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  width:100%;
-  margin-top: 20px;
-  margin-bottom: 30px;
-  color: var(--background-color);
+  width: 100%;
+  padding: 20px;
+  background-color: var(--background-color);
 `;
 
 const InfoIcon = styled.img`
@@ -57,10 +51,10 @@ const InfoIcon = styled.img`
 const FooterText = styled.div`
   position: absolute;
   left: 20px;
+  display: flex;
   font-size: 16px;
   font-weight: bold;
   color: #141f7b;
-  margin-bottom: 5px; 
   display: flex;
   align-items: center;
 `;
@@ -68,9 +62,10 @@ const FooterText = styled.div`
 
 const ButtonGroup = styled.div`
   display: flex;
-  gap: 150px;
+  gap: 130px;
   align-items: center;
   justify-content: center;
+  
 `;
 
 const SignButton = styled.button`

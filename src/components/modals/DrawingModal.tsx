@@ -1,6 +1,7 @@
 import React, { useState, createRef, useEffect } from 'react';
-import { Modal, Button, Menu, Dropdown, Label } from 'semantic-ui-react';
+import { Modal, Button, Menu, Dropdown, Label,Icon } from 'semantic-ui-react';
 import { Color } from '../../entities';
+import styled from 'styled-components';
 
 interface Props {
   open: boolean;
@@ -26,9 +27,8 @@ export const DrawingModal = ({ open, dismiss, confirm, drawing }: Props) => {
   const [minY, setMinY] = useState(Infinity);
   const [maxY, setMaxY] = useState(0);
   const [mouseDown, setMouseDown] = useState(false);
-  const [strokeWidth, setStrokeWidth] = useState(5);
+  const [strokeWidth, setStrokeWidth] = useState(3);
   const [stroke, setStroke] = useState(Color.BLACK);
-  const [strokeDropdownOpen, setStrokeDropdownOpen] = useState(false);
 
   useEffect(() => {
     const svg = svgRef.current;
@@ -78,7 +78,7 @@ export const DrawingModal = ({ open, dismiss, confirm, drawing }: Props) => {
     setMaxX(0);
     setMinY(Infinity);
     setMaxY(0);
-    setStrokeWidth(5);
+    setStrokeWidth(3);
     setStroke(Color.BLACK);
   };
 
@@ -114,85 +114,24 @@ export const DrawingModal = ({ open, dismiss, confirm, drawing }: Props) => {
     dismiss();
   };
 
-  // TODO: Move to config
-  const strokeSizes = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-
-  const handleStrokeSelect = (color: Color) => () => {
-    setStroke(color);
-    setStrokeDropdownOpen(false);
-  };
-
   return (
     <Modal size="small" dimmer="inverted" open={open} onClose={closeModal}>
-      <Modal.Header>Add your Drawing</Modal.Header>
+      <Modal.Header>서명하기</Modal.Header>
       <Modal.Content>
-        <Menu size="tiny">
-          <Menu.Item header>Tools</Menu.Item>
-          {/* <Menu.Item><Icon name="undo" /></Menu.Item>
-                    <Menu.Item><Icon name="redo" /></Menu.Item> */}
-          <Menu.Menu position="right">
-            <Dropdown item text={`${strokeWidth}`}>
-              <Dropdown.Menu>
-                {strokeSizes.map((size) => (
-                  <Dropdown.Item
-                    key={size}
-                    selected={size === strokeWidth}
-                    onClick={() => setStrokeWidth(size)}
-                  >
-                    {size}
-                  </Dropdown.Item>
-                ))}
-              </Dropdown.Menu>
-            </Dropdown>
-            <Dropdown
-              item
-              trigger={<Label color={stroke} />}
-              onClick={() => setStrokeDropdownOpen(true)}
-              onBlur={() => setStrokeDropdownOpen(false)}
-            >
-              <Dropdown.Menu open={strokeDropdownOpen}>
-                <div
-                  style={{
-                    display: 'grid',
-                    gridTemplateColumns: 'repeat(3, 1fr)',
-                    padding: 5,
-                  }}
-                >
-                  {Object.values(Color).map((color, index) => (
-                    <div 
-                      style={{ margin: 2.5 }} 
-                      key={index}
-                    >
-                      <Label
-                        color={color}
-                        onClick={handleStrokeSelect(color)}
-                      />
-                    </div>
-                  ))}
-                </div>
-              </Dropdown.Menu>
-            </Dropdown>
-            {/* <Dropdown item text={stroke}>
-                            <Dropdown.Menu>
-                                <Card.Group itemsPerRow={3}>
-                                    {Object.values(Color).map((color, index) => (
-                                        <Card inverted key={index} color={color} />
-                                    ))}
-                                </Card.Group>
-                            </Dropdown.Menu>
-                        </Dropdown> */}
-          </Menu.Menu>
-        </Menu>
         <div
           onMouseDown={handleMouseDown}
           onMouseMove={handleMouseMove}
           onMouseUp={handleMouseUp}
+          style={{ border: '1px solid #000', height: '40vh', textAlign: 'center', lineHeight: '40vh', position: 'relative' }}
         >
           <svg
             ref={svgRef}
             style={{
               width: '100%',
-              height: '50vh',
+              height: '100%',
+              position: 'absolute',
+              top: 0,
+              left: 0,
             }}
           >
             <path
@@ -204,18 +143,24 @@ export const DrawingModal = ({ open, dismiss, confirm, drawing }: Props) => {
               d={path}
             />
           </svg>
+          {path === '' && (
+            <span style={{ color: '#ccc', fontSize: '1.5em' }}>
+              이곳에 서명해주세요
+            </span>
+          )}
         </div>
       </Modal.Content>
-      <Modal.Actions>
-        <Button color="black" content="Cancel" onClick={closeModal} />
-        <Button
-          content="Done"
-          labelPosition="right"
-          icon="checkmark"
-          onClick={handleDone}
-          positive
-        />
+      <Modal.Actions style={{ justifyContent: 'space-between' }}>
+        <Button style = {{ backgroundColor: 'white', color: '#141f7b', border: '1px solid #141f7b'}} onClick={resetDrawingBoard}>
+          다시 서명하기
+        </Button>
+        <Button style = {{ backgroundColor: '#141f7b', color: 'white'}}  onClick={handleDone}>
+          삽입하기
+        </Button>
       </Modal.Actions>
+      <div style={{ textAlign: 'center', padding: '10px 0' }}>
+        본인의 서명이 법적 효력이 있음을 인정합니다.
+      </div>
     </Modal>
   );
 };

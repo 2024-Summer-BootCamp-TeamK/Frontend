@@ -1,4 +1,4 @@
-import React, { useState, useLayoutEffect } from 'react';
+import React, { useState, useEffect, useLayoutEffect, useRef } from 'react';
 import 'semantic-ui-css/semantic.min.css';
 import { Container, Grid, Segment } from 'semantic-ui-react';
 import styled from 'styled-components';
@@ -11,10 +11,7 @@ import { useAttachments } from '../hooks/useAttachments';
 import { useUploader, UploadTypes } from '../hooks/useUploader';
 import { Page } from '../components/PdfEditorComponent/Page';
 import { Attachments } from '../components/PdfEditorComponent/Attachments';
-import { getAsset } from '../utils/prepareAssets';
-import * as pdfjsLib from 'pdfjs-dist';
-import axios from 'axios';
-
+import { fetchPdfDocument } from '../services/pdfService';
 import Button from "../components/Button";
 import {
   Headerall,
@@ -23,31 +20,37 @@ import {
   ButtonContainer 
 } from "../components/Headerall";
 import logoSrc from "../images/logo.svg";
-import BorderStyle from 'pdf-lib/cjs/core/annotation/BorderStyle';
+import { useLocation } from 'react-router-dom';
+import * as pdfjsLib from 'pdfjs-dist';
 
-// PDF.js worker 설정
 pdfjsLib.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/2.6.347/pdf.worker.min.js`;
 
 const PdfEditor = () => {
   const [drawingModalOpen, setDrawingModalOpen] = useState(false);
-  const [pdfDocument, setPdfDocument] = useState(null);
+  const [ws, setWs] = useState(null); // 웹소켓 상태 추가
+  const [mousePositions, setMousePositions] = useState({}); // 사용자 마우스 위치 상태 추가
+  const [username, setUsername] = useState(null); // username 상태 추가
+  const location = useLocation();
+  const { documentId, password } = location.state || {}; // 이전 페이지에서 전달된 상태 사용
+  const canvasRef = useRef(null); // 캔버스 참조 추가
 
   const {
     initialize,
     pageIndex,
     isMultiPage,
-    isFirstPage,
-    isLastPage,
     currentPage,
     isSaving,
     savePdf,
-    previousPage,
-    nextPage,
     setDimensions,
     name,
-    dimensions
+    dimensions,
+    setPageIndex,
+    pages
   } = usePdf();
   
+  const isFirstPage = pageIndex === 0;
+  const isLastPage = pageIndex === pages.length - 1;
+
   const {
     add: addAttachment,
     allPageAttachments,
@@ -55,7 +58,7 @@ const PdfEditor = () => {
     reset: resetAttachments,
     update,
     remove,
-    setPageIndex
+    setPageIndex: setAttachmentsPageIndex
   } = useAttachments();
   
   const initializePageAndAttachments = (file, pdfDocument) => {
@@ -73,33 +76,21 @@ const PdfEditor = () => {
   useLayoutEffect(() => {
     const loadPdf = async () => {
       try {
-        const documentId = 11;
-        const password = '4KoxLn';
-        const url = `http://localhost/api/v1/encryption/test/${documentId}`;
-        const pdfjsLib = await getAsset('pdfjsLib');
-
-        // Fetch the PDF file from the server
-        const response = await axios.get(url, { 
-          responseType: 'blob',
-          headers: {
-            'X-Password': password
-          }
-        });
-        const blob = new Blob([response.data], { type: 'application/pdf' });
-        const file = new File([blob], "document.pdf", { type: "application/pdf" });
-
-        const loadingTask = pdfjsLib.getDocument({ data: await blob.arrayBuffer() });
-        const pdfDocument = await loadingTask.promise;
-        setPdfDocument(pdfDocument);
-
+        const { pdfDocument, file } = await fetchPdfDocument(documentId, password);
         initializePageAndAttachments(file, pdfDocument);
       } catch (error) {
         console.error('Error loading PDF:', error);
       }
     };
 
-    loadPdf();
-  }, []);
+    if (documentId && password) {
+      loadPdf();
+    }
+  }, [documentId, password]);
+
+  useLayoutEffect(() => {
+    setAttachmentsPageIndex(pageIndex);
+  }, [pageIndex, setAttachmentsPageIndex]);
 
   const { inputRef: pdfInput, handleClick: handlePdfClick, isUploading, onClick, upload: uploadPdf } = useUploader({ 
     use: UploadTypes.PDF,
@@ -110,20 +101,64 @@ const PdfEditor = () => {
     afterUploadAttachment: addAttachment,
   });
 
-  const addText = () => {
-    const newTextAttachment = {
-      id: ggID(),
-      type: AttachmentTypes.TEXT,
-      x: 0,
-      y: 0,
-      width: 120,
-      height: 25,
-      size: 16,
-      lineHeight: 1.4,
-      fontFamily: 'Times-Roman',
-      text: 'Enter Text Here',
-    };
-    addAttachment(newTextAttachment);
+  const handleSavePdf = () => savePdf(allPageAttachments);
+
+  // 웹소켓 연결 설정
+  useEffect(() => {
+    if (documentId) {
+      const websocket = new WebSocket(`ws://localhost:8000/ws/documents/${documentId}/`);
+      websocket.onopen = () => {
+        console.log('연결 성공');
+      };
+      websocket.onclose = (event) => {
+        console.log('연결이 닫혔습니다: ', event);
+      };
+      websocket.onmessage = (event) => {
+        const message = JSON.parse(event.data);
+        console.log('받은 메시지: ', message); // 메시지 로그 확인
+        if (message.type === 'user_count') {
+          setUsername(message.payload.username); // 서버에서 전달된 username 설정
+        }
+        if (message.type === 'mouse_move') {
+          setMousePositions(prev => ({ ...prev, [message.payload.username]: message.payload.position }));
+        }
+        if (message.type === 'page_change') {
+          setPageIndex(message.payload.pageIndex); // 서버에서 전달된 페이지 인덱스로 페이지 변경
+        }
+        if (message.type === 'add_drawing') {
+          addAttachment(message.payload); // 서버에서 전달된 드로잉 추가
+        }
+      };
+      websocket.onerror = (error) => {
+        console.error('웹소켓 에러: ', error);
+      };
+      setWs(websocket);
+      return () => websocket.close();
+    }
+  }, [documentId, setPageIndex]);
+
+  const handleMouseMove = (event) => {
+    const canvas = canvasRef.current;
+    const rect = canvas.getBoundingClientRect();
+    const x = event.clientX - rect.left;
+    const y = event.clientY - rect.top;
+
+    if (ws && username) {
+      ws.send(JSON.stringify({
+        type: 'mouse_move',
+        payload: { username, position: { x, y } }
+      }));
+    }
+  };
+
+  const handlePageChange = (newPageIndex) => {
+    if (ws) {
+      ws.send(JSON.stringify({
+        type: 'page_change',
+        payload: { pageIndex: newPageIndex }
+      }));
+    }
+    setPageIndex(newPageIndex);
   };
 
   const addDrawing = (drawing) => {
@@ -136,83 +171,86 @@ const PdfEditor = () => {
       x: 0,
       y: 0,
       scale: 1,
+      username: username, // username 추가
     };
-    addAttachment(newDrawingAttachment);
-  }
 
-  useLayoutEffect(() => setPageIndex(pageIndex), [pageIndex, setPageIndex]);
-
-  const handleSavePdf = () => savePdf(allPageAttachments);
+    // 서버로 드로잉 추가 이벤트 전송
+    if (ws) {
+      ws.send(JSON.stringify({
+        type: 'add_drawing',
+        payload: newDrawingAttachment
+      }));
+    }
+  };
 
   return (
-    <Container style={{ margin: 30 }}>
-        <Headerall>
-            <LogoContainer>
-                <Logo data={logoSrc} type="image/svg+xml" />
-            </LogoContainer>
-            <ButtonContainer>
-                <Button>AI 검토 받으러 가기</Button>
-                <Button>상대방과 계약서 검토하기</Button>
-            </ButtonContainer>
-        </Headerall>
-        { currentPage ? (
-            <Grid>
-                <Grid.Row>
-                    <Grid.Column width={3} verticalAlign="middle" textAlign="left">
-                        {isMultiPage && !isFirstPage && (
-                            <NavigationButton onClick={previousPage}>Previous</NavigationButton>
-                        )}
-                    </Grid.Column>
-                    <Grid.Column width={10}>
-                        { currentPage && (
-                            <StyledSegment style={{ marginTop: '80px'}}
-                                data-testid="page"
-                                compact
-                                stacked={isMultiPage && !isLastPage}
-                            >
-                                <div style={{ position: 'relative' }}>
-                                    <Page
-                                        dimensions={dimensions}
-                                        updateDimensions={setDimensions}
-                                        page={currentPage} 
-                                    />
-                                    { dimensions && (
-                                        <Attachments
-                                            pdfName={name}
-                                            removeAttachment={remove}
-                                            updateAttachment={update}
-                                            pageDimensions={dimensions}
-                                            attachments={pageAttachments}
-                                        /> 
-                                    )}
-                                </div>
-                            </StyledSegment>
-                        )}
-                    </Grid.Column>
-                    <Grid.Column width={3} verticalAlign="middle" textAlign="right">
-                        {isMultiPage && !isLastPage && (
-                            <NavigationButton onClick={nextPage}>Next</NavigationButton>
-                        )}
-                    </Grid.Column>
-                </Grid.Row>
-            </Grid>
-        ) : (
-            <div>Loading PDF...</div>
-        )}
-        <MenuBar
-            savePdf={handleSavePdf}
-            addText={addText}
-            addImage={handleImageClick}
-            addDrawing={() => setDrawingModalOpen(true)}
-            savingPdfStatus={isSaving}
-            uploadNewPdf={handlePdfClick}
-            isPdfLoaded={!!pdfDocument}
-        />
-        <DrawingModal 
-            open={drawingModalOpen} 
-            dismiss={() => setDrawingModalOpen(false)}
-            confirm={addDrawing}
-        />
+    <Container style={{ margin: 30, backgroundColor: "#fefdf6", paddingBottom: 30 }} onMouseMove={handleMouseMove}>
+      <Headerall>
+        <LogoContainer>
+          <Logo data={logoSrc} type="image/svg+xml" />
+        </LogoContainer>
+        <ButtonContainer>
+          <Button>AI 검토 받으러 가기</Button>
+          <Button>상대방과 계약서 검토하기</Button>
+        </ButtonContainer>
+      </Headerall>
+      {currentPage ? (
+        <Grid>
+          <Grid.Row>
+            <Grid.Column width={3} verticalAlign="middle" textAlign="left">
+              {isMultiPage && (
+                <NavigationButton onClick={() => handlePageChange(pageIndex - 1)} disabled={isFirstPage}>Previous</NavigationButton>
+              )}
+            </Grid.Column>
+            <Grid.Column width={10}>
+              {currentPage && (
+                <StyledSegment style={{ marginTop: '80px' }} data-testid="page" compact stacked={isMultiPage && !isLastPage}>
+                  <div style={{ position: 'relative' }} ref={canvasRef}>
+                    <Page dimensions={dimensions} updateDimensions={setDimensions} page={currentPage} />
+                    {dimensions && (
+                      <Attachments
+                        pdfName={name}
+                        removeAttachment={remove}
+                        updateAttachment={update}
+                        pageDimensions={dimensions}
+                        attachments={pageAttachments}
+                      />
+                    )}
+                    {Object.entries(mousePositions).map(([username, pos]) => (
+                      <div
+                        key={username}
+                        style={{
+                          position: 'absolute',
+                          left: pos.x,
+                          top: pos.y,
+                          backgroundColor: 'red',
+                          width: '10px',
+                          height: '10px',
+                          borderRadius: '50%',
+                        }}
+                      />
+                    ))}
+                  </div>
+                </StyledSegment>
+              )}
+            </Grid.Column>
+            <Grid.Column width={3} verticalAlign="middle" textAlign="right">
+              {isMultiPage && (
+                <NavigationButton onClick={() => handlePageChange(pageIndex + 1)} disabled={isLastPage}>Next</NavigationButton>
+              )}
+            </Grid.Column>
+          </Grid.Row>
+        </Grid>
+      ) : (
+        <div>Loading PDF...</div>
+      )}
+      <MenuBar
+        savePdf={handleSavePdf}
+        addDrawing={() => setDrawingModalOpen(true)}
+        savingPdfStatus={isSaving}
+        isPdfLoaded={!!currentPage}
+      />
+      <DrawingModal open={drawingModalOpen} dismiss={() => setDrawingModalOpen(false)} confirm={addDrawing} />
     </Container>
   );
 }
@@ -220,7 +258,7 @@ const PdfEditor = () => {
 export default PdfEditor;
 
 const StyledSegment = styled(Segment)`
-    margin-top: 80px;
+  margin-top: 80px;
 `;
 
 const NavigationButton = styled.button`
@@ -230,8 +268,6 @@ const NavigationButton = styled.button`
   border: none;
   padding: 10px 20px;
   cursor: pointer;
-  margin-left: 20px;
-  margin-right: 20px;
   &:disabled {
     background-color: #ccc;
     cursor: not-allowed;
