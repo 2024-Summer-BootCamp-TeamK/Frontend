@@ -101,20 +101,6 @@ const PdfEditor = () => {
     afterUploadAttachment: addAttachment,
   });
 
-  const addDrawing = (drawing) => {
-    if (!drawing) return;
-
-    const newDrawingAttachment = {
-      id: ggID(),
-      type: AttachmentTypes.DRAWING,
-      ...drawing,
-      x: 0,
-      y: 0,
-      scale: 1,
-    };
-    addAttachment(newDrawingAttachment);
-  }
-
   const handleSavePdf = () => savePdf(allPageAttachments);
 
   // 웹소켓 연결 설정
@@ -138,6 +124,9 @@ const PdfEditor = () => {
         }
         if (message.type === 'page_change') {
           setPageIndex(message.payload.pageIndex); // 서버에서 전달된 페이지 인덱스로 페이지 변경
+        }
+        if (message.type === 'add_drawing') {
+          addAttachment(message.payload); // 서버에서 전달된 드로잉 추가
         }
       };
       websocket.onerror = (error) => {
@@ -170,6 +159,29 @@ const PdfEditor = () => {
       }));
     }
     setPageIndex(newPageIndex);
+  };
+
+  const addDrawing = (drawing) => {
+    if (!drawing) return;
+
+    const newDrawingAttachment = {
+      id: ggID(),
+      type: AttachmentTypes.DRAWING,
+      ...drawing,
+      x: 0,
+      y: 0,
+      scale: 1,
+      username: username, // username 추가
+    };
+    addAttachment(newDrawingAttachment);
+
+    // 서버로 드로잉 추가 이벤트 전송
+    if (ws) {
+      ws.send(JSON.stringify({
+        type: 'add_drawing',
+        payload: newDrawingAttachment
+      }));
+    }
   };
 
   return (
