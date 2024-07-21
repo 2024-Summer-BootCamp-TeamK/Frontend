@@ -3,6 +3,7 @@ import styled, { createGlobalStyle } from "styled-components";
 import Orangebutton from "./Orangebutton";
 import Toggleswitch from "./Toggleswitch";
 import ModifiyviewSrc from "../images/Modifiyview.svg"; // 이미지 경로 확인
+import LabelImage from "../images/label.svg"; // label.svg 이미지 경로 추가
 
 const GlobalStyle = createGlobalStyle`
   *,
@@ -30,48 +31,51 @@ const Suggestion = ({ contractMain, contractToxin }) => {
   const [currentSection, setCurrentSection] = useState(0); // 현재 섹션 상태
   const [currentText, setCurrentText] = useState("main"); // 현재 텍스트 파일 상태
 
-  const mainSections = contractMain.articles.map((article, index) => `주요조항 ${index + 1}`);
-  const toxinSections = contractToxin.articles.map((article, index) => `주의조항 ${index + 1}`);
+  const mainSections = contractMain.articles.map(
+    (article, index) => `주요조항 ${index + 1}`
+  );
+  const toxinSections = contractToxin.articles.map(
+    (article, index) => `주의조항 ${index + 1}`
+  );
   const sections = currentText === "main" ? mainSections : toxinSections;
 
   const handlePrevClick = () => {
     if (currentSection > 0) {
-      setCurrentSection((prev) => {
-        console.log(`현재 인덱스: ${prev - 1}, 텍스트: ${sections[prev - 1]}`);
-        return prev - 1;
-      });
+      setCurrentSection((prev) => prev - 1);
     }
   };
 
   const handleNextClick = () => {
     if (currentSection < sections.length - 1) {
-      setCurrentSection((prev) => {
-        console.log(`현재 인덱스: ${prev + 1}, 텍스트: ${sections[prev + 1]}`);
-        return prev + 1;
-      });
+      setCurrentSection((prev) => prev + 1);
     }
   };
 
   const toggleText = () => {
     setCurrentText((prevText) => {
       const newText = prevText === "main" ? "toxin" : "main";
-      console.log(`currentText가 ${prevText}에서 ${newText}로 변경되었습니다.`);
       setCurrentSection(0); // 텍스트 파일 변경 시 섹션을 첫 번째 섹션으로 이동
       return newText;
     });
   };
 
   useEffect(() => {
-    console.log(`현재 인덱스: ${currentSection}, 텍스트: ${sections[currentSection]}`);
+    console.log(
+      `현재 인덱스: ${currentSection}, 텍스트: ${sections[currentSection]}`
+    );
   }, [currentSection, sections]);
 
-  const currentArticle = currentText === "main" ? contractMain.articles[currentSection] : contractToxin.articles[currentSection];
+  const currentArticle =
+    currentText === "main"
+      ? contractMain.articles[currentSection]
+      : contractToxin.articles[currentSection];
 
   return (
     <Container>
       <GlobalStyle />
       <ToggleswitchContainer>
-        <Toggleswitch onChange={toggleText} /> {/* 텍스트 파일을 토글하는 스위치 */}
+        <Toggleswitch onChange={toggleText} />{" "}
+        {/* 텍스트 파일을 토글하는 스위치 */}
       </ToggleswitchContainer>
       <ContentWrapper>
         <NavButton onClick={handlePrevClick} disabled={currentSection === 0}>
@@ -80,14 +84,61 @@ const Suggestion = ({ contractMain, contractToxin }) => {
         <Content>
           <Section className="active">
             <SectionContent className="slider__content">
-              <SectionTitle className="slider__title">{sections[currentSection]}</SectionTitle>
+              <SectionTitle    className="slider__title"
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}>
+                {sections[currentSection]}
+              </SectionTitle>
               <SectionText className="slider__text">
                 {currentArticle ? (
                   <>
-                    <p>문장: {currentArticle.sentence}</p>
-                    <p>법: {currentArticle.law}</p>
-                    <p>설명: {currentArticle.description}</p>
-                    {currentArticle.recommend && <p>추천: {currentArticle.recommend}</p>}
+                    <p style={{ textAlign: "left" }}>
+                      <img
+                        src={LabelImage}
+                        alt="label 이미지"
+                        style={{ marginRight: "5px", verticalAlign: "middle" }}
+                      />
+                      <span style={{ fontWeight: "bold" }}>
+                        계약서 내부 조항:
+                      </span><br /> {/* 줄 바꿈 추가 */}
+                      {currentArticle.sentence}
+                    </p>  
+
+                    <p style={{ textAlign: "left" }}>
+                      <img
+                        src={LabelImage}
+                        alt="label 이미지"
+                        style={{ marginRight: "5px", verticalAlign: "middle" }}
+                      />
+                      <span style={{ fontWeight: "bold" }}>법:</span><br /> {/* 줄 바꿈 추가 */}
+                      {currentArticle.law}
+                    </p>
+                    <p style={{ textAlign: "left" }}>
+                      <img
+                        src={LabelImage}
+                        alt="label 이미지"
+                        style={{ marginRight: "5px", verticalAlign: "middle" }}
+                      />
+                      <span style={{ fontWeight: "bold" }}>설명:</span><br /> {/* 줄 바꿈 추가 */}
+                      {currentArticle.description}
+                    </p>
+                    {currentArticle.recommend && (
+                      <p style={{ textAlign: "left" }}>
+                        <img
+                          src={LabelImage}
+                          alt="label 이미지"
+                          style={{
+                            marginRight: "5px",
+                            verticalAlign: "middle",
+                          }}
+                        />
+                        <span style={{ fontWeight: "bold" }}>추천:</span><br /> {/* 줄 바꿈 추가 */}
+                        {currentArticle.recommend}
+                      </p>
+                    )}
                   </>
                 ) : (
                   <p>데이터를 불러오는 중입니다...</p>
@@ -96,13 +147,20 @@ const Suggestion = ({ contractMain, contractToxin }) => {
             </SectionContent>
           </Section>
         </Content>
-        <NavButton onClick={handleNextClick} disabled={currentSection === sections.length - 1}>
+        <NavButton
+          onClick={handleNextClick}
+          disabled={currentSection === sections.length - 1}
+        >
           다음
         </NavButton>
       </ContentWrapper>
       <ProgressContainer>
         {sections.map((_, index) => (
-          <ProgressDot key={index} active={index === currentSection} onClick={() => setCurrentSection(index)} />
+          <ProgressDot
+            key={index}
+            active={index === currentSection}
+            onClick={() => setCurrentSection(index)}
+          />
         ))}
       </ProgressContainer>
       <StyledOrangebutton>
@@ -124,10 +182,11 @@ const Container = styled.div`
   position: relative;
   overflow: hidden;
   padding: 20px;
-  margin-top: 30px;
+  margin-top: 0px;
   border-radius: 20px;
   background-color: #fefdf6;
   flex-direction: column;
+  gap: 0px;
 `;
 
 const ContentWrapper = styled.div`
@@ -145,6 +204,7 @@ const NavButton = styled.button`
   margin: 0 10px;
   cursor: pointer;
   border-radius: 5px;
+
   &:disabled {
     background-color: #ccc;
     cursor: not-allowed;
@@ -155,8 +215,7 @@ const Content = styled.div`
   display: flex;
   flex-direction: column;
   height: 100%;
-  overflow-x: hidden;
-  overflow-y: hidden;
+  overflow-y: auto; /* 세로 스크롤 추가 */
   scroll-snap-type: y mandatory;
   scroll-behavior: smooth;
   flex: 1;
@@ -180,7 +239,7 @@ const Section = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 24px;
+  font-size: 18px;
   box-sizing: border-box;
   padding: 20px;
   color: #000000;
@@ -203,6 +262,8 @@ const SectionTitle = styled.div`
   font-weight: 700;
   color: #0d0925;
   margin-bottom: 20px;
+  display: flex;
+  align-items: center; /* 수직 정렬 추가 */
 `;
 
 const SectionText = styled.div`
