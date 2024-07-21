@@ -1,4 +1,5 @@
-import React from 'react';
+import React from "react";
+import { useLocation } from "react-router-dom";
 import styled from "styled-components";
 import Button from "../components/Button";
 import Suggestion from "../components/Suggestion";
@@ -12,6 +13,9 @@ import {
 import logoSrc from "../images/logo.svg";
 
 const Reviewresult = () => {
+  const location = useLocation();
+  const { contractMain, contractToxin } = location.state || {};
+
   return (
     <>
       <PageWrapper>
@@ -29,10 +33,13 @@ const Reviewresult = () => {
         <ContentWrapper>
           <Container>
             <ComponentWrapper>
-              <Aireviewresult />
+              <Aireviewresult contractData={contractMain} />
             </ComponentWrapper>
             <ComponentWrapper>
-              <Suggestion />
+              <Suggestion
+                contractMain={contractMain}
+                contractToxin={contractToxin}
+              />
             </ComponentWrapper>
           </Container>
         </ContentWrapper>
@@ -72,7 +79,7 @@ const Container = styled.div`
   gap: 30px; /* 두 컴포넌트 사이의 간격을 설정합니다. */
   width: 100%; /* 전체 너비를 100%로 설정 */
   box-sizing: border-box; /* 박스 크기 계산에 패딩과 테두리를 포함합니다. */
-  background-color: #FEFDF6; /* 배경색 설정 */
+  background-color: #fefdf6; /* 배경색 설정 */
   border-radius: 20px; /* 둥근 모서리 설정 */
   margin: 0; /* 전체 컨테이너의 여백을 0으로 설정 */
 `;

@@ -1,8 +1,9 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import styled, { createGlobalStyle } from "styled-components";
 import Orangebutton from "./Orangebutton";
 import Toggleswitch from "./Toggleswitch";
 import ModifiyviewSrc from "../images/Modifiyview.svg"; // 이미지 경로 확인
+import LabelImage from "../images/label.svg"; // label.svg 이미지 경로 추가
 
 const GlobalStyle = createGlobalStyle`
   *,
@@ -26,109 +27,140 @@ const GlobalStyle = createGlobalStyle`
   }
 `;
 
-const Suggestion = () => {
+const Suggestion = ({ contractMain, contractToxin }) => {
   const [currentSection, setCurrentSection] = useState(0); // 현재 섹션 상태
-  const [currentText, setCurrentText] = useState("text1"); // 현재 텍스트 파일 상태
-  const isScrolling = useRef(false); // 스크롤 중인지 여부를 확인하는 플래그
+  const [currentText, setCurrentText] = useState("main"); // 현재 텍스트 파일 상태
 
-  const contentRef = useRef(null);
+  const mainSections = contractMain.articles.map(
+    (article, index) => `주요조항 ${index + 1}`
+  );
+  const toxinSections = contractToxin.articles.map(
+    (article, index) => `주의조항 ${index + 1}`
+  );
+  const sections = currentText === "main" ? mainSections : toxinSections;
 
-  // 각 텍스트 파일의 섹션들
-  const text1Sections = ["주요조항 1", "주요조항 2", "주요조항 3"];
-  const text2Sections = ["주의조항 1", "주의조항 2", "주의조항 3"];
-
-  // 현재 선택된 텍스트 파일의 섹션들
-  const sections = currentText === "text1" ? text1Sections : text2Sections;
-
-  // 스크롤 이벤트 핸들러
-  const handleScroll = (event) => {
-    if (isScrolling.current) return; // 프로그래밍적으로 스크롤 중이면 실행하지 않음
-
-    if (event.deltaY > 0) {
-      scrollToSection(currentSection + 1); // 아래로 스크롤 시 다음 섹션으로 이동
-    } else if (event.deltaY < 0) {
-      scrollToSection(currentSection - 1); // 위로 스크롤 시 이전 섹션으로 이동
+  const handlePrevClick = () => {
+    if (currentSection > 0) {
+      setCurrentSection((prev) => prev - 1);
     }
   };
 
-  // 특정 섹션으로 스크롤하는 함수
-  const scrollToSection = (index) => {
-    if (index < 0 || index >= sections.length) return; // 인덱스가 유효 범위를 벗어나면 실행하지 않음
-
-    if (contentRef.current) {
-      isScrolling.current = true; // 프로그래밍적 스크롤 시작
-      contentRef.current.scrollTo({
-        top: contentRef.current.clientHeight * index,
-        behavior: "smooth",
-      });
-      setTimeout(() => {
-        isScrolling.current = false; // 프로그래밍적 스크롤 종료
-        setCurrentSection(index); // 현재 섹션 상태 업데이트
-      }, 500); // 스크롤 애니메이션 시간과 일치하도록 설정
+  const handleNextClick = () => {
+    if (currentSection < sections.length - 1) {
+      setCurrentSection((prev) => prev + 1);
     }
   };
 
-  // 텍스트 파일을 토글하는 함수
   const toggleText = () => {
-    const newText = currentText === "text1" ? "text2" : "text1";
-    setCurrentText(newText);
-    setCurrentSection(0);
-    if (contentRef.current) {
-      isScrolling.current = true; // 프로그래밍적 스크롤 시작
-      contentRef.current.scrollTo({ top: 0, behavior: "smooth" });
-      setTimeout(() => {
-        isScrolling.current = false; // 프로그래밍적 스크롤 종료
-      }, 500); // 스크롤 애니메이션 시간과 일치하도록 설정
-    }
+    setCurrentText((prevText) => {
+      const newText = prevText === "main" ? "toxin" : "main";
+      setCurrentSection(0); // 텍스트 파일 변경 시 섹션을 첫 번째 섹션으로 이동
+      return newText;
+    });
   };
 
-  // 섹션이 변경될 때마다 스크롤을 맨 위로 이동
   useEffect(() => {
-    if (contentRef.current) {
-      isScrolling.current = true; // 프로그래밍적 스크롤 시작
-      contentRef.current.scrollTo({ top: 0, behavior: "smooth" });
-      setTimeout(() => {
-        isScrolling.current = false; // 프로그래밍적 스크롤 종료
-      }, 500); // 스크롤 애니메이션 시간과 일치하도록 설정
-    }
-  }, [sections]);
+    console.log(
+      `현재 인덱스: ${currentSection}, 텍스트: ${sections[currentSection]}`
+    );
+  }, [currentSection, sections]);
 
-  // 스크롤 이벤트 리스너 추가
-  useEffect(() => {
-    const contentEl = contentRef.current;
-    if (contentEl) {
-      contentEl.addEventListener('wheel', handleScroll);
-    }
-    return () => {
-      if (contentEl) {
-        contentEl.removeEventListener('wheel', handleScroll);
-      }
-    };
-  }, [currentSection]);
+  const currentArticle =
+    currentText === "main"
+      ? contractMain.articles[currentSection]
+      : contractToxin.articles[currentSection];
 
   return (
     <Container>
       <GlobalStyle />
       <ToggleswitchContainer>
-        <Toggleswitch onChange={toggleText} /> {/* 텍스트 파일을 토글하는 스위치 */}
+        <Toggleswitch onChange={toggleText} />{" "}
+        {/* 텍스트 파일을 토글하는 스위치 */}
       </ToggleswitchContainer>
-      <Content ref={contentRef}>
-        {sections.map((section, index) => (
-          <Section key={index} className={index === currentSection ? "active" : ""}>
+      <ContentWrapper>
+        <NavButton onClick={handlePrevClick} disabled={currentSection === 0}>
+          이전
+        </NavButton>
+        <Content>
+          <Section className="active">
             <SectionContent className="slider__content">
-              <SectionTitle className="slider__title">{section}</SectionTitle>
-              <SectionText className="slider__text">...</SectionText>
+              <SectionTitle>
+                {sections[currentSection]}
+              </SectionTitle>
+              <SectionText className="slider__text">
+                {currentArticle ? (
+                  <>
+                    <p style={{ textAlign: "left" }}>
+                      <img
+                        src={LabelImage}
+                        alt="label 이미지"
+                        style={{ marginRight: "5px", verticalAlign: "middle" }}
+                      />
+                      <span style={{ fontWeight: "bold" }}>
+                        계약서 내부 조항:
+                      </span><br /> {/* 줄 바꿈 추가 */}
+                      {currentArticle.sentence}
+                    </p>  
+
+                    <p style={{ textAlign: "left" }}>
+                      <img
+                        src={LabelImage}
+                        alt="label 이미지"
+                        style={{ marginRight: "5px", verticalAlign: "middle" }}
+                      />
+                      <span style={{ fontWeight: "bold" }}>법:</span><br /> {/* 줄 바꿈 추가 */}
+                      {currentArticle.law}
+                    </p>
+                    <p style={{ textAlign: "left" }}>
+                      <img
+                        src={LabelImage}
+                        alt="label 이미지"
+                        style={{ marginRight: "5px", verticalAlign: "middle" }}
+                      />
+                      <span style={{ fontWeight: "bold" }}>설명:</span><br /> {/* 줄 바꿈 추가 */}
+                      {currentArticle.description}
+                    </p>
+                    {currentArticle.recommend && (
+                      <p style={{ textAlign: "left" }}>
+                        <img
+                          src={LabelImage}
+                          alt="label 이미지"
+                          style={{
+                            marginRight: "5px",
+                            verticalAlign: "middle",
+                          }}
+                        />
+                        <span style={{ fontWeight: "bold" }}>추천:</span><br /> {/* 줄 바꿈 추가 */}
+                        {currentArticle.recommend}
+                      </p>
+                    )}
+                  </>
+                ) : (
+                  <p>데이터를 불러오는 중입니다...</p>
+                )}
+              </SectionText>
+              {currentText === "toxin" && ( // 각 세션에 버튼 표시
+                <StyledOrangebutton>
+                  추천안으로 수정하기
+                </StyledOrangebutton>
+              )}
             </SectionContent>
           </Section>
-        ))}
-      </Content>
+        </Content>
+        <NavButton
+          onClick={handleNextClick}
+          disabled={currentSection === sections.length - 1}
+        >
+          다음
+        </NavButton>
+      </ContentWrapper>
       <ProgressContainer>
         {sections.map((_, index) => (
           <ProgressDot
             key={index}
             active={index === currentSection}
-            onClick={() => scrollToSection(index)}
-          /> // 프로그레스 도트
+            onClick={() => setCurrentSection(index)}
+          />
         ))}
       </ProgressContainer>
       <StyledOrangebutton>
@@ -144,24 +176,46 @@ export default Suggestion;
 // 스타일드 컴포넌트 정의
 const Container = styled.div`
   width: 100%;
-  height: 80vh;
+  height: 85vh;
   display: flex;
   align-items: center;
   position: relative;
-  overflow: hidden; /* 오버플로우 숨기기 */
+  overflow: hidden;
   padding: 20px;
-  margin-top: 30px; /* 수정 */
+  margin-top: 0px;
   border-radius: 20px;
-  background-color: #FEFDF6;
+  background-color: #fefdf6;
   flex-direction: column;
+  gap: 0px;
+`;
+
+const ContentWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+`;
+
+const NavButton = styled.button`
+  background-color: #e7470a;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  margin: 0 10px;
+  cursor: pointer;
+  border-radius: 5px;
+
+  &:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+  }
 `;
 
 const Content = styled.div`
   display: flex;
-  flex-direction: column; /* 세로 방향으로 스크롤 */
+  flex-direction: column;
   height: 100%;
-  overflow-x: hidden; /* 가로 스크롤바 숨기기 */
-  overflow-y: hidden; /* 세로 스크롤바 숨기기 */
+  overflow-y: auto; /* 세로 스크롤 추가 */
   scroll-snap-type: y mandatory;
   scroll-behavior: smooth;
   flex: 1;
@@ -185,8 +239,8 @@ const Section = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 24px;
-  box-sizing: border-box; /* 수정 */
+  font-size: 18px;
+  box-sizing: border-box;
   padding: 20px;
   color: #000000;
   opacity: 0;
@@ -208,17 +262,22 @@ const SectionTitle = styled.div`
   font-weight: 700;
   color: #0d0925;
   margin-bottom: 20px;
+  display: flex;
+  align-items: center; /* 수직 정렬 추가 */
 `;
 
 const SectionText = styled.div`
   color: #4e4a67;
   margin-bottom: 30px;
   line-height: 1.5em;
+  height: 300px; /* 고정된 높이 설정 */
+  overflow-y: auto; /* 내부 스크롤 활성화 */
+  
 `;
 
 const ProgressContainer = styled.div`
   position: absolute;
-  bottom: 150px; /* 수정 */
+  bottom: 20px;
   width: 90%;
   display: flex;
   justify-content: center;
@@ -238,18 +297,25 @@ const ToggleswitchContainer = styled.div`
   display: flex;
   justify-content: center;
   width: 100%;
-  margin-bottom: 10px; /* 수정 */
+  margin-bottom: 10px;
   z-index: 1;
 `;
 
 const StyledOrangebutton = styled(Orangebutton)`
   display: flex;
   align-items: center;
-  justify-content: space-around;
+  justify-content: center;
   position: relative;
   left: 50%;
   transform: translateX(-50%);
   margin-top: 20px;
+  padding: 10px 20px; /* 버튼 패딩 추가 */
+  background-color: #e7470a; /* 버튼 배경색 추가 */
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+
   img {
     width: 20px;
     height: 20px;

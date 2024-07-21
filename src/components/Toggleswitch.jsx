@@ -9,12 +9,7 @@ const Switch = styled.label`
   --_slider-txt-clr: #ffffff;
   --_inactive-txt-clr: #888888; /* Inactive text color */
   --_label-padding: 0.5rem 1.5rem; /* Padding around the labels - this gives the switch its global width and height */
-  --_switch-easing: cubic-bezier(
-    0.47,
-    1.64,
-    0.41,
-    0.8
-  ); /* Easing on toggle switch */
+  --_switch-easing: cubic-bezier(0.47, 1.64, 0.41, 0.8); /* Easing on toggle switch */
   --_font-size: 1rem;
 
   width: fit-content;
@@ -109,9 +104,9 @@ const Switch = styled.label`
   }
 `;
 
-const Toggleswitch = () => (
+const Toggleswitch = ({ onChange }) => (
   <Switch htmlFor="filter" aria-label="Toggle Filter">
-    <input type="checkbox" id="filter" />
+    <input type="checkbox" id="filter" onChange={onChange} />
     <span>주요조항</span>
     <span>주의조항</span>
   </Switch>
