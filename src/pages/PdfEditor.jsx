@@ -173,7 +173,6 @@ const PdfEditor = () => {
       scale: 1,
       username: username, // username 추가
     };
-    addAttachment(newDrawingAttachment);
 
     // 서버로 드로잉 추가 이벤트 전송
     if (ws) {
