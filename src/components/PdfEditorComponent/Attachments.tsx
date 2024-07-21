@@ -1,8 +1,6 @@
 import React from 'react';
 import { AttachmentTypes } from '../../entities';
-import { Image } from '../../containers/Image';
 import { Drawing } from '../../containers/Drawing';
-import { Text } from '../../containers/Text';
 
 interface Props {
   attachments: Attachment[];
@@ -10,6 +8,8 @@ interface Props {
   pageDimensions: Dimensions;
   removeAttachment: (index: number) => void;
   updateAttachment: (index: number, attachment: Partial<Attachment>) => void;
+  ws: WebSocket | null; // 웹소켓 객체를 props로 추가
+  username: string | null; // 사용자 이름을 props로 추가
 }
 
 export const Attachments: React.FC<Props> = ({
@@ -18,6 +18,8 @@ export const Attachments: React.FC<Props> = ({
   pageDimensions,
   removeAttachment,
   updateAttachment,
+  ws,
+  username,
 }) => {
   const handleAttachmentUpdate = (index: number) => (
     attachment: Partial<Attachment>
@@ -32,12 +34,14 @@ export const Attachments: React.FC<Props> = ({
             if (attachment.type === AttachmentTypes.DRAWING) {
               return (
                 <Drawing
-                  key={key}
+                  key={key} 
                   pageWidth={pageDimensions.width}
                   pageHeight={pageDimensions.height}
                   removeDrawing={() => removeAttachment(index)}
                   updateDrawingAttachment={handleAttachmentUpdate(index)}
                   {...(attachment as DrawingAttachment)}
+                  ws={ws} // 웹소켓 전달
+                  username={username} // 사용자 이름 전달
                 />
               );
             }

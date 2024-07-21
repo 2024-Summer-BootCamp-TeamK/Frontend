@@ -8,9 +8,12 @@ interface Props {
   pageHeight: number;
   removeDrawing: () => void;
   updateDrawingAttachment: (drawingObject: Partial<DrawingAttachment>) => void;
+  ws: WebSocket | null; // 웹소켓 객체를 props로 추가
+  username: string | null; // 사용자 이름을 props로 추가
 }
 
 export const Drawing = ({
+  id,
   x,
   y,
   width,
@@ -22,6 +25,8 @@ export const Drawing = ({
   pageHeight,
   removeDrawing,
   updateDrawingAttachment,
+  ws,
+  username,
 }: DrawingAttachment & Props) => {
   const svgRef = createRef<SVGSVGElement>();
   const [mouseDown, setMouseDown] = useState(false);
@@ -41,6 +46,22 @@ export const Drawing = ({
       svg.setAttribute('viewBox', `0 0 ${currentWidth} ${currentHeight}`);
     }
   }, [svgRef]);
+
+
+  useEffect(() => {
+    if (ws) {
+      ws.onmessage = (event) => {
+        const message = JSON.parse(event.data);
+        if (message.type === 'update_drawing' && message.payload.id === id) {
+          setPositionTop(message.payload.y);
+          setPositionLeft(message.payload.x);
+          setCurrentWidth(message.payload.width);
+          setCurrentHeight(message.payload.height);
+        }
+        console.log(message);
+      };
+    }
+  }, [ws, id]);
 
   const handleMousedown = (event: React.MouseEvent<HTMLDivElement>) => {
     event.preventDefault();
@@ -71,6 +92,14 @@ export const Drawing = ({
 
         setPositionTop(top);
         setPositionLeft(left);
+
+        // 웹소켓을 통해 위치 정보 전송
+        if (ws && username) {
+          ws.send(JSON.stringify({
+            type: 'update_drawing',
+            payload: {id, x: left, y: top, width: currentWidth, height: currentHeight, username }
+          }));
+        }
       });
     }
   };
@@ -95,6 +124,14 @@ export const Drawing = ({
         x: positionLeft,
         y: positionTop
       });
+
+      // 웹소켓을 통해 위치 정보 전송
+      if (ws && username) {
+        ws.send(JSON.stringify({
+          type: 'update_drawing',
+          payload: {id, x: positionLeft, y: positionTop, width: currentWidth, height: currentHeight,  username }
+        }));
+      }
     }
 
     if (operation === DragActions.SCALE) {
@@ -105,6 +142,14 @@ export const Drawing = ({
         height: currentHeight,
       });
       console.log(`handleMouseUp SCALE w ${width} cw: ${currentWidth} h: ${height} ch: ${currentHeight}`);
+
+      // 웹소켓을 통해 크기 정보 전송
+      if (ws && username) {
+        ws.send(JSON.stringify({
+          type: 'update_drawing',
+          payload: { id, x: positionLeft, y: positionTop, width: currentWidth, height: currentHeight, username }
+        }));
+      }
     }
 
     setOperation(DragActions.NO_MOVEMENT);
@@ -136,6 +181,14 @@ export const Drawing = ({
 
         if (direction.includes('bottom')) {
           setCurrentHeight(currentHeight + event.movementY);
+        }
+
+        // 웹소켓을 통해 크기 정보 전송
+        if (ws && username) {
+          ws.send(JSON.stringify({
+            type: 'update_drawing',
+            payload: { id, x: positionLeft, y: positionTop, width: currentWidth, height: currentHeight, username }
+          }));
         }
       });
     }
@@ -199,7 +252,15 @@ export const Drawing = ({
       x: newLeft,
       y: newTop,
     });
-  }, [positionTop, positionLeft, pageWidth, pageHeight, currentWidth, currentHeight, updateDrawingAttachment]);
+
+    // 웹소켓을 통해 위치 정보 전송
+    if (ws && username) {
+      ws.send(JSON.stringify({
+        type: 'update_drawing',
+        payload: { id, x: newLeft, y: newTop, width: currentWidth, height: currentHeight, username }
+      }));
+    }
+  }, [positionTop, positionLeft, pageWidth, pageHeight, currentWidth, currentHeight, updateDrawingAttachment, ws, username]);
 
   useEffect(() => {
     window.addEventListener('keydown', handleKeyDown);
