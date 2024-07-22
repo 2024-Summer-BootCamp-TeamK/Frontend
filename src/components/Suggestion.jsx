@@ -4,6 +4,7 @@ import Orangebutton from "./Orangebutton";
 import Toggleswitch from "./Toggleswitch";
 import ModifiyviewSrc from "../images/Modifiyview.svg"; // 이미지 경로 확인
 import LabelImage from "../images/label.svg"; // label.svg 이미지 경로 추가
+import axios from "axios"; // Axios 추가
 
 const GlobalStyle = createGlobalStyle`
   *,
@@ -30,6 +31,7 @@ const GlobalStyle = createGlobalStyle`
 const Suggestion = ({ contractMain, contractToxin }) => {
   const [currentSection, setCurrentSection] = useState(0); // 현재 섹션 상태
   const [currentText, setCurrentText] = useState("main"); // 현재 텍스트 파일 상태
+  const [selectedArticleIds, setSelectedArticleIds] = useState([]); // 선택된 계약서 ID 배열 상태
 
   const mainSections = contractMain.articles.map(
     (article, index) => `주요조항 ${index + 1}`
@@ -57,6 +59,38 @@ const Suggestion = ({ contractMain, contractToxin }) => {
       setCurrentSection(0); // 텍스트 파일 변경 시 섹션을 첫 번째 섹션으로 이동
       return newText;
     });
+  };
+
+  const handleModifyClick = () => {
+    const currentArticle =
+      currentText === "main"
+        ? contractMain.articles[currentSection]
+        : contractToxin.articles[currentSection];
+
+    if (currentArticle && currentArticle.id) {
+      // 중복 체크: 이미 선택된 계약서 ID인지 확인
+      if (!selectedArticleIds.includes(currentArticle.id)) {
+        setSelectedArticleIds((prev) => [...prev, currentArticle.id]); // 계약서 ID 추가
+        console.log("선택된 계약서 ID:", currentArticle.id); // 추가된 ID 확인
+      } else {
+        console.warn("계약서 ID가 이미 선택되었습니다.", currentArticle.id);
+      }
+    } else {
+      console.warn("현재 계약서가 없습니다.");
+    }
+  };
+
+  const handleSubmit = async () => {
+    try {
+      console.log("전송할 계약서 ID 배열:", selectedArticleIds); // 전송할 ID 배열 확인
+      const response = await axios.post("/api/updateContracts", {
+        articleIds: selectedArticleIds.filter(id => id !== null), // null 값 필터링
+      });
+      console.log("서버 응답:", response.data);
+      setSelectedArticleIds([]); // 전송 후 배열 초기화
+    } catch (error) {
+      console.error("서버에 데이터 전송 중 오류 발생:", error);
+    }
   };
 
   useEffect(() => {
@@ -140,7 +174,7 @@ const Suggestion = ({ contractMain, contractToxin }) => {
                 )}
               </SectionText>
               {currentText === "toxin" && ( // 각 세션에 버튼 표시
-                <StyledOrangebutton>
+                <StyledOrangebutton onClick={handleModifyClick}>
                   추천안으로 수정하기
                 </StyledOrangebutton>
               )}
@@ -163,7 +197,7 @@ const Suggestion = ({ contractMain, contractToxin }) => {
           />
         ))}
       </ProgressContainer>
-      <StyledOrangebutton>
+      <StyledOrangebutton onClick={handleSubmit}>
         <img src={ModifiyviewSrc} alt="modifyview" />
         수정안 보기
       </StyledOrangebutton>
@@ -272,7 +306,6 @@ const SectionText = styled.div`
   line-height: 1.5em;
   height: 300px; /* 고정된 높이 설정 */
   overflow-y: auto; /* 내부 스크롤 활성화 */
-  
 `;
 
 const ProgressContainer = styled.div`
