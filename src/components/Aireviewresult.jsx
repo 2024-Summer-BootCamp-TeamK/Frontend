@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import aireviewedSrc from "../images/aireviewed.svg"; // aireviewed.svg 파일 경로
+import aireviewedSrc from "../images/aireviewed.svg";
 import Aireviewedimage from "./Aireviewedimage";
 
 const Aireviewresult = ({ contractData }) => {
@@ -13,34 +13,99 @@ const Aireviewresult = ({ contractData }) => {
     }
   }, [contractData]);
 
+  const highlightText = (doc, sentence) => {
+    const textNodes = [];
+    const walker = document.createTreeWalker(doc.body, NodeFilter.SHOW_TEXT, null, false);
+    let node;
+
+    while ((node = walker.nextNode())) {
+      if (node.nodeValue && node.nodeValue.trim().length > 0) {
+        textNodes.push(node);
+      }
+    }
+
+    let fullText = textNodes.map(node => node.nodeValue).join('');
+    const sanitizedFullText = fullText.replace(/\s+/g, '');
+    const sanitizedSentence = sentence.replace(/\s+/g, '');
+
+    let startIndex = sanitizedFullText.indexOf(sanitizedSentence);
+    if (startIndex !== -1) {
+      let endIndex = startIndex + sanitizedSentence.length;
+      let currentCharIndex = 0;
+      let highlightStarted = false;
+      let highlightEnded = false;
+      
+      for (let node of textNodes) {
+        if (!node.nodeValue) continue;
+        let nodeText = node.nodeValue.replace(/\s+/g, '');
+        let nodeEndIndex = currentCharIndex + nodeText.length;
+
+        if (!highlightStarted && currentCharIndex <= startIndex && nodeEndIndex > startIndex) {
+          let nodeStartIndex = startIndex - currentCharIndex;
+          let before = node.nodeValue.slice(0, nodeStartIndex);
+          let highlight = node.nodeValue.slice(nodeStartIndex);
+          
+          node.nodeValue = before;
+          
+          let span = document.createElement('span');
+          span.className = 'highlight';
+          span.innerHTML = highlight;
+          node.parentNode.insertBefore(span, node.nextSibling);
+          
+          highlightStarted = true;
+        } else if (highlightStarted && !highlightEnded) {
+          if (nodeEndIndex >= endIndex) {
+            let nodeHighlightEndIndex = endIndex - currentCharIndex;
+            let highlight = node.nodeValue.slice(0, nodeHighlightEndIndex);
+            let after = node.nodeValue.slice(nodeHighlightEndIndex);
+
+            node.nodeValue = after;
+            
+            let span = document.createElement('span');
+            span.className = 'highlight';
+            span.innerHTML = highlight;
+            node.parentNode.insertBefore(span, node);
+
+            highlightEnded = true;
+          } else {
+            let highlight = node.nodeValue;
+            node.nodeValue = '';
+
+            let span = document.createElement('span');
+            span.className = 'highlight';
+            span.innerHTML = highlight;
+            node.parentNode.insertBefore(span, node);
+          }
+        }
+
+        currentCharIndex = nodeEndIndex;
+        if (highlightEnded) break;
+      }
+    }
+  };
+
   const modifyHtml = (html) => {
     const parser = new DOMParser();
     const doc = parser.parseFromString(html, "text/html");
-    const elements = doc.querySelectorAll("*");
-    
-    elements.forEach((element) => {
-      element.style.setProperty("font-size", "2px", "important");
-      element.style.setProperty("line-height", "0.0", "important");
-      element.style.setProperty("letter-spacing", "-1px", "important");
-      element.style.setProperty("word-spacing", "1px", "important");
+
+    const articles = contractData.articles;
+
+    articles.forEach(article => {
+      highlightText(doc, article.sentence);
     });
 
-    // 강조할 내용에 대한 스타일 추가
     const highlightedElements = doc.querySelectorAll('.highlight');
-    highlightedElements.forEach((element) => {
-      element.style.setProperty("background-color", "#FFD700", "important"); // 강조 색상
-      element.style.setProperty("font-weight", "bold", "important"); // 강조된 글씨 굵게
+    highlightedElements.forEach(element => {
+      element.style.setProperty("background-color", "#FFD700", "important");
+      element.style.setProperty("font-weight", "bold", "important");
     });
 
-    // 강조된 부분 설명 추가
     const description = doc.createElement('div');
     description.innerHTML = "<strong>강조된 부분:</strong> 이 부분은 계약서의 중요 조항입니다.";
     description.style.marginTop = "10px";
-    description.style.color = "#E7470A"; // 강조 색상
+    description.style.color = "#E7470A";
     doc.body.appendChild(description);
 
-    // 부모 요소의 font-size를 14px로 설정
-    doc.body.style.setProperty("font-size", "3px", "important");
     return doc.body.innerHTML;
   };
 
@@ -71,13 +136,12 @@ const AireviewedIconWrapper = styled.div`
 const Container = styled.div`
   width: 45vw;
   height: 70vh;
-  overflow-y: scroll;
+  overflow-y: auto;
   padding: 0px;
   box-sizing: border-box;
   border-right: 1px solid #ccc;
   position: relative;
   background-color: #ffffff;
-  border-radius: 20px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   &:hover {
     box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
@@ -88,7 +152,6 @@ const Content = styled.div`
   background-color: #ffffff;
   padding: 0px;
   box-sizing: border-box;
-  margin-top: 0px;
   color: #000000;
   letter-spacing: -0.5px;
   font-size: 14px;
