@@ -39,7 +39,7 @@ const Aireviewresult = ({ contractId }) => {
         containerRef.current.innerHTML = ''; // Clear previous content
         for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
           const page = await pdf.getPage(pageNum);
-          const viewport = page.getViewport({ scale: 1.1 });
+          const viewport = page.getViewport({ scale: 1 });
 
           const canvas = document.createElement("canvas");
           const context = canvas.getContext("2d");
@@ -104,7 +104,7 @@ const AireviewedIcon = styled.object`
 
 const Container = styled.div`
   width: 45vw;
-  height: 75vh;
+  height: 60vh; /* 높이 값을 줄임 */
   overflow-y: auto; /* 스크롤 가능하게 설정 */
   padding: 20px;
   box-sizing: border-box;
