@@ -39,7 +39,7 @@ const Aireviewresult = ({ contractId }) => {
         containerRef.current.innerHTML = ''; // Clear previous content
         for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
           const page = await pdf.getPage(pageNum);
-          const viewport = page.getViewport({ scale: 1.3 });
+          const viewport = page.getViewport({ scale: 1.1 });
 
           const canvas = document.createElement("canvas");
           const context = canvas.getContext("2d");
@@ -118,6 +118,7 @@ const Container = styled.div`
     box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
   }
   font-size: 12px;
+  margin-top: 20px; /* 컨테이너 상단 여백 추가 */
 `;
 
 const Content = styled.div`
@@ -125,4 +126,6 @@ const Content = styled.div`
   padding: 20px;
   box-sizing: border-box;
   margin-top: 20px;
+  position: relative;
+  z-index: 1; /* Content가 canvas보다 위에 보이도록 설정 */
 `;
