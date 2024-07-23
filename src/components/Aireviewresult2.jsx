@@ -17,7 +17,7 @@ const Aireviewresult = ({contractId}) => {
       try {
         if (contractId) {
           const pdfUrl = await modifiedContract(contractId); // pdf 파일 경로
-          setContent(pdfUrl);
+          setContent(content);
         } else {
           console.error("contractId is not provided.");
         }
@@ -35,9 +35,9 @@ const Aireviewresult = ({contractId}) => {
           <AireviewedIcon data={suggestcontract} type="image/svg+xml" />
         </AireviewedIconWrapper>
         <Content>
-          {pdfUrl ? (
+          {content ? ( // content로 변경
             <Worker workerUrl="https://unpkg.com/pdfjs-dist/build/pdf.worker.min.js">
-              <Viewer fileUrl={pdfUrl} />
+              <Viewer fileUrl={content} /> {/* content로 변경 */}
             </Worker>
           ) : (
             <p>PDF를 불러오는 중입니다...</p>
