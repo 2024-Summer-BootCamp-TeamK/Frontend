@@ -9,7 +9,6 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.j
 const Aireviewresult = ({ contractId }) => {
   const [pdfUrl, setPdfUrl] = useState("");
   const [pdfDoc, setPdfDoc] = useState(null);
-  const [pages, setPages] = useState([]);
   const containerRef = useRef(null);
 
   useEffect(() => {
@@ -36,25 +35,26 @@ const Aireviewresult = ({ contractId }) => {
       const pdf = await loadingTask.promise;
       setPdfDoc(pdf);
 
-      const pagesArray = [];
-      for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
-        const page = await pdf.getPage(pageNum);
-        const viewport = page.getViewport({ scale: 1.1 });
+      if (containerRef.current) {
+        containerRef.current.innerHTML = ''; // Clear previous content
+        for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
+          const page = await pdf.getPage(pageNum);
+          const viewport = page.getViewport({ scale: 1.5 });
 
-        const canvas = document.createElement("canvas");
-        const context = canvas.getContext("2d");
-        canvas.height = viewport.height;
-        canvas.width = viewport.width;
+          const canvas = document.createElement("canvas");
+          const context = canvas.getContext("2d");
+          canvas.height = viewport.height;
+          canvas.width = viewport.width;
 
-        const renderContext = {
-          canvasContext: context,
-          viewport: viewport,
-        };
-        await page.render(renderContext).promise;
+          const renderContext = {
+            canvasContext: context,
+            viewport: viewport,
+          };
+          await page.render(renderContext).promise;
 
-        pagesArray.push(canvas);
+          containerRef.current.appendChild(canvas);
+        }
       }
-      setPages(pagesArray);
     };
 
     renderPDF();
@@ -67,14 +67,10 @@ const Aireviewresult = ({ contractId }) => {
           <AireviewedIcon data={suggestcontract} type="image/svg+xml" />
         </AireviewedIconWrapper>
         <Content>
-          {pages.length ? (
-            pages.map((canvas, index) => (
-              <div key={index} style={{ marginBottom: '20px' }}>
-                {canvas}
-              </div>
-            ))
-          ) : (
+          {!pdfDoc ? (
             <p>로딩 중...</p>
+          ) : (
+            <p>PDF가 로딩되었습니다.</p>
           )}
         </Content>
       </Container>
