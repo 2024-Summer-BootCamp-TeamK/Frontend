@@ -174,7 +174,7 @@ const PdfEditor = () => {
       x: 0,
       y: 0,
       scale: 1,
-      username: username, 
+      username: username,
     };
 
     // 서버로 드로잉 추가 이벤트 전송
@@ -212,7 +212,6 @@ const PdfEditor = () => {
                     <Page dimensions={dimensions} updateDimensions={setDimensions} page={currentPage} />
                     {dimensions && (
                       <Attachments
-                       
                         pdfName={name}
                         removeAttachment={remove}
                         updateAttachment={update}
@@ -220,6 +219,9 @@ const PdfEditor = () => {
                         attachments={pageAttachments}
                         ws={ws}
                         username={username}
+                        setPageIndex={setPageIndex}
+                        setMousePositions={setMousePositions}
+                        addAttachment={addAttachment}
                       />
                     )}
                     {Object.entries(mousePositions).map(([username, pos]) => (

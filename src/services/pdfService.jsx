@@ -5,7 +5,7 @@ import api from "./api";
 
 export const fetchPdfDocument = async (documentId, password) => {
   try {
-    const url = `/encryption/test/${documentId}`;
+    const url = `/documents/${documentId}`;
     const pdfjsLib = await getAsset('pdfjsLib');
 
     // Fetch the PDF file from the server

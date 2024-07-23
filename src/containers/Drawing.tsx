@@ -10,6 +10,9 @@ interface Props {
   updateDrawingAttachment: (drawingObject: Partial<DrawingAttachment>) => void;
   ws: WebSocket | null; // 웹소켓 객체를 props로 추가
   username: string | null; // 사용자 이름을 props로 추가
+  setPageIndex: (index: number) => void; // 페이지 인덱스 설정 함수 추가
+  setMousePositions: (positions: any) => void; // 마우스 위치 설정 함수 추가
+  addAttachment: (attachment: DrawingAttachment) => void; // addAttachment 함수 추가
 }
 
 export const Drawing = ({
@@ -27,6 +30,9 @@ export const Drawing = ({
   updateDrawingAttachment,
   ws,
   username,
+  setPageIndex,
+  setMousePositions,
+  addAttachment,
 }: DrawingAttachment & Props) => {
   const svgRef = createRef<SVGSVGElement>();
   const [mouseDown, setMouseDown] = useState(false);
@@ -47,7 +53,6 @@ export const Drawing = ({
     }
   }, [svgRef]);
 
-
   useEffect(() => {
     if (ws) {
       ws.onmessage = (event) => {
@@ -57,11 +62,17 @@ export const Drawing = ({
           setPositionLeft(message.payload.x);
           setCurrentWidth(message.payload.width);
           setCurrentHeight(message.payload.height);
+        } else if (message.type === 'mouse_move') {
+          setMousePositions(prev => ({ ...prev, [message.payload.username]: message.payload.position }));
+        } else if (message.type === 'page_change') {
+          setPageIndex(message.payload.pageIndex);
+        } else if (message.type === 'add_drawing') {
+          addAttachment(message.payload);
         }
         console.log(message);
       };
     }
-  }, [ws, id]);
+  }, [ws, id, setPageIndex, setMousePositions, addAttachment]);
 
   const handleMousedown = (event: React.MouseEvent<HTMLDivElement>) => {
     event.preventDefault();
@@ -97,7 +108,7 @@ export const Drawing = ({
         if (ws && username) {
           ws.send(JSON.stringify({
             type: 'update_drawing',
-            payload: {id, x: left, y: top, width: currentWidth, height: currentHeight, username }
+            payload: { id, x: left, y: top, width: currentWidth, height: currentHeight, username }
           }));
         }
       });
@@ -129,7 +140,7 @@ export const Drawing = ({
       if (ws && username) {
         ws.send(JSON.stringify({
           type: 'update_drawing',
-          payload: {id, x: positionLeft, y: positionTop, width: currentWidth, height: currentHeight,  username }
+          payload: { id, x: positionLeft, y: positionTop, width: currentWidth, height: currentHeight, username }
         }));
       }
     }

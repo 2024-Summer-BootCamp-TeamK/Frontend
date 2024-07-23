@@ -8,8 +8,11 @@ interface Props {
   pageDimensions: Dimensions;
   removeAttachment: (index: number) => void;
   updateAttachment: (index: number, attachment: Partial<Attachment>) => void;
-  ws: WebSocket | null; // À¥¼ÒÄÏ °´Ã¼¸¦ props·Î Ãß°¡
-  username: string | null; // »ç¿ëÀÚ ÀÌ¸§À» props·Î Ãß°¡
+  ws: WebSocket | null; // ì›¹ì†Œì¼“ ê°ì²´ë¥¼ propsë¡œ ì¶”ê°€
+  username: string | null; // ì‚¬ìš©ìž ì´ë¦„ì„ propsë¡œ ì¶”ê°€
+  setPageIndex: (index: number) => void; // íŽ˜ì´ì§€ ì¸ë±ìŠ¤ ì„¤ì • í•¨ìˆ˜ ì¶”ê°€
+  setMousePositions: (positions: any) => void; // ë§ˆìš°ìŠ¤ ìœ„ì¹˜ ì„¤ì • í•¨ìˆ˜ ì¶”ê°€
+  addAttachment: (attachment: Attachment) => void; // addAttachment í•¨ìˆ˜ ì¶”ê°€
 }
 
 export const Attachments: React.FC<Props> = ({
@@ -20,6 +23,9 @@ export const Attachments: React.FC<Props> = ({
   updateAttachment,
   ws,
   username,
+  setPageIndex,
+  setMousePositions,
+  addAttachment,
 }) => {
   const handleAttachmentUpdate = (index: number) => (
     attachment: Partial<Attachment>
@@ -34,14 +40,17 @@ export const Attachments: React.FC<Props> = ({
             if (attachment.type === AttachmentTypes.DRAWING) {
               return (
                 <Drawing
-                  key={key} 
+                  key={key}
                   pageWidth={pageDimensions.width}
                   pageHeight={pageDimensions.height}
                   removeDrawing={() => removeAttachment(index)}
                   updateDrawingAttachment={handleAttachmentUpdate(index)}
                   {...(attachment as DrawingAttachment)}
-                  ws={ws} // À¥¼ÒÄÏ Àü´Þ
-                  username={username} // »ç¿ëÀÚ ÀÌ¸§ Àü´Þ
+                  ws={ws}
+                  username={username}
+                  setPageIndex={setPageIndex}
+                  setMousePositions={setMousePositions}
+                  addAttachment={addAttachment}
                 />
               );
             }
