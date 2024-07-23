@@ -32,7 +32,11 @@ const Aireviewresult = ({contractId}) => {
           <AireviewedIcon data={suggestcontract} type="image/svg+xml" />
         </AireviewedIconWrapper>
         <Content>
-          <p>{content}</p>
+          {content ? (
+            <iframe src={content} width="100%" height="600px" title="PDF Preview" />
+          ) : (
+            <p>PDF를 불러오는 중입니다...</p>
+          )}
         </Content>
       </Container>
     </Wrapper>
