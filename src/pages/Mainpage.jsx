@@ -1,6 +1,7 @@
-// Mainpage.jsx
+// Mainpage 컴포넌트
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
+// import Mainanimation from "../components/Mainanimation"; // Mainanimation 컴포넌트 경로 확인
 import Button from "../components/Button";
 import Orangebutton from "../components/Orangebutton";
 import logoSrc from "../images/logo.svg"; // 로고 이미지 파일 경로
@@ -30,6 +31,7 @@ const MainContainer = styled.div`
 
 // 이미지 컨테이너 스타일 정의
 const ImageContainer = styled.div`
+  position: relative;
   text-align: center;
   overflow: hidden;
   height: 100%;
@@ -45,6 +47,20 @@ const ImageContainer = styled.div`
     border: none;
   }
 `;
+
+// Mainanimation을 위한 스타일 정의
+// const AnimationContainer = styled.div`
+//   position: absolute;
+//   display: flex;
+//   justify-content: center;
+//   align-items: center;
+//   width: auto; /* 크기를 자동으로 조정 */
+//   height: auto;
+//   top: 50%;
+//   left: 50%;
+//   transform: translate(-50%, -50%);
+//   z-index: 1; /* Add this line to ensure Mainanimation is on top */
+// `;
 
 // SVG 행 스타일 정의
 const SvgRow = styled.div`
@@ -111,7 +127,11 @@ const Mainpage = () => {
 
       <ImageContainer>
         <img src={main1Src} alt="main1" />
+        {/* <AnimationContainer>
+          <Mainanimation />
+        </AnimationContainer> */}
       </ImageContainer>
+
       <ImageContainer>
         <img src={main2Src} alt="main2" />
       </ImageContainer>

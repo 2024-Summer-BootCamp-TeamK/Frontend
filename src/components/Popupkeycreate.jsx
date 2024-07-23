@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import styled, { keyframes } from 'styled-components';
-import axios from 'axios';
 import contractShare from '../services/share_API';
 
 const PopupWrapper = styled.div`
@@ -20,7 +19,7 @@ const PopupWrapper = styled.div`
   min-width: 300px; /* 최소 너비 */
   min-height: 200px; /* 최소 높이 */
   position: fixed; /* 고정 위치 설정 */
-  top: calc(100% - 320px); 
+  top: calc(100% - 350px); 
   left: 50%;
   transform: translate(-50%, -50%);
   z-index: 1; /* 기본 z-index 설정 */
@@ -211,12 +210,12 @@ const Popupkeycreate = ({ closePopup, pdfFile }) => {
     formData.append('pdfFile', pdfFile);
     try {
       const data = await contractShare(formData);
-      console.log('공유계약서 업로드 성공:', data);
+      console.log('이메일 전송 성공:', data);
       setShowAlert(true); // Show the custom alert
       // 성공 시 추가 작업
     } catch (error) {
-      console.error('공유계약서 업로드 에러:', error.data?.data || error.message);
-      alert('계약서 공유에 실패했습니다.');
+      console.error('이메일 전송 에러:', error.data?.data || error.message);
+      alert('이메일 전송에 실패했습니다.');
       // 에러 처리 추가
     } finally {
       setLoading(false); // Hide the loading spinner

@@ -22,7 +22,7 @@ function App() {
       <Router>
         <Routes>
           <Route path="/category" element={<Category />} />
-          <Route path="/loading" element={<Loading/>} />
+          <Route path="/loading" element={<Loading />} />
           <Route path="/" element={<Mainpage />} />
           <Route path="/fileupload" element={<Fileupload />} />
           <Route path="/fileuploadshare" element={<Fileuploadshare />} />
