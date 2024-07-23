@@ -29,7 +29,7 @@ const Aireviewresult = ({contractId}) => {
       const loadingTask = pdfjsLib.getDocument(url);
       const pdf = await loadingTask.promise;
       const page = await pdf.getPage(1);
-      const viewport = page.getViewport({ scale: 1 });
+      const viewport = page.getViewport({ scale: 1.2 });
       const canvas = canvasRef.current;
       const context = canvas.getContext("2d");
       canvas.height = viewport.height;
