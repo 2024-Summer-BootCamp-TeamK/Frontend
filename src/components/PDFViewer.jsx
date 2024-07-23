@@ -3,7 +3,7 @@ import * as pdfjsLib from 'pdfjs-dist';
 import 'pdfjs-dist/web/pdf_viewer.css';
 
 // PDF.js 워커 파일 로드
-pdfjsLib.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@${pdfjsLib.version}/build/pdf.worker.min.js`;
+pdfjsLib.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@2.11.338/build/pdf.worker.min.js`;
 
 const PDFViewer = ({ pdfUrl }) => {
   const canvasRef = useRef(null);
