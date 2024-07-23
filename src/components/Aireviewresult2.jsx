@@ -83,10 +83,12 @@ const Container = styled.div`
   }
   font-size: 12px;
 `;
-
 const Content = styled.div`
   background-color: #ffffff;
   padding: 20px;
   box-sizing: border-box;
   margin-top: 20px;
+  width: 80%; /* 부모 요소의 80% 너비를 설정합니다 */
+  max-width: 1200px; /* 최대 너비를 설정하여 너무 넓어지는 것을 방지합니다 */
 `;
+
