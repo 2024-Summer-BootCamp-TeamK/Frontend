@@ -36,6 +36,7 @@ export const Drawing = ({
 }: DrawingAttachment & Props) => {
   const svgRef = createRef<SVGSVGElement>();
   const [mouseDown, setMouseDown] = useState(false);
+  const [isDragging, setIsDragging] = useState(false); // 드래그 상태를 추적하는 상태 추가
   const [positionTop, setPositionTop] = useState(y);
   const [positionLeft, setPositionLeft] = useState(x);
   const [dimmerActive, setDimmerActive] = useState(false);
@@ -45,6 +46,8 @@ export const Drawing = ({
   const [operation, setOperation] = useState<DragActions>(
     DragActions.NO_MOVEMENT
   );
+
+  const [isClicking, setIsClicking] = useState(false); // 클릭 상태 추가
 
   useEffect(() => {
     const svg = svgRef.current;
@@ -63,7 +66,9 @@ export const Drawing = ({
           setCurrentWidth(message.payload.width);
           setCurrentHeight(message.payload.height);
         } else if (message.type === 'mouse_move') {
-          setMousePositions(prev => ({ ...prev, [message.payload.username]: message.payload.position }));
+          if (!isClicking) { // 클릭 중일 때는 무시
+            setMousePositions(prev => ({ ...prev, [message.payload.username]: message.payload.position }));
+          }
         } else if (message.type === 'page_change') {
           setPageIndex(message.payload.pageIndex);
         } else if (message.type === 'add_drawing') {
@@ -72,11 +77,13 @@ export const Drawing = ({
         console.log(message);
       };
     }
-  }, [ws, id, setPageIndex, setMousePositions, addAttachment]);
+  }, [ws, id, setPageIndex, setMousePositions, addAttachment, isClicking]); // isClicking 추가
 
   const handleMousedown = (event: React.MouseEvent<HTMLDivElement>) => {
     event.preventDefault();
     setMouseDown(true);
+    setIsDragging(true); // 드래그 시작
+    setIsClicking(true); // 클릭 시작
     setOperation(DragActions.MOVE);
     const directions = event.currentTarget.dataset.direction;
     if (directions) {
@@ -104,8 +111,8 @@ export const Drawing = ({
         setPositionTop(top);
         setPositionLeft(left);
 
-        // 웹소켓을 통해 위치 정보 전송
-        if (ws && username) {
+        // 클릭 중이 아닐 때만 웹소켓을 통해 위치 정보 전송
+        if (ws && username && !isClicking) {
           ws.send(JSON.stringify({
             type: 'update_drawing',
             payload: { id, x: left, y: top, width: currentWidth, height: currentHeight, username }
@@ -118,6 +125,8 @@ export const Drawing = ({
   const handleMouseUp = (event: React.MouseEvent<HTMLDivElement>) => {
     event.preventDefault();
     setMouseDown(false);
+    setIsDragging(false); // 드래그 종료
+    setIsClicking(false); // 클릭 종료
 
     if (operation === DragActions.MOVE) {
       const { top, left } = getMovePosition(
@@ -136,7 +145,7 @@ export const Drawing = ({
         y: positionTop
       });
 
-      // 웹소켓을 통해 위치 정보 전송
+      // 클릭 종료 후 웹소켓을 통해 위치 정보 전송
       if (ws && username) {
         ws.send(JSON.stringify({
           type: 'update_drawing',
@@ -152,9 +161,8 @@ export const Drawing = ({
         width: currentWidth,
         height: currentHeight,
       });
-      console.log(`handleMouseUp SCALE w ${width} cw: ${currentWidth} h: ${height} ch: ${currentHeight}`);
 
-      // 웹소켓을 통해 크기 정보 전송
+      // 클릭 종료 후 웹소켓을 통해 크기 정보 전송
       if (ws && username) {
         ws.send(JSON.stringify({
           type: 'update_drawing',
@@ -194,8 +202,8 @@ export const Drawing = ({
           setCurrentHeight(currentHeight + event.movementY);
         }
 
-        // 웹소켓을 통해 크기 정보 전송
-        if (ws && username) {
+        // 클릭 중이 아닐 때만 웹소켓을 통해 크기 정보 전송
+        if (ws && username && !isClicking) {
           ws.send(JSON.stringify({
             type: 'update_drawing',
             payload: { id, x: positionLeft, y: positionTop, width: currentWidth, height: currentHeight, username }
@@ -264,14 +272,14 @@ export const Drawing = ({
       y: newTop,
     });
 
-    // 웹소켓을 통해 위치 정보 전송
-    if (ws && username) {
+    // 클릭 중이 아닐 때만 웹소켓을 통해 위치 정보 전송
+    if (ws && username && !isClicking) {
       ws.send(JSON.stringify({
         type: 'update_drawing',
         payload: { id, x: newLeft, y: newTop, width: currentWidth, height: currentHeight, username }
       }));
     }
-  }, [positionTop, positionLeft, pageWidth, pageHeight, currentWidth, currentHeight, updateDrawingAttachment, ws, username]);
+  }, [positionTop, positionLeft, pageWidth, pageHeight, currentWidth, currentHeight, updateDrawingAttachment, ws, username, isClicking]); // isClicking 추가
 
   useEffect(() => {
     window.addEventListener('keydown', handleKeyDown);
