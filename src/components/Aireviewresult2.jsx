@@ -3,9 +3,6 @@ import styled from "styled-components";
 import suggestcontract from "../images/suggestcontract.svg";
 import { modifiedContract } from "../services/getModifiedContract";
 import { useNavigate } from "react-router-dom"; // useNavigate 훅 import 추가
-import { Worker, Viewer } from '@react-pdf-viewer/core';
-import '@react-pdf-viewer/core/lib/styles/index.css';
-
 
 const Aireviewresult = ({contractId}) => {
   const [content, setContent] = useState("");
@@ -17,9 +14,8 @@ const Aireviewresult = ({contractId}) => {
       try {
         if (contractId) {
           const pdfUrl = await modifiedContract(contractId); // pdf 파일 경로
-          console.log("Fetched PDF URL:", pdfUrl); // pdfUrl 확인
-
-          setContent(pdfUrl);
+          const googleDocsViewerUrl = `https://docs.google.com/viewer?url=${encodeURIComponent(pdfUrl)}&embedded=true`;
+          setContent(googleDocsViewerUrl);
         } else {
           console.error("contractId is not provided.");
         }
@@ -37,10 +33,8 @@ const Aireviewresult = ({contractId}) => {
           <AireviewedIcon data={suggestcontract} type="image/svg+xml" />
         </AireviewedIconWrapper>
         <Content>
-          {content ? ( // content로 변경
-            <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.worker.min.js">
-              <Viewer fileUrl={content} /> {/* content로 변경 */}
-            </Worker>
+        {content ? (
+            <iframe src={content} width="100%" height="600px" title="PDF Preview" style={{border: 'none'}} />
           ) : (
             <p>PDF를 불러오는 중입니다...</p>
           )}
