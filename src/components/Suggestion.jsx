@@ -34,6 +34,8 @@ const Suggestion = ({ contractId, contractMain, contractToxin }) => {
   const [currentSection, setCurrentSection] = useState(0); // 현재 섹션 상태
   const [currentText, setCurrentText] = useState("main"); // 현재 텍스트 파일 상태
   const [selectedArticleIds, setSelectedArticleIds] = useState([]); // 선택된 계약서 ID 배열 상태
+  
+  const navigate = useNavigate(); // useNavigate 훅 선언
 
   const mainSections = contractMain.articles.map(
     (article, index) => `주요조항 ${index + 1}`
