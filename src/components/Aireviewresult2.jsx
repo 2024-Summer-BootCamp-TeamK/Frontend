@@ -1,47 +1,52 @@
-import React, { useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
 import suggestcontract from "../images/suggestcontract.svg";
 import { modifiedContract } from "../services/getModifiedContract";
 import * as pdfjsLib from "pdfjs-dist/build/pdf";
-import pdfjsWorker from "pdfjs-dist/build/pdf.worker.entry";
+import "pdfjs-dist/build/pdf.worker.entry";
 
-pdfjsLib.GlobalWorkerOptions.workerSrc = pdfjsWorker;
+const Aireviewresult = ({contractId}) => {
+  const [content, setContent] = useState("");
+  const pdfCanvasRef = useRef(null);
 
-const Aireviewresult = ({ contractId }) => {
-  const canvasRef = useRef(null);
+  console.log(contractId)
 
   useEffect(() => {
-    const fetchAndRenderPdf = async () => {
+    const fetchContent = async () => {
       try {
         if (contractId) {
-          const blobUrl = await modifiedContract(contractId);
-          const pdf = await pdfjsLib.getDocument(blobUrl).promise;
-
-          const page = await pdf.getPage(1); // 첫 페이지 가져오기
-          const viewport = page.getViewport({ scale: 1.5 });
-
-          const canvas = canvasRef.current;
-          const context = canvas.getContext("2d");
-
-          canvas.height = viewport.height;
-          canvas.width = viewport.width;
-
-          const renderContext = {
-            canvasContext: context,
-            viewport: viewport,
-          };
-
-          page.render(renderContext);
+          const pdfUrl = await modifiedContract(contractId); // pdf 파일 경로
+          setContent(pdfUrl);
+          renderPDF(pdfUrl);
         } else {
           console.error("contractId is not provided.");
         }
       } catch (error) {
-        alert("Error displaying PDF file");
+        alert('Error displaying PDF file');
       }
     };
 
-    fetchAndRenderPdf();
-  }, [contractId]);
+    fetchContent();
+  }, [contractId]); // contractId 의존성 추가
+
+
+  const renderPDF = async (url) => {
+    const loadingTask = pdfjsLib.getDocument(url);
+    const pdf = await loadingTask.promise;
+    const page = await pdf.getPage(1);
+    const scale = 1.5;
+    const viewport = page.getViewport({ scale });
+    const canvas = pdfCanvasRef.current;
+    const context = canvas.getContext("2d");
+    canvas.height = viewport.height;
+    canvas.width = viewport.width;
+
+    const renderContext = {
+      canvasContext: context,
+      viewport: viewport,
+    };
+    page.render(renderContext);
+  };
 
   return (
     <Wrapper>
@@ -50,7 +55,11 @@ const Aireviewresult = ({ contractId }) => {
           <AireviewedIcon data={suggestcontract} type="image/svg+xml" />
         </AireviewedIconWrapper>
         <Content>
-          <canvas ref={canvasRef}></canvas>
+          {pdfUrl ? (
+            <canvas ref={pdfCanvasRef}></canvas>
+          ) : (
+            <p>PDF를 불러오는 중입니다...</p>
+          )}
         </Content>
       </Container>
     </Wrapper>
