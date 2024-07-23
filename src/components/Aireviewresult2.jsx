@@ -3,15 +3,21 @@ import styled from "styled-components";
 import suggestcontract from "../images/suggestcontract.svg";
 import { modifiedContract } from "../services/getModifiedContract";
 import { useNavigate } from "react-router-dom"; // useNavigate 훅 import 추가
+import PDFViewer from './PDFViewer'; // PDFViewer 컴포넌트 임포트
+
+
+
+
 const Aireviewresult = ({contractId}) => {
-  const [content, setContent] = useState("");
+  const [pdfUrl, setPdfUrl] = useState('');
   console.log(contractId)
+
   useEffect(() => {
     const fetchContent = async () => {
       try {
         if (contractId) {
-          const pdfUrl = await modifiedContract(contractId); // pdf 파일 경로
-          setContent(pdfUrl);
+          const url = await modifiedContract(contractId); // pdf 파일 경로
+          setPdfUrl(url);
         } else {
           console.error("contractId is not provided.");
         }
@@ -28,11 +34,11 @@ const Aireviewresult = ({contractId}) => {
           <AireviewedIcon data={suggestcontract} type="image/svg+xml" />
         </AireviewedIconWrapper>
         <Content>
-          {content ? (
-              <iframe src={content} width="100%" height="600px" title="PDF Preview" />
-            ) : (
-              <p>PDF를 불러오는 중입니다...</p>
-            )}
+          {pdfUrl ? (
+            <PDFViewer pdfUrl={pdfUrl} />
+          ) : (
+            <p>PDF를 불러오는 중입니다...</p>
+          )}
         </Content>
       </Container>
     </Wrapper>
