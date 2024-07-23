@@ -91,8 +91,7 @@ const Wrapper = styled.div`
 const AireviewedIconWrapper = styled.div`
   display: flex;
   justify-content: center;
-  margin-top: -20px; /* 아이콘과 컨테이너 사이의 간격 조정 */
-  margin-bottom: -40px;
+  margin-bottom: 10px; /* 아이콘과 컨테이너 사이의 간격 조정 */
 `;
 
 const AireviewedIcon = styled.object`
@@ -116,6 +115,7 @@ const Container = styled.div`
   display: flex;
   flex-direction: column; /* 페이지를 세로 방향으로 정렬 */
   align-items: center; /* 페이지가 중앙 정렬되도록 설정 */
+  gap: 10px; /* 아이콘과 콘텐츠 사이의 간격 설정 */
 
   &:hover {
     box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
@@ -127,5 +127,6 @@ const Content = styled.div`
   background-color: #ffffff;
   padding: 20px;
   box-sizing: border-box;
-  margin-top: 20px; /* 아이콘과 내용 사이에 여백 추가 */
+  width: 100%;
+  /* 콘텐츠가 아이콘과 겹치지 않도록 하기 위한 마진 추가 */
 `;
