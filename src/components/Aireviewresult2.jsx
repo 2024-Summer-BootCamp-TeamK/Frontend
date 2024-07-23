@@ -104,7 +104,7 @@ const AireviewedIcon = styled.object`
 
 const Container = styled.div`
   width: 45vw;
-  height: 60vh; /* 높이 값을 줄임 */
+  height: 75vh;
   overflow-y: auto; /* 스크롤 가능하게 설정 */
   padding: 20px;
   box-sizing: border-box;
