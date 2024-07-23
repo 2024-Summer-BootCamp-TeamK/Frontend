@@ -54,6 +54,18 @@ const createPartsArray = (text) => {
   return parts;
 }
 
+const matchRatios = (sentence, combinedText ) => {
+  const parts = createPartsArray(sentence);
+  let matchCount = 0;
+  parts.forEach(part => {
+    if (combinedText.match(part)){
+      matchCount++;
+    }
+  })
+
+  const matchRatio = matchCount / parts.length;
+  return matchRatio;
+}
 const highlightPlainText = (text, articles) => {
   // 각 p 태그로 나눈 후 개별적으로 처리
   const paragraphs = text.split('</p>').map(paragraph => paragraph + '</p>');
@@ -64,8 +76,7 @@ const highlightPlainText = (text, articles) => {
     if(index < array.length - 1 ){
       console.log(`인덱스 : ${index}`);
       console.log("❌날것 innerText : ", paragraph);
-      const nextValue =  array[index + 1].replace(/<\/?p>/g, ''); 
-     
+    
       let innerText = paragraph.replace(/<\/?p>/g, ''); // p 태그 제거
       if (innerText.includes('<span class="highlight">')) {
         innerText = innerText.replace(/<span class="highlight">|<\/span>/g, '');
@@ -74,8 +85,6 @@ const highlightPlainText = (text, articles) => {
       let shouldHighlight = false;
       let combinedText="";
       let innerTextOnly = false;
-
-      console.log(`병합 전 combinedText: ${combinedText} innerText : ${innerText}`);
       
       // 이전, 현재, 다음 <p> 태그의 텍스트를 결합하여 비교
       combinedText += innerText;
@@ -106,87 +115,81 @@ const highlightPlainText = (text, articles) => {
         //  count++;
           console.log("found matches 후 count: ", count);
         }else {
-          const partialMatchThreshold = 0.88; // 80% 이상 매칭되면 매칭된 것으로 간주
-          const parts = createPartsArray(sentence);
-          let matchCount = 0;
-          console.log(parts);
-          parts.forEach(part => {
-            if(sanitizedCombinedText.match(part)){
-              matchCount++;
-            }
-          })
-       
-          const matchRatio = matchCount / parts.length;
+          const partialMatchThreshold = 0.5; // 80% 이상 매칭되면 매칭된 것으로 간주
+          const matchRatio = matchRatios(sentence, sanitizedCombinedText);
           console.log(`매칭된 비율: ${matchRatio}`);
           if( matchRatio >= partialMatchThreshold){
             shouldHighlight = true; 
           }
         }
-        
-        //count=1에서-> next 태그가 매치가 되면 true
-        const nextText = nextValue.replace(/\s+/g, '');
-        const textMatches =nextText.match(regex); // 다음게 매치가 됨 
-        console.log(`다음거 문장 >> ${nextText}`);
+
+        // 이번 문장 정확도 up!!
+        const inner = innerText.replace(/\s+/g, '');
+        const textMatches = inner.match(regex); 
+    
         if (textMatches){
-          console.log(`다음 innerText만 통과함>>>> ${array[index+1]}`);
+          console.log(`이번 innerText만 통과함>>>> ${array[index+1]}`);
           innerTextOnly = true;
         } else {
-          const partialMatchThreshold = 0.95; 
-          const parts = createPartsArray(sentence);
-          let matchCount = 0;
-          console.log(parts);
-          parts.forEach(part => {
-            if(sanitizedCombinedText.match(part)){
-              matchCount++;
-            }
-          })
-       
-          const matchRatio = matchCount / parts.length;
-          console.log(`매칭된 비율: ${matchRatio}`);
+          const partialMatchThreshold = 0.6; 
+          const matchRatio = matchRatios(sentence, inner);
+          console.log(`정확도] 이번 문장 매칭비율: ${matchRatio}`);
           if( matchRatio >= partialMatchThreshold){
             innerTextOnly = true;
           }
         }
       });
 
+      // combined 정확도( 조금 낮게)
       if (shouldHighlight ) {
         count++;
         console.log(`innerText: ${innerText}`);
         console.log("현재 매치된 횟수 : ",count);
-      //  console.log(`Matched innerText: ${innerText}`);
-      if (count === 1) {
-        // 다음거 매치 false
-        if (!innerTextOnly) {  // count= 1 이나, 현재 문장은 매치 x 
-          console.log(`카운트 : ${count}, array: ${array[index + 1]}`);
-          let nextText = array[index + 1].replace(/<\/?p>/g, '').replace(/<span class="highlight">|<\/span>/g, '');
-          array[index + 1] = `<p><span class="highlight">${nextText}</span></p>`;
-          console.log(`array[index+1]: ${array[index+1]}`);
-          paragraph = `<p><span class="highlight">${innerText}</span></p>`;
+
+        if (count === 1){
+          // 정확도 false
+          if(!innerTextOnly){
+            paragraph = `<p>${innerText}</p>`;
+          }
+
+          // 현재 문장의 정확도 (조금 높게))
+          else {
+            paragraph = `<p><span class="highlight">${innerText}</span></p>`;
+          }
           count = 0;
-        // 다음거 매치 true
-        }else {
-          let nextText = array[index + 1].replace(/<\/?p>/g, '').replace(/<span class="highlight">|<\/span>/g, '');
-          array[index + 1] = `<p><span class="highlight">${nextText}</span></p>`;
-          console.log(`array[index+1]: ${array[index+1]}`);
         }
-      } else if (count === 2) {
-        console.log(`카운트 ${count}: inner 바껴야함.`);
-        if (index > 0) {
-          let prevText = array[index - 1].replace(/<\/?p>/g, '').replace(/<span class="highlight">|<\/span>/g, '');
-          array[index - 1] = `<p>${prevText}</p>`;
-        }
-        console.log(`array[index-1]: ${array[index-1]}`);
-        innerText = `<span class="highlight">${innerText}</span>`;
-        count = 0;
-        console.log(`innerText: ${innerText}, count: ${count}`);
       }
-      else if (count >= 3){
-        count = 0;
-      }
+      //  console.log(`Matched innerText: ${innerText}`);
+      // if (count === 1) {
+      //   // 다음거 매치 false
+      //   if (!innerTextOnly) {  // count= 1 이나, 현재 문장은 매치 x 
+      //     console.log(`카운트 : ${count}, array: ${array[index + 1]}`);
+      //     let nextText = array[index + 1].replace(/<\/?p>/g, '').replace(/<span class="highlight">|<\/span>/g, '');
+      //     array[index + 1] = `<p><span class="highlight">${nextText}</span></p>`;
+      //     console.log(`array[index+1]: ${array[index+1]}`);
+      //     paragraph = `<p><span class="highlight">${innerText}</span></p>`;
+      //     count = 0;
+      //   // 다음거 매치 true
+      //   }else {
+      //     let nextText = array[index + 1].replace(/<\/?p>/g, '').replace(/<span class="highlight">|<\/span>/g, '');
+      //     array[index + 1] = `<p><span class="highlight">${nextText}</span></p>`;
+      //     console.log(`array[index+1]: ${array[index+1]}`);
+      //   }
+      // } else if (count === 2) {
+      //   console.log(`카운트 ${count}: inner 바껴야함.`);
+      //   if (index > 0) {
+      //     let prevText = array[index - 1].replace(/<\/?p>/g, '').replace(/<span class="highlight">|<\/span>/g, '');
+      //     array[index - 1] = `<p>${prevText}</p>`;
+      //   }
+      //   console.log(`array[index-1]: ${array[index-1]}`);
+      //   innerText = `<span class="highlight">${innerText}</span>`;
+      //   count = 0;
+      //   console.log(`innerText: ${innerText}, count: ${count}`);
+      // }
+      // else if (count >= 3){
+      //   count = 0;
+      // }
 
-    }
-
-  
     }
   return `${paragraph}`;
   });
@@ -248,7 +251,7 @@ const TextContainer = styled.div`
   padding: 10px;
   box-sizing: border-box;
   color: #000000;
-  font-size: 14px;
+  font-size: 12px;
   margin-top: 10px;
   border: 1px solid #ddd;
   white-space: pre-wrap;
