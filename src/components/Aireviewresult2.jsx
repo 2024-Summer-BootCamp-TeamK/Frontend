@@ -7,7 +7,8 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.j
 
 const Aireviewresult = ({contractId}) => {
   const [pdfUrl, setPdfUrl] = useState("");
-  const canvasRef = useRef(null);
+  const [pdfDoc, setPdfDoc] = useState(null);
+  const [pageNum, setPageNum] = useState(1);  const canvasRef = useRef(null);
   console.log(contractId)
   useEffect(() => {
     const fetchContent = async () => {
@@ -24,26 +25,44 @@ const Aireviewresult = ({contractId}) => {
     };
     fetchContent();
   }, [contractId]); // contractId 의존성 추가
+
   useEffect(() => {
-    const renderPDF = async (url) => {
-      const loadingTask = pdfjsLib.getDocument(url);
+    const renderPDF = async () => {
+      if (!pdfUrl) return;
+
+      const loadingTask = pdfjsLib.getDocument(pdfUrl);
       const pdf = await loadingTask.promise;
-      const page = await pdf.getPage(1);
+      setPdfDoc(pdf);
+
+      const page = await pdf.getPage(pageNum);
       const viewport = page.getViewport({ scale: 1.1 });
       const canvas = canvasRef.current;
       const context = canvas.getContext("2d");
       canvas.height = viewport.height;
       canvas.width = viewport.width;
+
       const renderContext = {
         canvasContext: context,
         viewport: viewport,
       };
-      page.render(renderContext);
+      await page.render(renderContext).promise;
     };
-    if (pdfUrl) {
-      renderPDF(pdfUrl);
+
+    renderPDF();
+  }, [pdfUrl, pageNum]);
+
+  const handlePrevPage = () => {
+    if (pageNum > 1) {
+      setPageNum(pageNum - 1);
     }
-  }, [pdfUrl]);
+  };
+
+  const handleNextPage = () => {
+    if (pdfDoc && pageNum < pdfDoc.numPages) {
+      setPageNum(pageNum + 1);
+    }
+  };
+
   return (
     <Wrapper>
       <Container>
@@ -51,11 +70,16 @@ const Aireviewresult = ({contractId}) => {
           <AireviewedIcon data={suggestcontract} type="image/svg+xml" />
         </AireviewedIconWrapper>
         <Content>
-          {pdfUrl ? (
-            <canvas ref={canvasRef}></canvas>
-          ) : (
-            <p>로딩 중...</p>
-          )}
+          <canvas ref={canvasRef}></canvas>
+          <PageControls>
+            <button onClick={handlePrevPage} disabled={pageNum <= 1}>
+              Previous
+            </button>
+            <span>Page {pageNum}</span>
+            <button onClick={handleNextPage} disabled={!pdfDoc || pageNum >= pdfDoc.numPages}>
+              Next
+            </button>
+          </PageControls>
         </Content>
       </Container>
     </Wrapper>
