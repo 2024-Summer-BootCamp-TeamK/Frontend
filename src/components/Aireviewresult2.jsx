@@ -4,6 +4,12 @@ import suggestcontract from "../images/suggestcontract.svg";
 import { modifiedContract } from "../services/getModifiedContract";
 import * as pdfjsLib from "pdfjs-dist/webpack";
 
+// Vite가 처리하는 워커 파일 경로 설정
+pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
+  "pdfjs-dist/build/pdf.worker.js",
+  import.meta.url
+).toString();
+
 const Aireviewresult = ({contractId}) => {
   const [pdfUrl, setPdfUrl] = useState("");
   const canvasRef = useRef(null);
