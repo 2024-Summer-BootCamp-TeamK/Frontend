@@ -39,7 +39,7 @@ const Aireviewresult = ({ contractId }) => {
         containerRef.current.innerHTML = ''; // Clear previous content
         for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
           const page = await pdf.getPage(pageNum);
-          const viewport = page.getViewport({ scale: 1.1 });
+          const viewport = page.getViewport({ scale: 1.3 });
 
           const canvas = document.createElement("canvas");
           const context = canvas.getContext("2d");
@@ -52,6 +52,7 @@ const Aireviewresult = ({ contractId }) => {
           };
           await page.render(renderContext).promise;
 
+          canvas.style.marginTop = "10px"; // 상단 여백 조정 (예: 10px)
           containerRef.current.appendChild(canvas);
         }
       }
