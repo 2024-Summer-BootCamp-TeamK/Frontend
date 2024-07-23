@@ -6,6 +6,7 @@ import ModifiyviewSrc from "../images/Modifiyview.svg"; // 이미지 경로 확�
 import LabelImage from "../images/label.svg"; // label.svg 이미지 경로 추가
 import axios from "axios"; // Axios 추가
 import { updateContractById } from "../services/updateContractService";
+import { useNavigate } from "react-router-dom"; // useNavigate 훅 import 추가
 
 const GlobalStyle = createGlobalStyle`
   *,
@@ -20,7 +21,7 @@ const GlobalStyle = createGlobalStyle`
   }
   body {
     min-height: 100vh;
-    padding: 2rem;
+    padding
     color: white;
     font-family: semi-bold;
     display: grid;
@@ -29,7 +30,7 @@ const GlobalStyle = createGlobalStyle`
   }
 `;
 
-const Suggestion = ({ contractMain, contractToxin }) => {
+const Suggestion = ({ contractId, contractMain, contractToxin }) => {
   const [currentSection, setCurrentSection] = useState(0); // 현재 섹션 상태
   const [currentText, setCurrentText] = useState("main"); // 현재 텍스트 파일 상태
   const [selectedArticleIds, setSelectedArticleIds] = useState([]); // 선택된 계약서 ID 배열 상태
@@ -72,21 +73,23 @@ const Suggestion = ({ contractMain, contractToxin }) => {
       // 중복 체크: 이미 선택된 계약서 ID인지 확인
       if (!selectedArticleIds.includes(currentArticle.articleId)) {
         setSelectedArticleIds((prev) => [...prev, currentArticle.articleId]); // 계약서 ID 추가
-        console.log("선택된 계약서 ID:", currentArticle.articleId); // 추가된 ID 확인
+        console.log("선택된 조항 ID:", currentArticle.articleId); // 추가된 ID 확인
       } else {
-        console.warn("계약서 ID가 이미 선택되었습니다.", currentArticle.articleId);
+        console.warn("조항 ID가 이미 선택되었습니다.", currentArticle.articleId);
       }
     } else {
-      console.warn("현재 계약서가 없습니다.");
+      console.warn("현재 조항이 없습니다.");
     }
   };
 
   const handleSubmit = async () => {
     try {
-      console.log("전송할 계약서 ID 배열:", selectedArticleIds); // 전송할 ID 배열 확인
+      console.log("전송할 조항 ID 배열:", selectedArticleIds); // 전송할 ID 배열 확인
       const data = await updateContractById(contractMain.contractId, selectedArticleIds);
       console.log("서버 응답:", data);
       setSelectedArticleIds([]); // 전송 후 배열 초기화
+      navigate("/Resultcompare", { state: { contractId } }); // contractId와 함께 네비게이트
+
     } catch (error) {
       console.error("서버에 데이터 전송 중 오류 발생:", error);
     }

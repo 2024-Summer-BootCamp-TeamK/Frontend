@@ -1,19 +1,20 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import suggestcontract from "../images/suggestcontract.svg";
+import { modifiedContract } from "../services/getModifiedContract";
+import { useNavigate } from "react-router-dom"; // useNavigate 훅 import 추가
 
-const Aireviewresult = () => {
+const Aireviewresult = ({contractId}) => {
   const [content, setContent] = useState("");
 
   useEffect(() => {
-    // 텍스트 파일을 불러오는 함수
+    // pdf 파일을 불러오는 함수
     const fetchContent = async () => {
       try {
-        const response = await fetch("/path/to/textfile.txt"); // 텍스트 파일 경로
-        const text = await response.text();
-        setContent(text);
+        const response = await modifiedContract(contractId); // pdf 파일 경로
+        setPdfUrl(url);
       } catch (error) {
-        console.error("Error fetching content:", error);
+        alert('Error displaying PDF file');
       }
     };
 
