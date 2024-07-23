@@ -37,6 +37,8 @@ const Aireviewresult = ({ contractId }) => {
 
       if (containerRef.current) {
         containerRef.current.innerHTML = ''; // Clear previous content
+        const pages = []; // Store pages to append in order
+
         for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
           const page = await pdf.getPage(pageNum);
           const viewport = page.getViewport({ scale: 1 });
@@ -52,12 +54,13 @@ const Aireviewresult = ({ contractId }) => {
           };
           await page.render(renderContext).promise;
 
-          // 페이지가 상단에 추가되도록 prepend 사용
-          containerRef.current.appendChild(canvas);
+          pages.push(canvas); // Add canvas to pages array
         }
 
-        // Scroll to top after rendering
-        containerRef.current.scrollTop = 0;
+        // Append pages in the correct order
+        pages.forEach(page => {
+          containerRef.current.appendChild(page);
+        });
       }
     };
 
@@ -118,8 +121,8 @@ const Container = styled.div`
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   color: #000000;
   display: flex;
-  flex-direction: column-reverse; /* 페이지가 상단에 나타나도록 설정 */
-  align-items: center; /* 페이지가 중앙에 정렬되도록 설정 */
+  flex-direction: column; /* 페이지를 세로 방향으로 정렬 */
+  align-items: center; /* 페이지가 중앙 정렬되도록 설정 */
 
   &:hover {
     box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
