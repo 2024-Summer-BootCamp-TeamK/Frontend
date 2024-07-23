@@ -1,15 +1,23 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import aireviewedSrc from "../images/aireviewed.svg";
 import Aireviewedimage from "./Aireviewedimage";
 
 const Aireviewresult = ({ contractData }) => {
   const [content, setContent] = useState("");
+  const [textContent, setTextContent] = useState("");
+  const [highlightedTextContent, setHighlightedTextContent] = useState("");
 
   useEffect(() => {
     if (contractData && contractData.contract) {
-      const modifiedContent = modifyHtml(contractData.contract);
+      const { modifiedContent, plainText } = modifyHtml(contractData.contract);
       setContent(modifiedContent);
+
+
+
+      setTextContent(plainText);
+
+      const highlightedText = highlightPlainText(plainText, contractData.articles);
+      setHighlightedTextContent(highlightedText);
     }
   }, [contractData]);
 
@@ -34,7 +42,7 @@ const Aireviewresult = ({ contractData }) => {
       let currentCharIndex = 0;
       let highlightStarted = false;
       let highlightEnded = false;
-      
+
       for (let node of textNodes) {
         if (!node.nodeValue) continue;
         let nodeText = node.nodeValue.replace(/\s+/g, '');
@@ -44,14 +52,14 @@ const Aireviewresult = ({ contractData }) => {
           let nodeStartIndex = startIndex - currentCharIndex;
           let before = node.nodeValue.slice(0, nodeStartIndex);
           let highlight = node.nodeValue.slice(nodeStartIndex);
-          
+
           node.nodeValue = before;
-          
+
           let span = document.createElement('span');
           span.className = 'highlight';
           span.innerHTML = highlight;
           node.parentNode.insertBefore(span, node.nextSibling);
-          
+
           highlightStarted = true;
         } else if (highlightStarted && !highlightEnded) {
           if (nodeEndIndex >= endIndex) {
@@ -60,7 +68,7 @@ const Aireviewresult = ({ contractData }) => {
             let after = node.nodeValue.slice(nodeHighlightEndIndex);
 
             node.nodeValue = after;
-            
+
             let span = document.createElement('span');
             span.className = 'highlight';
             span.innerHTML = highlight;
@@ -106,8 +114,90 @@ const Aireviewresult = ({ contractData }) => {
     description.style.color = "#E7470A";
     doc.body.appendChild(description);
 
-    return doc.body.innerHTML;
-  };
+    // Extract plain text content from the document, grouping by top position per page
+    const pages = Array.from(doc.querySelectorAll(".page"));
+    const pageTexts = pages.map(page => {
+      const textNodes = Array.from(page.querySelectorAll(".text"));
+      const groupedText = textNodes.reduce((acc, node) => {
+        const top = node.style.top;
+        if (!acc[top]) {
+          acc[top] = [];
+        }
+        acc[top].push(node.textContent.trim());
+        return acc;
+      }, {});
+
+      return Object.values(groupedText)
+        .map(group => group.join(" "))
+        .join("\n");
+    });
+
+    const plainText = pageTexts.join("\n\n");
+
+    const paragraphs = plainText.split('\n').map(line => `<p>${line}</p>`).join('');
+
+  return { modifiedContent: doc.body.innerHTML, plainText: paragraphs };
+};
+
+
+const highlightPlainText = (text, articles) => {
+console.log(text);
+  // 각 p 태그로 나눈 후 개별적으로 처리
+  const paragraphs = text.split('</p>').map(paragraph => paragraph + '</p>');
+
+  // 모든 텍스트를 공백 없이 결합하여 비교
+  const fullText = paragraphs.map(paragraph => paragraph.replace(/<\/?p>/g, '').replace(/\s+/g, '')).join('');
+
+  const highlightedParagraphs = paragraphs.map(paragraph => {
+    let innerText = paragraph.replace(/<\/?p>/g, ''); // p 태그 제거
+    let shouldHighlight = false;
+
+    articles.forEach(article => {
+      // 공백 제거 및 특수 문자 이스케이프
+      const sentence = article.sentence.replace(/\s+/g, '').replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      // 각 글자 사이에 \s* 추가
+      const regexString = sentence.split('').join('\s*');
+      const regex = new RegExp(regexString, 'gi');
+
+      // 디버깅을 위한 로그 출력
+      console.log("Highlighting sentence:", sentence);
+     // console.log("Using regex:", regex);
+
+      // 공백 제거한 텍스트에서 비교
+      console.log("original Text: ", innerText);
+      const sanitizedText = innerText.replace(/\s+/g, '');
+      console.log("공백 제거 텍스트 : ", sanitizedText);
+
+
+      const matches = sanitizedText.match(regex);
+      if (matches && matches[0]) {
+     
+        console.log("Found matches:", matches[0]);
+        shouldHighlight = true;
+      }
+    });
+
+    if (shouldHighlight) {
+      innerText = `<span class="highlight">${innerText}</span>`;
+    }
+
+
+    //     // 일치하는 부분을 강조 표시
+    //   const originalSentence = article.sentence;
+    //   innerText = innerText.split(matches[0]).join(`<span class="highlight">${originalSentence}</span>`);
+    //   console.log(`변경된 후의 innerText : ${innerText}`);
+    // } else {
+    //   console.log("No matches found for:", sentence);
+    // }
+    // });
+
+    return `<p>${innerText}</p>`;
+  });
+
+  return highlightedParagraphs.join('');
+};
+
+
 
   return (
     <>
@@ -118,6 +208,9 @@ const Aireviewresult = ({ contractData }) => {
         <Content>
           <div dangerouslySetInnerHTML={{ __html: content }} />
         </Content>
+        <TextContainer>
+          <div dangerouslySetInnerHTML={{ __html: highlightedTextContent }} />
+        </TextContainer>
       </Container>
     </>
   );
@@ -155,4 +248,23 @@ const Content = styled.div`
   color: #000000;
   letter-spacing: -0.5px;
   font-size: 14px;
+`;
+
+const TextContainer = styled.div`
+  background-color: #f9f9f9;
+  padding: 10px;
+  box-sizing: border-box;
+  color: #000000;
+  font-size: 14px;
+  margin-top: 10px;
+  border: 1px solid #ddd;
+  white-space: pre-wrap;
+
+  .p {
+    margin-bottom:5px;
+  }
+  .highlight {
+    background-color: #FFD700;
+    font-weight: bold;
+  }
 `;
