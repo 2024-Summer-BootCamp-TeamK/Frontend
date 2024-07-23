@@ -1,58 +1,212 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import aireviewedSrc from "../images/aireviewed.svg"; // aireviewed.svg 파일 경로
 import Aireviewedimage from "./Aireviewedimage";
 
 const Aireviewresult = ({ contractData }) => {
-  const [content, setContent] = useState("");
+  const [highlightedTextContent, setHighlightedTextContent] = useState("");
 
   useEffect(() => {
     if (contractData && contractData.contract) {
-      const modifiedContent = modifyHtml(contractData.contract);
-      setContent(modifiedContent);
+      const plainText  = modifyHtml(contractData.contract);
+      const highlightedText = highlightPlainText(plainText, contractData.articles);
+      setHighlightedTextContent(highlightedText);
     }
   }, [contractData]);
 
   const modifyHtml = (html) => {
     const parser = new DOMParser();
     const doc = parser.parseFromString(html, "text/html");
-    const elements = doc.querySelectorAll("*");
+
+    const pages = Array.from(doc.querySelectorAll(".page"));
+    const pageTexts = pages.map(page => {
+      const textNodes = Array.from(page.querySelectorAll(".text"));
+      const groupedText = textNodes.reduce((acc, node) => {
+        const top = node.style.top;
+        if (!acc[top]) {
+          acc[top] = [];
+        }
+        acc[top].push(node.textContent.trim());
+        return acc;
+      }, {});
+
+      return Object.values(groupedText)
+        .map(group => group.join(" "))
+        .join("\n");
+    });
+
+    const plainText = pageTexts.join("\n\n");
+
+    const paragraphs = plainText.split('\n').map(line => `<p>${line}</p>`).join('');
+
+  return paragraphs;
+};
+
+const escapeRegExp = (string) => {
+  return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // $&는 일치한 전체 문자열을 의미
+};
+
+const createPartsArray = (text) => {
+  const matches = text.split('');
+
+  // 각 분리된 항목을 정규식 객체로 변환
+  const parts = matches.map(match => new RegExp(escapeRegExp(match)));
+
+  return parts;
+}
+
+const matchRatios = (sentence, combinedText ) => {
+  const parts = createPartsArray(sentence);
+  let matchCount = 0;
+  parts.forEach(part => {
+    if (combinedText.match(part)){
+      matchCount++;
+    }
+  })
+
+  const matchRatio = matchCount / parts.length;
+  return matchRatio;
+}
+const highlightPlainText = (text, articles) => {
+  // 각 p 태그로 나눈 후 개별적으로 처리
+  const paragraphs = text.split('</p>').map(paragraph => paragraph + '</p>');
+
+  let count = 0;
+  const highlightedParagraphs = paragraphs.map((paragraph, index, array) => {
+
+    if(index < array.length - 1 ){
+      console.log(`인덱스 : ${index}`);
+      console.log("❌날것 innerText : ", paragraph);
     
-    elements.forEach((element) => {
-      element.style.setProperty("font-size", "2px", "important");
-      element.style.setProperty("line-height", "0.0", "important");
-      element.style.setProperty("letter-spacing", "-1px", "important");
-      element.style.setProperty("word-spacing", "1px", "important");
-    });
+      let innerText = paragraph.replace(/<\/?p>/g, ''); // p 태그 제거
+      if (innerText.includes('<span class="highlight">')) {
+        innerText = innerText.replace(/<span class="highlight">|<\/span>/g, '');
+      }
 
-    // 강조할 내용에 대한 스타일 추가
-    const highlightedElements = doc.querySelectorAll('.highlight');
-    highlightedElements.forEach((element) => {
-      element.style.setProperty("background-color", "#FFD700", "important"); // 강조 색상
-      element.style.setProperty("font-weight", "bold", "important"); // 강조된 글씨 굵게
-    });
+      let shouldHighlight = false;
+      let combinedText="";
+      let innerTextOnly = false;
+      
+      // 이전, 현재, 다음 <p> 태그의 텍스트를 결합하여 비교
+      combinedText += innerText;
+      if (index < array.length - 1) {
+        combinedText += array[index + 1].replace(/<\/?p>/g, '');
+      }
+      console.log(`병합 후 combinedText: ${combinedText}`);
 
-    // 강조된 부분 설명 추가
-    const description = doc.createElement('div');
-    description.innerHTML = "<strong>강조된 부분:</strong> 이 부분은 계약서의 중요 조항입니다.";
-    description.style.marginTop = "10px";
-    description.style.color = "#E7470A"; // 강조 색상
-    doc.body.appendChild(description);
+    
+      articles.forEach(article => {
+        // 공백 제거 및 특수 문자 이스케이프
+        const sentence = escapeRegExp(article.sentence.replace(/\s+/g, ''));
+        console.log(`공백제거 article: ${sentence}`);
 
-    // 부모 요소의 font-size를 14px로 설정
-    doc.body.style.setProperty("font-size", "3px", "important");
-    return doc.body.innerHTML;
-  };
+        // 각 글자 사이에 \s* 추가
+        const regexString = sentence.split('').join('\s*');
+        const regex = new RegExp(regexString, 'gi');
 
-  return (
+         // 결합된 텍스트에서 비교
+        const sanitizedCombinedText = combinedText.replace(/\s+/g, '');
+        console.log(`공백제거 text: ${sanitizedCombinedText}`);
+        
+        // 매치 
+        const matches = sanitizedCombinedText.match(regex);
+        if (matches) {
+          console.log("Found matches:", matches[0]);
+          shouldHighlight = true;
+        //  count++;
+          console.log("found matches 후 count: ", count);
+        }else {
+          const partialMatchThreshold = 0.5; // 80% 이상 매칭되면 매칭된 것으로 간주
+          const matchRatio = matchRatios(sentence, sanitizedCombinedText);
+          console.log(`매칭된 비율: ${matchRatio}`);
+          if( matchRatio >= partialMatchThreshold){
+            shouldHighlight = true; 
+          }
+        }
+
+        // 이번 문장 정확도 up!!
+        const inner = innerText.replace(/\s+/g, '');
+        const textMatches = inner.match(regex); 
+    
+        if (textMatches){
+          console.log(`이번 innerText만 통과함>>>> ${array[index+1]}`);
+          innerTextOnly = true;
+        } else {
+          const partialMatchThreshold = 0.6; 
+          const matchRatio = matchRatios(sentence, inner);
+          console.log(`정확도] 이번 문장 매칭비율: ${matchRatio}`);
+          if( matchRatio >= partialMatchThreshold){
+            innerTextOnly = true;
+          }
+        }
+      });
+
+      // combined 정확도( 조금 낮게)
+      if (shouldHighlight ) {
+        count++;
+        console.log(`innerText: ${innerText}`);
+        console.log("현재 매치된 횟수 : ",count);
+
+        if (count === 1){
+          // 정확도 false
+          if(!innerTextOnly){
+            paragraph = `<p>${innerText}</p>`;
+          }
+
+          // 현재 문장의 정확도 (조금 높게))
+          else {
+            paragraph = `<p><span class="highlight">${innerText}</span></p>`;
+          }
+          count = 0;
+        }
+      }
+      //  console.log(`Matched innerText: ${innerText}`);
+      // if (count === 1) {
+      //   // 다음거 매치 false
+      //   if (!innerTextOnly) {  // count= 1 이나, 현재 문장은 매치 x 
+      //     console.log(`카운트 : ${count}, array: ${array[index + 1]}`);
+      //     let nextText = array[index + 1].replace(/<\/?p>/g, '').replace(/<span class="highlight">|<\/span>/g, '');
+      //     array[index + 1] = `<p><span class="highlight">${nextText}</span></p>`;
+      //     console.log(`array[index+1]: ${array[index+1]}`);
+      //     paragraph = `<p><span class="highlight">${innerText}</span></p>`;
+      //     count = 0;
+      //   // 다음거 매치 true
+      //   }else {
+      //     let nextText = array[index + 1].replace(/<\/?p>/g, '').replace(/<span class="highlight">|<\/span>/g, '');
+      //     array[index + 1] = `<p><span class="highlight">${nextText}</span></p>`;
+      //     console.log(`array[index+1]: ${array[index+1]}`);
+      //   }
+      // } else if (count === 2) {
+      //   console.log(`카운트 ${count}: inner 바껴야함.`);
+      //   if (index > 0) {
+      //     let prevText = array[index - 1].replace(/<\/?p>/g, '').replace(/<span class="highlight">|<\/span>/g, '');
+      //     array[index - 1] = `<p>${prevText}</p>`;
+      //   }
+      //   console.log(`array[index-1]: ${array[index-1]}`);
+      //   innerText = `<span class="highlight">${innerText}</span>`;
+      //   count = 0;
+      //   console.log(`innerText: ${innerText}, count: ${count}`);
+      // }
+      // else if (count >= 3){
+      //   count = 0;
+      // }
+
+    }
+  return `${paragraph}`;
+  });
+  console.log(highlightedParagraphs.join(''));
+  return highlightedParagraphs.join('');
+};
+
+
+return (
     <>
       <AireviewedIconWrapper>
         <Aireviewedimage />
       </AireviewedIconWrapper>
       <Container>
-        <Content>
-          <div dangerouslySetInnerHTML={{ __html: content }} />
-        </Content>
+        <TextContainer>
+          <div dangerouslySetInnerHTML={{ __html: highlightedTextContent }} />
+        </TextContainer>
       </Container>
     </>
   );
@@ -71,13 +225,12 @@ const AireviewedIconWrapper = styled.div`
 const Container = styled.div`
   width: 45vw;
   height: 70vh;
-  overflow-y: scroll;
+  overflow-y: auto;
   padding: 0px;
   box-sizing: border-box;
   border-right: 1px solid #ccc;
   position: relative;
   background-color: #ffffff;
-  border-radius: 20px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   &:hover {
     box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
@@ -88,8 +241,26 @@ const Content = styled.div`
   background-color: #ffffff;
   padding: 0px;
   box-sizing: border-box;
-  margin-top: 0px;
   color: #000000;
   letter-spacing: -0.5px;
   font-size: 14px;
+`;
+
+const TextContainer = styled.div`
+  background-color: #fff;
+  padding: 10px;
+  box-sizing: border-box;
+  color: #000000;
+  font-size: 12px;
+  margin-top: 10px;
+  border: 1px solid #ddd;
+  white-space: pre-wrap;
+
+  .p {
+    margin-bottom:5px;
+  }
+  .highlight {
+    background-color: #FFD700;
+    font-weight: bold;
+  }
 `;
