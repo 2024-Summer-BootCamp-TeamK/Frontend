@@ -3,6 +3,18 @@ FROM node:20-alpine
 # 컨테이너 내부 작업 디렉토리를 /app/frontend로 설정
 WORKDIR /app/frontend
 
+# 필수 시스템 라이브러리 설치
+RUN apt-get update && apt-get install -y \
+    pkg-config \
+    libcairo2-dev \
+    libpango1.0-dev \
+    libjpeg-dev \
+    libgif-dev \
+    librsvg2-dev \
+    libpixman-1-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+
 # package.json과 package-lock.json을 복사
 COPY package*.json ./
 
