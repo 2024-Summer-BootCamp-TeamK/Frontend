@@ -14,8 +14,7 @@ const Aireviewresult = ({contractId}) => {
       try {
         if (contractId) {
           const pdfUrl = await modifiedContract(contractId); // pdf 파일 경로
-          const googleDocsViewerUrl = `https://docs.google.com/viewer?url=${encodeURIComponent(pdfUrl)}&embedded=true`;
-          setContent(googleDocsViewerUrl);
+          setContent(pdfUrl);
         } else {
           console.error("contractId is not provided.");
         }
