@@ -1,56 +1,35 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import suggestcontract from "../images/suggestcontract.svg";
 import { modifiedContract } from "../services/getModifiedContract";
-import * as pdfjsLib from "pdfjs-dist";
-import "pdfjs-dist/build/pdf.worker.entry"; // Ensure this line is used to properly include the worker script
+import { useNavigate } from "react-router-dom"; // useNavigate 훅 import 추가
+import { pdfjs, Document, Page } from "react-pdf";
+import "react-pdf/dist/esm/Page/AnnotationLayer.css";
 
-const Aireviewresult = ({ contractId }) => {
+pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/2.6.347/pdf.worker.min.js`;
+
+const Aireviewresult = ({contractId}) => {
   const [pdfUrl, setPdfUrl] = useState("");
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const pdfCanvasRef = useRef(null);
+
+  console.log(contractId)
 
   useEffect(() => {
     const fetchContent = async () => {
       try {
         if (contractId) {
-          const blobUrl = await modifiedContract(contractId);
-          setPdfUrl(blobUrl);
-          setLoading(true); // Set loading to true when starting to fetch
-          await renderPDF(blobUrl);
+          const url = await modifiedContract(contractId); // pdf 파일 경로
+          setContent(url);
         } else {
           console.error("contractId is not provided.");
-          setError("Contract ID is missing.");
         }
       } catch (error) {
-        setError("Error loading PDF.");
-        console.error("Error displaying PDF file:", error);
-      } finally {
-        setLoading(false); // Set loading to false after processing
+        alert('Error displaying PDF file');
       }
     };
 
     fetchContent();
-  }, [contractId]);
+  }, [contractId]); // contractId 의존성 추가
 
-  const renderPDF = async (url) => {
-    const loadingTask = pdfjsLib.getDocument(url);
-    const pdf = await loadingTask.promise;
-    const page = await pdf.getPage(1);
-    const scale = 1.5;
-    const viewport = page.getViewport({ scale });
-    const canvas = pdfCanvasRef.current;
-    const context = canvas.getContext("2d");
-    canvas.height = viewport.height;
-    canvas.width = viewport.width;
-
-    const renderContext = {
-      canvasContext: context,
-      viewport: viewport,
-    };
-    await page.render(renderContext).promise; // Ensure rendering is completed
-  };
 
   return (
     <Wrapper>
@@ -59,14 +38,12 @@ const Aireviewresult = ({ contractId }) => {
           <AireviewedIcon data={suggestcontract} type="image/svg+xml" />
         </AireviewedIconWrapper>
         <Content>
-          {loading ? (
-            <p>Loading PDF...</p>
-          ) : error ? (
-            <p>{error}</p>
-          ) : pdfUrl ? (
-            <canvas ref={pdfCanvasRef}></canvas>
+          {pdfUrl ? (
+            <Document file={pdfUrl}>
+              <Page pageNumber={1} />
+            </Document>
           ) : (
-            <p>PDF URL is not available.</p>
+            <p>Loading...</p>
           )}
         </Content>
       </Container>
@@ -80,14 +57,14 @@ export default Aireviewresult;
 const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
-  align-items: center;
-  margin-top: 9vh;
+  align-items: center; /* 중앙 정렬 */
+  margin-top: 9vh; /* 헤더와의 간격 조정 */
 `;
 
 const AireviewedIconWrapper = styled.div`
   display: flex;
   justify-content: center;
-  margin-top: -20px;
+  margin-top: -20px; /* 아이콘과 컨테이너 사이의 간격 조정 */
   margin-bottom: -40px;
 `;
 
@@ -99,12 +76,12 @@ const AireviewedIcon = styled.object`
 
 const Container = styled.div`
   width: 45vw;
-  height: 75vh;
-  overflow-y: auto; /* Changed from 'scroll' to 'auto' */
+  height: 75vh; /* 뷰포트 높이를 가득 채움 */
+  overflow-y: scroll;
   padding: 20px;
   box-sizing: border-box;
   border-right: 1px solid #ccc;
-  position: relative;
+  position: relative; /* 아이콘 배치를 위해 relative 설정 */
   background-color: #ffffff;
   border-radius: 20px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -112,7 +89,7 @@ const Container = styled.div`
 
   &:hover {
     box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
-  }
+  } /* 이미지와의 간격 조정 */
   font-size: 12px;
 `;
 
@@ -120,6 +97,5 @@ const Content = styled.div`
   background-color: #ffffff;
   padding: 20px;
   box-sizing: border-box;
-  margin-top: 20px;
-  text-align: center; /* Center text */
+  margin-top: 20px; /* 아이콘과 내용 사이에 여백 추가 */
 `;
