@@ -1,10 +1,9 @@
 import React, { useRef, useEffect } from 'react';
 import * as pdfjsLib from 'pdfjs-dist';
-import pdfjsWorker from "pdfjs-dist/build/pdf.worker.entry";
 import 'pdfjs-dist/web/pdf_viewer.css';
 
 // PDF.js 워커 파일 로드
-pdfjsLib.GlobalWorkerOptions.workerSrc = pdfjsWorker;
+pdfjsLib.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.js`;
 
 const PDFViewer = ({ pdfUrl }) => {
   const canvasRef = useRef(null);
