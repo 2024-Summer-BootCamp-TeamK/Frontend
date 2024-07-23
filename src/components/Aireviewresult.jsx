@@ -141,16 +141,13 @@ const Aireviewresult = ({ contractData }) => {
 
 
 const highlightPlainText = (text, articles) => {
-console.log(text);
   // 각 p 태그로 나눈 후 개별적으로 처리
   const paragraphs = text.split('</p>').map(paragraph => paragraph + '</p>');
 
-  // 모든 텍스트를 공백 없이 결합하여 비교
-  const fullText = paragraphs.map(paragraph => paragraph.replace(/<\/?p>/g, '').replace(/\s+/g, '')).join('');
-
-  const highlightedParagraphs = paragraphs.map(paragraph => {
+  const highlightedParagraphs = paragraphs.map((paragraph, index, array) => {
     let innerText = paragraph.replace(/<\/?p>/g, ''); // p 태그 제거
     let shouldHighlight = false;
+    let combinedText="";
 
     articles.forEach(article => {
       // 공백 제거 및 특수 문자 이스케이프
@@ -159,12 +156,7 @@ console.log(text);
       const regexString = sentence.split('').join('\s*');
       const regex = new RegExp(regexString, 'gi');
 
-      // 디버깅을 위한 로그 출력
-      console.log("Highlighting sentence:", sentence);
-     // console.log("Using regex:", regex);
 
-      // 공백 제거한 텍스트에서 비교
-      console.log("original Text: ", innerText);
       const sanitizedText = innerText.replace(/\s+/g, '');
       console.log("공백 제거 텍스트 : ", sanitizedText);
 
@@ -174,22 +166,29 @@ console.log(text);
      
         console.log("Found matches:", matches[0]);
         shouldHighlight = true;
+
+      }else {
+        // 이전, 현재, 다음 <p> 태그의 텍스트를 결합하여 비교
+        
+        combinedText += innerText;
+        console.log(`combinedText: ${combinedText}`);
+        if (index < array.length - 1) {
+          combinedText += array[index + 1].replace(/<\/?p>/g, '');
+        }
+
+         // 결합된 텍스트에서 비교
+        const sanitizedCombinedText = combinedText.replace(/\s+/g, '');
+        const matches = sanitizedCombinedText.match(regex);
+        if (matches && matches[0]) {
+          console.log("Found matches:", matches[0]);
+          shouldHighlight = true;
+        }
       }
     });
 
     if (shouldHighlight) {
       innerText = `<span class="highlight">${innerText}</span>`;
     }
-
-
-    //     // 일치하는 부분을 강조 표시
-    //   const originalSentence = article.sentence;
-    //   innerText = innerText.split(matches[0]).join(`<span class="highlight">${originalSentence}</span>`);
-    //   console.log(`변경된 후의 innerText : ${innerText}`);
-    // } else {
-    //   console.log("No matches found for:", sentence);
-    // }
-    // });
 
     return `<p>${innerText}</p>`;
   });
