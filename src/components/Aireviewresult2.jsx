@@ -37,8 +37,6 @@ const Aireviewresult = ({ contractId }) => {
 
       if (containerRef.current) {
         containerRef.current.innerHTML = ''; // Clear previous content
-        const pages = []; // Store pages to append in order
-
         for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
           const page = await pdf.getPage(pageNum);
           const viewport = page.getViewport({ scale: 1 });
@@ -54,13 +52,8 @@ const Aireviewresult = ({ contractId }) => {
           };
           await page.render(renderContext).promise;
 
-          pages.push(canvas); // Add canvas to pages array
+          containerRef.current.appendChild(canvas);
         }
-
-        // Append pages in the correct order
-        pages.forEach(page => {
-          containerRef.current.appendChild(page);
-        });
       }
     };
 
