@@ -52,7 +52,6 @@ const Aireviewresult = ({ contractId }) => {
           };
           await page.render(renderContext).promise;
 
-          canvas.style.marginTop = "10px"; // 상단 여백 조정 (예: 10px)
           containerRef.current.appendChild(canvas);
         }
       }
@@ -85,14 +84,14 @@ export default Aireviewresult;
 const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
-  align-items: center;
-  margin-top: 9vh;
+  align-items: center; /* 중앙 정렬 */
+  margin-top: 9vh; /* 헤더와의 간격 조정 */
 `;
 
 const AireviewedIconWrapper = styled.div`
   display: flex;
   justify-content: center;
-  margin-top: -20px;
+  margin-top: -20px; /* 아이콘과 컨테이너 사이의 간격 조정 */
   margin-bottom: -40px;
 `;
 
@@ -104,28 +103,26 @@ const AireviewedIcon = styled.object`
 
 const Container = styled.div`
   width: 45vw;
-  height: 75vh;
-  overflow-y: auto; /* 스크롤 가능하게 설정 */
+  height: 75vh; /* 뷰포트 높이를 가득 채움 */
+  overflow-y: scroll;
   padding: 20px;
   box-sizing: border-box;
   border-right: 1px solid #ccc;
-  position: relative;
+  position: relative; /* 아이콘 배치를 위해 relative 설정 */
   background-color: #ffffff;
   border-radius: 20px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   color: #000000;
+
   &:hover {
     box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
-  }
+  } /* 이미지와의 간격 조정 */
   font-size: 12px;
-  margin-top: 20px; /* 컨테이너 상단 여백 추가 */
 `;
 
 const Content = styled.div`
   background-color: #ffffff;
   padding: 20px;
   box-sizing: border-box;
-  margin-top: 20px;
-  position: relative;
-  z-index: 1; /* Content가 canvas보다 위에 보이도록 설정 */
-`;
+  margin-top: 20px; /* 아이콘과 내용 사이에 여백 추가 */
+  `;
