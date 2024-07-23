@@ -2,18 +2,18 @@ import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import suggestcontract from "../images/suggestcontract.svg";
 import { modifiedContract } from "../services/getModifiedContract";
-import PDFViewer from "./PDFViewer"; // PDFViewer 컴포넌트 임포트
+import * as pdfjsLib from "pdfjs-dist/webpack";
 
-const Aireviewresult = ({ contractId }) => {
-  const [content, setContent] = useState("");
-  console.log(contractId);
-  
+const Aireviewresult = ({contractId}) => {
+  const [pdfUrl, setPdfUrl] = useState("");
+  const canvasRef = useRef(null);
+  console.log(contractId)
   useEffect(() => {
     const fetchContent = async () => {
       try {
         if (contractId) {
-          const pdfUrl = await modifiedContract(contractId);
-          setContent(pdfUrl);
+          const url = await modifiedContract(contractId); // pdf 파일 경로
+          setPdfUrl(url);
         } else {
           console.error("contractId is not provided.");
         }
@@ -21,10 +21,28 @@ const Aireviewresult = ({ contractId }) => {
         alert('Error displaying PDF file');
       }
     };
-
     fetchContent();
-  }, [contractId]);
-
+  }, [contractId]); // contractId 의존성 추가
+  useEffect(() => {
+    const renderPDF = async (url) => {
+      const loadingTask = pdfjsLib.getDocument(url);
+      const pdf = await loadingTask.promise;
+      const page = await pdf.getPage(1);
+      const viewport = page.getViewport({ scale: 1.5 });
+      const canvas = canvasRef.current;
+      const context = canvas.getContext("2d");
+      canvas.height = viewport.height;
+      canvas.width = viewport.width;
+      const renderContext = {
+        canvasContext: context,
+        viewport: viewport,
+      };
+      page.render(renderContext);
+    };
+    if (pdfUrl) {
+      renderPDF(pdfUrl);
+    }
+  }, [pdfUrl]);
   return (
     <Wrapper>
       <Container>
@@ -32,10 +50,10 @@ const Aireviewresult = ({ contractId }) => {
           <AireviewedIcon data={suggestcontract} type="image/svg+xml" />
         </AireviewedIconWrapper>
         <Content>
-          {content ? (
-            <PDFViewer pdfUrl={content} /> // PDFViewer 컴포넌트를 사용하여 PDF 렌더링
+          {pdfUrl ? (
+            <canvas ref={canvasRef}></canvas>
           ) : (
-            <p>Loading PDF...</p>
+            <p>로딩 중...</p>
           )}
         </Content>
       </Container>
@@ -83,12 +101,10 @@ const Container = styled.div`
   }
   font-size: 12px;
 `;
+
 const Content = styled.div`
   background-color: #ffffff;
   padding: 20px;
   box-sizing: border-box;
   margin-top: 20px;
-  width: 80%; /* 부모 요소의 80% 너비를 설정합니다 */
-  max-width: 1200px; /* 최대 너비를 설정하여 너무 넓어지는 것을 방지합니다 */
 `;
-
