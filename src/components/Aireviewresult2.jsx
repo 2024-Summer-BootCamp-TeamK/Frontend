@@ -38,7 +38,7 @@ const Aireviewresult = ({contractId}) => {
         </AireviewedIconWrapper>
         <Content>
           {content ? ( // content로 변경
-            <Worker workerUrl="https://unpkg.com/pdfjs-dist/build/pdf.worker.min.js">
+            <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.worker.min.js">
               <Viewer fileUrl={content} /> {/* content로 변경 */}
             </Worker>
           ) : (
