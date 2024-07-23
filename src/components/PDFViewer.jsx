@@ -1,6 +1,6 @@
 import React, { useRef, useEffect } from 'react';
 import { pdfjs } from 'pdfjs-dist';
-import 'pdfjs-dist/build/pdf.css';
+import 'pdfjs-dist/web/pdf_viewer.css'; // PDF.js 뷰어의 기본 CSS 임포트
 
 // PDF.js 워커 파일 로드
 pdfjs.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
