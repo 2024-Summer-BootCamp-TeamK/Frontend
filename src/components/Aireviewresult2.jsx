@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import styled from "styled-components";
 import suggestcontract from "../images/suggestcontract.svg";
 import { modifiedContract } from "../services/getModifiedContract";
-import * as pdfjsLib from "pdfjs-dist/webpack";
+import * as pdfjsLib from "pdfjs-dist";
 
 // Vite가 처리하는 워커 파일 경로 설정
 pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
