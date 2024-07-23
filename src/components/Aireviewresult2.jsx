@@ -53,8 +53,11 @@ const Aireviewresult = ({ contractId }) => {
           await page.render(renderContext).promise;
 
           // 페이지가 상단에 추가되도록 prepend 사용
-          containerRef.current.prepend(canvas);
+          containerRef.current.appendChild(canvas);
         }
+
+        // Scroll to top after rendering
+        containerRef.current.scrollTop = 0;
       }
     };
 
@@ -115,8 +118,8 @@ const Container = styled.div`
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   color: #000000;
   display: flex;
-  flex-direction: column;
-  align-items: center; /* 페이지가 상단에 정렬되도록 설정 */
+  flex-direction: column-reverse; /* 페이지가 상단에 나타나도록 설정 */
+  align-items: center; /* 페이지가 중앙에 정렬되도록 설정 */
 
   &:hover {
     box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
