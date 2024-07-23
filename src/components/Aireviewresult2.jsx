@@ -17,7 +17,7 @@ const Aireviewresult = ({contractId}) => {
       try {
         if (contractId) {
           const url = await modifiedContract(contractId); // pdf 파일 경로
-          setContent(url);
+          setPdfUrl(url);
         } else {
           console.error("contractId is not provided.");
         }
