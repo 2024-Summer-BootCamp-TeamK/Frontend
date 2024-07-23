@@ -52,7 +52,8 @@ const Aireviewresult = ({ contractId }) => {
           };
           await page.render(renderContext).promise;
 
-          containerRef.current.appendChild(canvas);
+          // 페이지가 상단에 추가되도록 prepend 사용
+          containerRef.current.prepend(canvas);
         }
       }
     };
@@ -113,10 +114,13 @@ const Container = styled.div`
   border-radius: 20px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   color: #000000;
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* 페이지가 상단에 정렬되도록 설정 */
 
   &:hover {
     box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
-  } /* 이미지와의 간격 조정 */
+  }
   font-size: 12px;
 `;
 
@@ -125,4 +129,4 @@ const Content = styled.div`
   padding: 20px;
   box-sizing: border-box;
   margin-top: 20px; /* 아이콘과 내용 사이에 여백 추가 */
-  `;
+`;
