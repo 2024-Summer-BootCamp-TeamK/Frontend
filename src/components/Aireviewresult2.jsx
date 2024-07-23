@@ -1,20 +1,22 @@
-import React, { useRef ,useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
 import suggestcontract from "../images/suggestcontract.svg";
 import { modifiedContract } from "../services/getModifiedContract";
 import * as pdfjsLib from "pdfjs-dist";
+
 pdfjsLib.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/2.6.347/pdf.worker.min.js`;
 
-const Aireviewresult = ({contractId}) => {
+const Aireviewresult = ({ contractId }) => {
   const [pdfUrl, setPdfUrl] = useState("");
   const [pdfDoc, setPdfDoc] = useState(null);
-  const [pageNum, setPageNum] = useState(1);  const canvasRef = useRef(null);
-  console.log(contractId)
+  const [pages, setPages] = useState([]);
+  const containerRef = useRef(null);
+
   useEffect(() => {
     const fetchContent = async () => {
       try {
         if (contractId) {
-          const url = await modifiedContract(contractId); // pdf 파일 경로
+          const url = await modifiedContract(contractId);
           setPdfUrl(url);
         } else {
           console.error("contractId is not provided.");
@@ -24,7 +26,7 @@ const Aireviewresult = ({contractId}) => {
       }
     };
     fetchContent();
-  }, [contractId]); // contractId 의존성 추가
+  }, [contractId]);
 
   useEffect(() => {
     const renderPDF = async () => {
@@ -34,52 +36,46 @@ const Aireviewresult = ({contractId}) => {
       const pdf = await loadingTask.promise;
       setPdfDoc(pdf);
 
-      const page = await pdf.getPage(pageNum);
-      const viewport = page.getViewport({ scale: 1.1 });
-      const canvas = canvasRef.current;
-      const context = canvas.getContext("2d");
-      canvas.height = viewport.height;
-      canvas.width = viewport.width;
+      const pagesArray = [];
+      for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
+        const page = await pdf.getPage(pageNum);
+        const viewport = page.getViewport({ scale: 1.1 });
 
-      const renderContext = {
-        canvasContext: context,
-        viewport: viewport,
-      };
-      await page.render(renderContext).promise;
+        const canvas = document.createElement("canvas");
+        const context = canvas.getContext("2d");
+        canvas.height = viewport.height;
+        canvas.width = viewport.width;
+
+        const renderContext = {
+          canvasContext: context,
+          viewport: viewport,
+        };
+        await page.render(renderContext).promise;
+
+        pagesArray.push(canvas);
+      }
+      setPages(pagesArray);
     };
 
     renderPDF();
-  }, [pdfUrl, pageNum]);
-
-  const handlePrevPage = () => {
-    if (pageNum > 1) {
-      setPageNum(pageNum - 1);
-    }
-  };
-
-  const handleNextPage = () => {
-    if (pdfDoc && pageNum < pdfDoc.numPages) {
-      setPageNum(pageNum + 1);
-    }
-  };
+  }, [pdfUrl]);
 
   return (
     <Wrapper>
-      <Container>
+      <Container ref={containerRef}>
         <AireviewedIconWrapper>
           <AireviewedIcon data={suggestcontract} type="image/svg+xml" />
         </AireviewedIconWrapper>
         <Content>
-          <canvas ref={canvasRef}></canvas>
-          <PageControls>
-            <button onClick={handlePrevPage} disabled={pageNum <= 1}>
-              Previous
-            </button>
-            <span>Page {pageNum}</span>
-            <button onClick={handleNextPage} disabled={!pdfDoc || pageNum >= pdfDoc.numPages}>
-              Next
-            </button>
-          </PageControls>
+          {pages.length ? (
+            pages.map((canvas, index) => (
+              <div key={index} style={{ marginBottom: '20px' }}>
+                {canvas}
+              </div>
+            ))
+          ) : (
+            <p>로딩 중...</p>
+          )}
         </Content>
       </Container>
     </Wrapper>
@@ -112,7 +108,7 @@ const AireviewedIcon = styled.object`
 const Container = styled.div`
   width: 45vw;
   height: 75vh;
-  overflow-y: scroll;
+  overflow-y: auto; /* 스크롤 가능하게 설정 */
   padding: 20px;
   box-sizing: border-box;
   border-right: 1px solid #ccc;
