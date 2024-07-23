@@ -2,11 +2,13 @@ import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
 import suggestcontract from "../images/suggestcontract.svg";
 import { modifiedContract } from "../services/getModifiedContract";
-import * as pdfjsLib from "pdfjs-dist/build/pdf";
-import "pdfjs-dist/build/pdf.worker.entry";
+import * as pdfjsLib from "pdfjs-dist";
+import "pdfjs-dist/build/pdf.worker.entry"; // Ensure this line is used to properly include the worker script
 
 const Aireviewresult = ({ contractId }) => {
   const [pdfUrl, setPdfUrl] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const pdfCanvasRef = useRef(null);
 
   useEffect(() => {
@@ -15,12 +17,17 @@ const Aireviewresult = ({ contractId }) => {
         if (contractId) {
           const blobUrl = await modifiedContract(contractId);
           setPdfUrl(blobUrl);
-          renderPDF(blobUrl);
+          setLoading(true); // Set loading to true when starting to fetch
+          await renderPDF(blobUrl);
         } else {
           console.error("contractId is not provided.");
+          setError("Contract ID is missing.");
         }
       } catch (error) {
-        alert('Error displaying PDF file');
+        setError("Error loading PDF.");
+        console.error("Error displaying PDF file:", error);
+      } finally {
+        setLoading(false); // Set loading to false after processing
       }
     };
 
@@ -42,7 +49,7 @@ const Aireviewresult = ({ contractId }) => {
       canvasContext: context,
       viewport: viewport,
     };
-    page.render(renderContext);
+    await page.render(renderContext).promise; // Ensure rendering is completed
   };
 
   return (
@@ -52,10 +59,14 @@ const Aireviewresult = ({ contractId }) => {
           <AireviewedIcon data={suggestcontract} type="image/svg+xml" />
         </AireviewedIconWrapper>
         <Content>
-          {pdfUrl ? (
+          {loading ? (
+            <p>Loading PDF...</p>
+          ) : error ? (
+            <p>{error}</p>
+          ) : pdfUrl ? (
             <canvas ref={pdfCanvasRef}></canvas>
           ) : (
-            <p>PDF를 불러오는 중입니다...</p>
+            <p>PDF URL is not available.</p>
           )}
         </Content>
       </Container>
@@ -89,7 +100,7 @@ const AireviewedIcon = styled.object`
 const Container = styled.div`
   width: 45vw;
   height: 75vh;
-  overflow-y: scroll;
+  overflow-y: auto; /* Changed from 'scroll' to 'auto' */
   padding: 20px;
   box-sizing: border-box;
   border-right: 1px solid #ccc;
@@ -110,4 +121,5 @@ const Content = styled.div`
   padding: 20px;
   box-sizing: border-box;
   margin-top: 20px;
+  text-align: center; /* Center text */
 `;
