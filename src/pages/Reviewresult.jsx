@@ -33,7 +33,7 @@ const Reviewresult = () => {
         <ContentWrapper>
           <Container>
             <ComponentWrapper>
-              <Aireviewresult contractData={contractMain} />
+              <Aireviewresult contractDataMain={contractMain}  contractDataToxin={contractToxin}/>
             </ComponentWrapper>
             <ComponentWrapper>
               <Suggestion

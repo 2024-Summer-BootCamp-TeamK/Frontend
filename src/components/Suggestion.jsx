@@ -6,6 +6,7 @@ import ModifiyviewSrc from "../images/Modifiyview.svg"; // 이미지 경로 확�
 import LabelImage from "../images/label.svg"; // label.svg 이미지 경로 추가
 import axios from "axios"; // Axios 추가
 import { updateContractById } from "../services/updateContractService";
+import ArticleDetail from "./ArticleDetail";
 
 const GlobalStyle = createGlobalStyle`
   *,
@@ -164,8 +165,7 @@ const Suggestion = ({ contractMain, contractToxin }) => {
     <Container>
       <GlobalStyle />
       <ToggleswitchContainer>
-        <Toggleswitch onChange={toggleText} />{" "}
-        {/* 텍스트 파일을 토글하는 스위치 */}
+        <Toggleswitch onChange={toggleText} />
       </ToggleswitchContainer>
       <ContentWrapper>
         <NavButton onClick={handlePrevClick} disabled={currentSection === 0}>
@@ -178,60 +178,19 @@ const Suggestion = ({ contractMain, contractToxin }) => {
               <SectionText className="slider__text">
                 {currentArticle ? (
                   <>
-                    <p style={{ textAlign: "left" }}>
-                      <img
-                        src={LabelImage}
-                        alt="label 이미지"
-                        style={{ marginRight: "5px", verticalAlign: "middle" }}
-                      />
-                      <span style={{ fontWeight: "bold" }}>
-                        계약서 내부 조항:
-                      </span>
-                      <br /> {/* 줄 바꿈 추가 */}
-                      {currentArticle.sentence}
-                    </p>
-
-                    <p style={{ textAlign: "left" }}>
-                      <img
-                        src={LabelImage}
-                        alt="label 이미지"
-                        style={{ marginRight: "5px", verticalAlign: "middle" }}
-                      />
-                      <span style={{ fontWeight: "bold" }}>법:</span>
-                      <br /> {/* 줄 바꿈 추가 */}
-                      {currentArticle.law}
-                    </p>
-                    <p style={{ textAlign: "left" }}>
-                      <img
-                        src={LabelImage}
-                        alt="label 이미지"
-                        style={{ marginRight: "5px", verticalAlign: "middle" }}
-                      />
-                      <span style={{ fontWeight: "bold" }}>설명:</span>
-                      <br /> {/* 줄 바꿈 추가 */}
-                      {currentArticle.description}
-                    </p>
-                    {currentArticle.recommend && (
-                      <p style={{ textAlign: "left" }}>
-                        <img
-                          src={LabelImage}
-                          alt="label 이미지"
-                          style={{
-                            marginRight: "5px",
-                            verticalAlign: "middle",
-                          }}
-                        />
-                        <span style={{ fontWeight: "bold" }}>추천:</span>
-                        <br /> {/* 줄 바꿈 추가 */}
-                        {currentArticle.recommend}
-                      </p>
-                    )}
+                  <ArticleDetail title="계약서 내부 조항" content={currentArticle.sentence}/>
+                  <ArticleDetail title="법" content={currentArticle.law}/>
+                  <ArticleDetail title="상세 설명" content={currentArticle.description}/>
+                 {currentArticle.recommend && (
+                  <ArticleDetail title="수정 제안" content={currentArticle.recommend}/>
+                  )}
                   </>
                 ) : (
                   <p>데이터를 불러오는 중입니다...</p>
                 )}
               </SectionText>
               {currentText === "toxin" && ( // 각 세션에 버튼 표시
+              <>
                 <StyledOrangebutton
                   onClick={
                     modifiedSections[currentSection]
@@ -243,15 +202,13 @@ const Suggestion = ({ contractMain, contractToxin }) => {
                     ? "추천안으로 수정 취소하기"
                     : "추천안으로 수정하기"}
                 </StyledOrangebutton>
-              )}
+              
               {currentText === "toxin" &&
                 modifiedSections[currentSection] && ( // 수정 여부에 따라 메시지 표시
-                  <ModifiedMessage
-                    style={{ justifycontent: "center", alignitems: "center" }}
-                  >
-                    수정안 담김
-                  </ModifiedMessage>
+                  <ModifiedMessage>수정안 담김</ModifiedMessage>
                 )}
+              </>
+            )}
             </SectionContent>
           </Section>
         </Content>
@@ -304,12 +261,15 @@ const ContentWrapper = styled.div`
   display: flex;
   align-items: center;
   width: 100%;
-  height: 100%;
+  height: 90%;
+ 
 `;
 
 const NavButton = styled.button`
   background-color: #e7470a;
   color: white;
+  font-size: 14px;
+  
   border: none;
   padding: 10px 20px;
   margin: 0 10px;
@@ -325,7 +285,7 @@ const NavButton = styled.button`
 const Content = styled.div`
   display: flex;
   flex-direction: column;
-  height: 100%;
+  height: 70%;
   overflow-y: auto; /* 세로 스크롤 추가 */
   scroll-snap-type: y mandatory;
   scroll-behavior: smooth;
@@ -394,7 +354,8 @@ const ProgressContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 10px;
+  gap: 15px;
+  margin-top:20px; 
 `;
 
 const ProgressDot = styled.div`
@@ -418,6 +379,7 @@ const StyledOrangebutton = styled(Orangebutton)`
   align-items: center;
   justify-content: center;
   position: relative;
+
   left: 50%;
   transform: translateX(-50%);
   margin-top: 20px;
@@ -436,18 +398,16 @@ const StyledOrangebutton = styled(Orangebutton)`
 `;
 
 const ModifiedMessage = styled.div`
-  margin-top: 5px;
-  padding: 5px;
+  margin-top: 10px;
+  padding: 5px 10px;
   border: 1px solid #e7470a;
   background-color: #fff3e0; /* 연한 배경색 */
   color: #e7470a;
   border-radius: 5px;
   text-align: center;
   font-weight: bold;
+  font-size: 14px; /* 폰트 크기 조정 */
   width: auto;
-  jutify-content: center;
-  align-items: center;
-  display: flex;
-  flex-direction: column;
-  max-width;
+  display: inline-block;
+  vertical-align: middle;
 `;
