@@ -48,7 +48,7 @@ const Wrapper = styled.div`
   align-items: center; /* 중앙 정렬 */
   margin-top: 9vh; /* 헤더와의 간격 조정 */
 `;
-ㅌㅈ
+
 const AireviewedIconWrapper = styled.div`
   display: flex;
   justify-content: center;
