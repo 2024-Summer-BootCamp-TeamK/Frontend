@@ -7,20 +7,24 @@ import { useNavigate } from "react-router-dom"; // useNavigate 훅 import 추가
 const Aireviewresult = ({contractId}) => {
   const [content, setContent] = useState("");
 
+  console.log(contractId)
+
   useEffect(() => {
-    // pdf 파일을 불러오는 함수
     const fetchContent = async () => {
       try {
-        const response = await modifiedContract(contractId); // pdf 파일 경로
-        setPdfUrl(url);
+        if (contractId) {
+          const pdfUrl = await modifiedContract(contractId); // pdf 파일 경로
+          setContent(pdfUrl);
+        } else {
+          console.error("contractId is not provided.");
+        }
       } catch (error) {
         alert('Error displaying PDF file');
       }
     };
 
     fetchContent();
-  }, []);
-
+  }, [contractId]); // contractId 의존성 추가
   return (
     <Wrapper>
       <Container>
