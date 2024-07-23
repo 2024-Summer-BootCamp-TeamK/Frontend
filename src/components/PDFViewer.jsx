@@ -10,23 +10,27 @@ const Container = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  /* 배경색 제거 */
-  background-color: transparent; /* 투명 배경색 */
+  background-color: transparent; /* 배경색 제거 */
 `;
 
 const PdfWrapper = styled.div`
-  width: 100%;  /* PDF 뷰어의 너비를 100%로 설정 */
-  height: 100vh; /* PDF 뷰어의 높이를 전체 화면 높이로 설정 */
-  /* 스크롤 제거 */
-  overflow: hidden; /* 오버플로우 숨기기 */
-  /* 배경색 제거 */
-  background-color: transparent; /* 투명 배경색 */
+  width: 90%; /* PDF 뷰어의 너비를 화면의 90%로 설정 */
+  height: 90vh; /* PDF 뷰어의 높이를 화면의 90%로 설정 */
+  border: 1px solid #ccc; /* 테두리 설정 */
+  border-radius: 8px; /* 모서리 둥글게 */
+  overflow: hidden; /* 스크롤을 완전히 제거 */
+  background-color: transparent; /* 배경색 제거 */
+  position: relative; /* 위치 설정 */
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
 
 const LoadingText = styled.p`
   font-size: 18px;
   color: #555;
 `;
+
 const PDFViewer = ({ pdfUrl }) => {
   const [pdf, setPdf] = useState(null);
 
