@@ -1,9 +1,9 @@
 import React, { useRef, useEffect } from 'react';
-import { pdfjs } from 'pdfjs-dist';
-import 'pdfjs-dist/web/pdf_viewer.css'; // PDF.js 뷰어의 기본 CSS 임포트
+import * as pdfjsLib from 'pdfjs-dist';
+import 'pdfjs-dist/web/pdf_viewer.css';
 
 // PDF.js 워커 파일 로드
-pdfjs.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
+pdfjsLib.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@${pdfjsLib.version}/build/pdf.worker.min.js`;
 
 const PDFViewer = ({ pdfUrl }) => {
   const canvasRef = useRef(null);
@@ -11,7 +11,7 @@ const PDFViewer = ({ pdfUrl }) => {
   useEffect(() => {
     const loadPDF = async () => {
       try {
-        const pdf = await pdfjs.getDocument(pdfUrl).promise;
+        const pdf = await pdfjsLib.getDocument(pdfUrl).promise;
         const page = await pdf.getPage(1); // 첫 페이지 로드
 
         const viewport = page.getViewport({ scale: 1 });
