@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import suggestcontract from "../images/suggestcontract.svg";
 import { modifiedContract } from "../services/getModifiedContract";
-import { useNavigate } from "react-router-dom"; // useNavigate 훅 import 추가
+import * as pdfjsLib from 'pdfjs-dist';
 import { pdfjs, Document, Page } from "react-pdf";
 import "react-pdf/dist/esm/Page/AnnotationLayer.css";
 
@@ -10,6 +10,7 @@ pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/2
 
 const Aireviewresult = ({contractId}) => {
   const [pdfUrl, setPdfUrl] = useState("");
+  const canvasRef = useRef(null);
 
   console.log(contractId)
 
@@ -30,6 +31,31 @@ const Aireviewresult = ({contractId}) => {
     fetchContent();
   }, [contractId]); // contractId 의존성 추가
 
+  useEffect(() => {
+    const renderPDF = async (url) => {
+      const loadingTask = pdfjsLib.getDocument(url);
+      const pdf = await loadingTask.promise;
+      const page = await pdf.getPage(1);
+
+      const viewport = page.getViewport({ scale: 1.5 });
+      const canvas = canvasRef.current;
+      const context = canvas.getContext("2d");
+
+      canvas.height = viewport.height;
+      canvas.width = viewport.width;
+
+      const renderContext = {
+        canvasContext: context,
+        viewport: viewport,
+      };
+      page.render(renderContext);
+    };
+
+    if (pdfUrl) {
+      renderPDF(pdfUrl);
+    }
+  }, [pdfUrl]);
+
 
   return (
     <Wrapper>
@@ -39,11 +65,9 @@ const Aireviewresult = ({contractId}) => {
         </AireviewedIconWrapper>
         <Content>
           {pdfUrl ? (
-            <Document file={pdfUrl}>
-              <Page pageNumber={1} />
-            </Document>
+            <canvas ref={canvasRef}></canvas>
           ) : (
-            <p>Loading...</p>
+            <p>로딩 중...</p>
           )}
         </Content>
       </Container>
