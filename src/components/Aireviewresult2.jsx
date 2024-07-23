@@ -1,30 +1,48 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import styled from "styled-components";
 import suggestcontract from "../images/suggestcontract.svg";
 import { modifiedContract } from "../services/getModifiedContract";
-import { useNavigate } from "react-router-dom"; // useNavigate 훅 import 추가
+import * as pdfjsLib from "pdfjs-dist/build/pdf";
+import pdfjsWorker from "pdfjs-dist/build/pdf.worker.entry";
 
-const Aireviewresult = ({contractId}) => {
-  const [content, setContent] = useState("");
+pdfjsLib.GlobalWorkerOptions.workerSrc = pdfjsWorker;
 
-  console.log(contractId)
+const Aireviewresult = ({ contractId }) => {
+  const canvasRef = useRef(null);
 
   useEffect(() => {
-    const fetchContent = async () => {
+    const fetchAndRenderPdf = async () => {
       try {
         if (contractId) {
-          const pdfUrl = await modifiedContract(contractId); // pdf 파일 경로
-          setContent(pdfUrl);
+          const blobUrl = await modifiedContract(contractId);
+          const pdf = await pdfjsLib.getDocument(blobUrl).promise;
+
+          const page = await pdf.getPage(1); // 첫 페이지 가져오기
+          const viewport = page.getViewport({ scale: 1.5 });
+
+          const canvas = canvasRef.current;
+          const context = canvas.getContext("2d");
+
+          canvas.height = viewport.height;
+          canvas.width = viewport.width;
+
+          const renderContext = {
+            canvasContext: context,
+            viewport: viewport,
+          };
+
+          page.render(renderContext);
         } else {
           console.error("contractId is not provided.");
         }
       } catch (error) {
-        alert('Error displaying PDF file');
+        alert("Error displaying PDF file");
       }
     };
 
-    fetchContent();
-  }, [contractId]); // contractId 의존성 추가
+    fetchAndRenderPdf();
+  }, [contractId]);
+
   return (
     <Wrapper>
       <Container>
@@ -32,11 +50,7 @@ const Aireviewresult = ({contractId}) => {
           <AireviewedIcon data={suggestcontract} type="image/svg+xml" />
         </AireviewedIconWrapper>
         <Content>
-        {content ? (
-            <iframe src={content} width="100%" height="600px" title="PDF Preview" style={{border: 'none'}} />
-          ) : (
-            <p>PDF를 불러오는 중입니다...</p>
-          )}
+          <canvas ref={canvasRef}></canvas>
         </Content>
       </Container>
     </Wrapper>
