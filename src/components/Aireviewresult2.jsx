@@ -3,6 +3,9 @@ import styled from "styled-components";
 import suggestcontract from "../images/suggestcontract.svg";
 import { modifiedContract } from "../services/getModifiedContract";
 import { useNavigate } from "react-router-dom"; // useNavigate 훅 import 추가
+import { Worker, Viewer } from '@react-pdf-viewer/core';
+import '@react-pdf-viewer/core/lib/styles/index.css';
+
 
 const Aireviewresult = ({contractId}) => {
   const [content, setContent] = useState("");
@@ -32,8 +35,10 @@ const Aireviewresult = ({contractId}) => {
           <AireviewedIcon data={suggestcontract} type="image/svg+xml" />
         </AireviewedIconWrapper>
         <Content>
-          {content ? (
-            <iframe src={content} width="100%" height="600px" title="PDF Preview" />
+          {pdfUrl ? (
+            <Worker workerUrl="https://unpkg.com/pdfjs-dist/build/pdf.worker.min.js">
+              <Viewer fileUrl={pdfUrl} />
+            </Worker>
           ) : (
             <p>PDF를 불러오는 중입니다...</p>
           )}

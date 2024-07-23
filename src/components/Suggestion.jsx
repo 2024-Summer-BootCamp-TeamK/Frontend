@@ -34,7 +34,7 @@ const Suggestion = ({ contractId, contractMain, contractToxin }) => {
   const [currentSection, setCurrentSection] = useState(0); // 현재 섹션 상태
   const [currentText, setCurrentText] = useState("main"); // 현재 텍스트 파일 상태
   const [selectedArticleIds, setSelectedArticleIds] = useState([]); // 선택된 계약서 ID 배열 상태
-  
+
   const navigate = useNavigate(); // useNavigate 훅 선언
 
   const mainSections = contractMain.articles.map(
@@ -72,9 +72,9 @@ const Suggestion = ({ contractId, contractMain, contractToxin }) => {
         : contractToxin.articles[currentSection];
 
     if (currentArticle && currentArticle.articleId) {
-      // 중복 체크: 이미 선택된 계약서 ID인지 확인
+      // 중복 체크: 이미 선택된 조항 ID인지 확인
       if (!selectedArticleIds.includes(currentArticle.articleId)) {
-        setSelectedArticleIds((prev) => [...prev, currentArticle.articleId]); // 계약서 ID 추가
+        setSelectedArticleIds((prev) => [...prev, currentArticle.articleId]); // 조항 ID 추가
         console.log("선택된 조항 ID:", currentArticle.articleId); // 추가된 ID 확인
       } else {
         console.warn("조항 ID가 이미 선택되었습니다.", currentArticle.articleId);
