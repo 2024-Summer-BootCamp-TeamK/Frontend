@@ -3,10 +3,6 @@ import styled, { createGlobalStyle } from "styled-components";
 import Orangebutton from "./Orangebutton";
 import Toggleswitch from "./Toggleswitch";
 import ModifiyviewSrc from "../images/Modifiyview.svg"; // 이미지 경로 확인
-import LabelImage from "../images/label.svg"; // label.svg 이미지 경로 추가
-import axios from "axios"; // Axios 추가
-import { updateContractById } from "../services/updateContractService";
-import { useNavigate } from "react-router-dom"; // useNavigate 훅 import 추가
 import ArticleDetail from "./ArticleDetail";
 import { updateContractById } from "../services/updateContractService";
 
@@ -43,8 +39,6 @@ const Suggestion = ({ contractMain, contractToxin }) => {
     const savedSections = localStorage.getItem("modifiedSections");
     return savedSections ? JSON.parse(savedSections) : [];
   });
-
-  const navigate = useNavigate(); // useNavigate 훅 선언
 
   const mainSections = contractMain.articles.map(
     (article, index) => `주요조항 ${index + 1}`
