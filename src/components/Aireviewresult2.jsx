@@ -91,7 +91,7 @@ const Wrapper = styled.div`
 const AireviewedIconWrapper = styled.div`
   display: flex;
   justify-content: center;
-  margin-top: -30px; /* 아이콘과 컨테이너 사이의 간격 조정 */
+  margin-top: -15px; /* 아이콘과 컨테이너 사이의 간격 조정 */
   margin-bottom: -40px;
 `;
 
