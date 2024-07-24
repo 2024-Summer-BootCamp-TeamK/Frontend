@@ -3,24 +3,23 @@ import styled from "styled-components";
 
 const Swit = styled.label`
   --_switch-bg-clr: #f9e6d8; /* Background color of the switch */
-  --_switch-padding: 4px; /* Padding around button */
+  --_switch-padding: 3px; /* Padding around button */
   --_slider-bg-clr: #e7470a; /* Slider color unchecked */
 
-  --_label-padding: 0.5rem 1.5rem; /* Padding around the labels - this gives the switch its global width and height */
+  --_label-padding: 0.8rem 1.8rem; /* Padding around the labels - this gives the switch its global width and height */
   --_switch-easing: cubic-bezier(
     0.47,
     1.64,
     0.41,
     0.8
   ); /* Easing on toggle switch */
-  --_font-size: 1rem;
+  --_font-size: 1.12rem;
 
   width: fit-content;
   display: flex;
   justify-content: center;
   position: relative;
-  border-radius: 9999px;
-  cursor: pointer;
+  border-radius: 10px;
   position: relative;
   isolation: isolate;
   font-size: var(--_font-size);
@@ -67,8 +66,9 @@ const Swit = styled.label`
   }
 
   > span {
-    color: initial; /* Active text color */
+    color: #fff; 
     padding: var(--_label-padding);
+    font-weight:bold;
   }
 
   @media (max-width: 768px) {
