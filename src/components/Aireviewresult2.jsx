@@ -1,33 +1,77 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
 import suggestcontract from "../images/suggestcontract.svg";
+import { modifiedContract } from "../services/getModifiedContract";
+import * as pdfjsLib from "pdfjs-dist";
 
-const Aireviewresult = () => {
-  const [content, setContent] = useState("");
+pdfjsLib.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/2.6.347/pdf.worker.min.js`;
+
+const Aireviewresult = ({ contractId }) => {
+  const [pdfUrl, setPdfUrl] = useState("");
+  const [pdfDoc, setPdfDoc] = useState(null);
+  const containerRef = useRef(null);
 
   useEffect(() => {
-    // 텍스트 파일을 불러오는 함수
     const fetchContent = async () => {
       try {
-        const response = await fetch("/path/to/textfile.txt"); // 텍스트 파일 경로
-        const text = await response.text();
-        setContent(text);
+        if (contractId) {
+          const url = await modifiedContract(contractId);
+          setPdfUrl(url);
+        } else {
+          console.error("contractId is not provided.");
+        }
       } catch (error) {
-        console.error("Error fetching content:", error);
+        alert('Error displaying PDF file');
+      }
+    };
+    fetchContent();
+  }, [contractId]);
+
+  useEffect(() => {
+    const renderPDF = async () => {
+      if (!pdfUrl) return;
+
+      const loadingTask = pdfjsLib.getDocument(pdfUrl);
+      const pdf = await loadingTask.promise;
+      setPdfDoc(pdf);
+
+      if (containerRef.current) {
+        containerRef.current.innerHTML = ''; // Clear previous content
+        for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
+          const page = await pdf.getPage(pageNum);
+          const viewport = page.getViewport({ scale: 1 });
+
+          const canvas = document.createElement("canvas");
+          const context = canvas.getContext("2d");
+          canvas.height = viewport.height;
+          canvas.width = viewport.width;
+
+          const renderContext = {
+            canvasContext: context,
+            viewport: viewport,
+          };
+          await page.render(renderContext).promise;
+
+          containerRef.current.appendChild(canvas);
+        }
       }
     };
 
-    fetchContent();
-  }, []);
+    renderPDF();
+  }, [pdfUrl]);
 
   return (
     <Wrapper>
-      <Container>
+      <Container ref={containerRef}>
         <AireviewedIconWrapper>
           <AireviewedIcon data={suggestcontract} type="image/svg+xml" />
         </AireviewedIconWrapper>
         <Content>
-          <p>{content}</p>
+          {!pdfDoc ? (
+            <p>로딩 중...</p>
+          ) : (
+            <p>PDF가 로딩되었습니다.</p>
+          )}
         </Content>
       </Container>
     </Wrapper>
@@ -69,10 +113,13 @@ const Container = styled.div`
   border-radius: 20px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   color: #000000;
+  display: flex;
+  flex-direction: column; /* 페이지를 세로 방향으로 정렬 */
+  align-items: center; /* 페이지가 중앙 정렬되도록 설정 */
 
   &:hover {
     box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
-  } /* 이미지와의 간격 조정 */
+  }
   font-size: 12px;
 `;
 

@@ -14,7 +14,7 @@ import logoSrc from "../images/logo.svg";
 
 const Reviewresult = () => {
   const location = useLocation();
-  const { contractMain, contractToxin } = location.state || {};
+  const { contractId, contractMain, contractToxin } = location.state || {};
 
   return (
     <>
@@ -37,6 +37,7 @@ const Reviewresult = () => {
             </ComponentWrapper>
             <ComponentWrapper>
               <Suggestion
+                contractId = {contractId}
                 contractMain={contractMain}
                 contractToxin={contractToxin}
               />

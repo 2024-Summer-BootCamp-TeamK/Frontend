@@ -6,6 +6,8 @@ import ModifiyviewSrc from "../images/Modifiyview.svg"; // 이미지 경로 확�
 import LabelImage from "../images/label.svg"; // label.svg 이미지 경로 추가
 import axios from "axios"; // Axios 추가
 import { updateContractById } from "../services/updateContractService";
+import { useNavigate } from "react-router-dom"; // useNavigate 훅 import 추가
+
 import ArticleDetail from "./ArticleDetail";
 
 const GlobalStyle = createGlobalStyle`
@@ -21,7 +23,7 @@ const GlobalStyle = createGlobalStyle`
   }
   body {
     min-height: 100vh;
-    padding: 2rem;
+    padding
     color: white;
     font-family: semi-bold;
     display: grid;
@@ -30,7 +32,7 @@ const GlobalStyle = createGlobalStyle`
   }
 `;
 
-const Suggestion = ({ contractMain, contractToxin }) => {
+const Suggestion = ({ contractId, contractMain, contractToxin }) => {
   const [currentSection, setCurrentSection] = useState(0); // 현재 섹션 상태
   const [currentText, setCurrentText] = useState("main"); // 현재 텍스트 파일 상태
   const [selectedArticleIds, setSelectedArticleIds] = useState(() => {
@@ -43,6 +45,8 @@ const Suggestion = ({ contractMain, contractToxin }) => {
     const savedSections = localStorage.getItem("modifiedSections");
     return savedSections ? JSON.parse(savedSections) : [];
   }); // 수정된 섹션 상태
+
+  const navigate = useNavigate(); // useNavigate 훅 선언
 
   const mainSections = contractMain.articles.map(
     (article, index) => `주요조항 ${index + 1}`
@@ -79,8 +83,9 @@ const Suggestion = ({ contractMain, contractToxin }) => {
         : contractToxin.articles[currentSection];
 
     if (currentArticle && currentArticle.articleId) {
-      // 중복 체크: 이미 선택된 계약서 ID인지 확인
+      // 중복 체크: 이미 선택된 조항 ID인지 확인
       if (!selectedArticleIds.includes(currentArticle.articleId)) {
+
         setSelectedArticleIds((prev) => {
           const newIds = [...prev, currentArticle.articleId];
           localStorage.setItem("selectedArticleIds", JSON.stringify(newIds)); // localStorage에 저장
@@ -98,15 +103,15 @@ const Suggestion = ({ contractMain, contractToxin }) => {
           return newModifiedSections;
         });
 
-        console.log("선택된 계약서 ID:", currentArticle.articleId); // 추가된 ID 확인
+        console.log("선택된 조항 ID:", currentArticle.articleId); // 추가된 ID 확인
       } else {
         console.warn(
-          "계약서 ID가 이미 선택되었습니다.",
+          " ID가 이미 선택되었습니다.",
           currentArticle.articleId
         );
       }
     } else {
-      console.warn("현재 계약서가 없습니다.");
+      console.warn("현재 조항이 없습니다.");
     }
   };
 
@@ -145,6 +150,7 @@ const Suggestion = ({ contractMain, contractToxin }) => {
       );
       console.log("서버 응답:", data);
       // 배열 및 localStorage 초기화 코드를 제거했습니다.
+      navigate("/Resultcompare", { state: { contractId } }); // contractId와 함께 네비게이트
     } catch (error) {
       console.error("서버에 데이터 전송 중 오류 발생:", error);
     }

@@ -11,6 +11,8 @@
   },
   "dependencies": {
     "@compdfkit_pdf_sdk/webviewer": "^2.2.2",
+    "@react-pdf-viewer/core": "^3.12.0",
+    "@react-pdf-viewer/default-layout": "^3.12.0",
     "axios": "^1.7.2",
     "gsap": "^3.12.5",
     "pdf-lib": "^1.17.1",
@@ -21,7 +23,6 @@
     "react-dropzone": "^14.2.3",
     "react-icons": "^5.2.1",
     "react-lottie": "^1.2.4",
-    "react-pdf": "^9.1.0",
     "react-router-dom": "^6.25.1",
     "react-signature-canvas": "^1.0.6",
     "rollup": "^4.19.0",
