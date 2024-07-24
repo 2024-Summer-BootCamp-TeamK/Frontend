@@ -179,6 +179,10 @@ const Aireviewresult = ({ contractDataMain, contractDataToxin }) => {
           <div dangerouslySetInnerHTML={{ __html: highlightedTextContent }} />
         </TextContainer>
       </Container>
+        <HighlightLegend>
+          <LegendItem color="#FFDD61">주요조항</LegendItem>
+          <LegendItem color="#FFAFA4">주의조항</LegendItem>
+        </HighlightLegend>
     </>
   );
 };
@@ -196,9 +200,9 @@ const AireviewedIconWrapper = styled.div`
 const Container = styled.div`
  width: 45vw;
   height: 70vh;
-
+  color: #000;
   box-sizing: border-box;
-  overflow: auto; 
+  overflow: scroll;
   border: 1px solid #ccc;
   padding-top:10px ;
   position: relative;
@@ -211,7 +215,7 @@ const Container = styled.div`
 
 const TextContainer = styled.div`
   background-color: #fff;
-
+  overflow:hidden;
   padding: 10px;
   box-sizing: border-box;
   color: #000000;
@@ -219,24 +223,45 @@ const TextContainer = styled.div`
   margin-top: 10px;
   padding-left: 20px;
   white-space: pre-wrap;
-   
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 
   .p {
     margin-bottom:3px;
-  
   }
   
   .highlight-main {
    background-color: #FFDD61;
    font-weight: bold;
-   
   } 
+
   .highlight-toxin {
-  background-color: #FFAFA4;
-  font-weight: bold;
-  padding-top:3px;
-   padding-bottom:3px; 
+    background-color: #FFAFA4;
+    font-weight: bold;
+    padding-top:3px;
+    padding-bottom:3px; 
+  }
+`;
+
+const HighlightLegend = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+`;
+
+const LegendItem = styled.div`
+  display: flex;
+  align-items: center;
+  margin: 0 13px;
+  color: #000;
+  font-weight:bold;
   
+  &::before {
+    color: #000;
+    content: "";
+    width: 14px;
+    height: 14px;
+    background-color: ${({ color }) => color};
+    border-radius: 50%;
+    margin-right: 5px;
   }
 `;
