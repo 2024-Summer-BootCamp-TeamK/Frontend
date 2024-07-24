@@ -128,6 +128,9 @@ const PdfEditor = () => {
         if (message.type === 'add_drawing') {
           addAttachment(message.payload); // 서버에서 전달된 드로잉 추가
         }
+        if (message.type === 'update_drawing') {
+            update( message.payload); 
+          }
       };
       websocket.onerror = (error) => {
         console.error('웹소켓 에러: ', error);
@@ -171,7 +174,7 @@ const PdfEditor = () => {
       x: 0,
       y: 0,
       scale: 1,
-      username: username, // username 추가
+      username: username,
     };
 
     // 서버로 드로잉 추가 이벤트 전송
@@ -214,6 +217,11 @@ const PdfEditor = () => {
                         updateAttachment={update}
                         pageDimensions={dimensions}
                         attachments={pageAttachments}
+                        ws={ws}
+                        username={username}
+                        setPageIndex={setPageIndex}
+                        setMousePositions={setMousePositions}
+                        addAttachment={addAttachment}
                       />
                     )}
                     {Object.entries(mousePositions).map(([username, pos]) => (
