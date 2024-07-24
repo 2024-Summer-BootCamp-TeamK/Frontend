@@ -116,7 +116,6 @@ const Aireviewresult = ({ contractDataMain, contractDataToxin }) => {
           if (matches) {
             console.log("Found matches:", matches[0]);
             shouldHighlight = true;
-          //  count++;
             console.log("found matches 후 count: ", count);
           }else {
             const partialMatchThreshold = 0.5; // 50% 이상 매칭되면 매칭된 것으로 간주
@@ -137,7 +136,7 @@ const Aireviewresult = ({ contractDataMain, contractDataToxin }) => {
           } else {
             const partialMatchThreshold = 0.6; 
             const matchRatio = matchRatios(sentence, inner);
-            console.log(`정확도] 이번 문장 매칭비율: ${matchRatio}`);
+            console.log(`[정확도] 매칭비율: ${matchRatio}`);
             if( matchRatio >= partialMatchThreshold){
               innerTextOnly = true;
             }
@@ -166,7 +165,7 @@ const Aireviewresult = ({ contractDataMain, contractDataToxin }) => {
       }
     return `${paragraph}`;
     });
-    console.log(highlightedParagraphs.join(''));
+   
     return highlightedParagraphs.join('');
   };
 

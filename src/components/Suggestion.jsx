@@ -229,7 +229,7 @@ const Suggestion = ({ contractMain, contractToxin }) => {
         ))}
       </ProgressContainer>
       <StyledOrangebutton
-        style={{ width: "150px", position: "absolute", top: "75vh" }}
+
         onClick={handleSubmit}
       >
         <img src={ModifiyviewSrc} alt="modifyview" />
