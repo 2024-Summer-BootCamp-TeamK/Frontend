@@ -1,40 +1,56 @@
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
+import Button from './Button';
 
-const Header = styled.header`
-  position: fixed; /* 상단에 고정 */
+const Header = ({ logoSrc, isScrolled }) => {
+  const navigate = useNavigate();
+
+  return (
+    <StyledHeader $isScrolled={isScrolled}>
+      <LogoContainer>
+        <Logo data={logoSrc} type="image/svg+xml" />
+      </LogoContainer>
+      <ButtonContainer>
+        <Button onClick={() => navigate('/category')}>AI 검토 받으러 가기</Button>
+        <Button onClick={() => navigate('/fileuploadshare')}>상대방과 계약서 검토하기</Button>
+      </ButtonContainer>
+    </StyledHeader>
+  );
+};
+
+export default Header;
+
+const StyledHeader = styled.header`
+  position: fixed;
   top: 0;
   left: 0;
   right: 0;
-  height: 10vh; /* 화면 높이의 10% */
+  height: 10vh;
   display: flex;
-  align-items: center; /* 수직 중앙 정렬 */
+  align-items: center;
   background-color: #fefdf6;
   padding: 0 20px;
   text-align: center;
   font-size: 24px;
-  box-shadow: ${({ isScrolled }) => (isScrolled ? '0px 4px 4px rgba(0, 0, 0, 0.25)' : 'none')};
-  z-index: 1000; /* 다른 요소보다 위에 표시되도록 함 */
-  justify-content: space-between; /* 왼쪽 끝에 로고, 오른쪽 끝에 버튼들 */
+  box-shadow: ${({ $isScrolled }) => ($isScrolled ? '0px 4px 4px rgba(0, 0, 0, 0.25)' : 'none')};
+  z-index: 1000;
+  justify-content: space-between;
+  transition: background-color 0.3s, box-shadow 0.3s;
 `;
 
-
-
 const LogoContainer = styled.div`
-  height: 90%; /* 로고 이미지 높이를 헤더 높이에 맞춤 */
+  height: 90%;
   display: flex;
   align-items: center;
 `;
 
 const Logo = styled.object`
-  height: 100%; /* 로고 이미지 높이를 컨테이너 높이에 맞춤 */
+  height: 100%;
 `;
-
 
 const ButtonContainer = styled.div`
-display: flex;
-align-items: center;
-gap: 20px; /* 버튼 간의 간격 설정 */
-
+  display: flex;
+  align-items: center;
+  gap: 20px;
 `;
-
-export { Header, LogoContainer, Logo, ButtonContainer };

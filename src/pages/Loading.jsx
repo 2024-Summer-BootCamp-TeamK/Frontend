@@ -226,7 +226,7 @@ const Wrapper = styled.div`
     left: -25px;
     top: -50px;
     font-size: 12px;
-    font-color: #FEFDF6;
+    font-color: #FFFFF;
     font-weight: bold;
     width: 44px;
     height: 25px;

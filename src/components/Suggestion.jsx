@@ -3,7 +3,6 @@ import styled, { createGlobalStyle } from "styled-components";
 import Orangebutton from "./Orangebutton";
 import Toggleswitch from "./Toggleswitch";
 import ModifiyviewSrc from "../images/Modifiyview.svg"; // 이미지 경로 확인
-
 import ArticleDetail from "./ArticleDetail";
 import { updateContractById } from "../services/updateContractService";
 
@@ -41,6 +40,8 @@ const Suggestion = ({ contractMain, contractToxin }) => {
     return savedSections ? JSON.parse(savedSections) : [];
   });
 
+  
+
   const mainSections = contractMain.articles.map(
     (article, index) => `주요조항 ${index + 1}`
   );
@@ -76,6 +77,7 @@ const Suggestion = ({ contractMain, contractToxin }) => {
         : contractToxin.articles[currentSection];
 
     if (currentArticle && currentArticle.articleId) {
+      // 중복 체크: 이미 선택된 조항 ID인지 확인
       // 중복 체크: 이미 선택된 조항 ID인지 확인
       if (!selectedArticleIds.includes(currentArticle.articleId)) {
 
@@ -425,3 +427,4 @@ const ModifiedMessage = styled.div`
 `;
 
 export default Suggestion;
+
