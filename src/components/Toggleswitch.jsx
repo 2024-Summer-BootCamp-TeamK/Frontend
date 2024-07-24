@@ -10,7 +10,7 @@ const Switch = styled.label`
   --_inactive-txt-clr: #888888; /* Inactive text color */
   --_label-padding: 0.5rem 1.5rem; /* Padding around the labels - this gives the switch its global width and height */
   --_switch-easing: cubic-bezier(0.47, 1.64, 0.41, 0.8); /* Easing on toggle switch */
-  --_font-size: 1rem;
+  --_font-size: 1.13rem;
 
   width: fit-content;
   display: flex;
