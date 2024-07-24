@@ -62,10 +62,10 @@ const Aireviewresult = ({ contractId }) => {
 
   return (
     <Wrapper>
-      <Container ref={containerRef}>
-        <AireviewedIconWrapper>
+      <AireviewedIconWrapper>
           <AireviewedIcon data={suggestcontract} type="image/svg+xml" />
         </AireviewedIconWrapper>
+      <Container ref={containerRef}> 
         <Content>
           {!pdfDoc ? (
             <p>로딩 중...</p>
