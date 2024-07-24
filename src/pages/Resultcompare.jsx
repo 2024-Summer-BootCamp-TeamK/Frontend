@@ -92,8 +92,8 @@ const ArrowImage = styled.object`
 
 const ButtonsWrapper = styled.div`
   display: flex;
-  justify-content: center; /* 버튼을 수평 중앙 정렬 */
-  align-items: center; /* 버튼을 수직 중앙 정렬 */
-  margin-top: 20px; /* 원하는 경우 추가적인 간격 설정 */
-  gap: 30px; /* 버튼 사이의 간격 설정 */
+  justify-content: center; 
+  align-items: center; 
+  margin-top: 20px; 
+  gap: 30px; 
 `;

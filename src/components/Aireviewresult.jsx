@@ -198,7 +198,7 @@ const AireviewedIconWrapper = styled.div`
 `;
 
 const Container = styled.div`
- width: 45vw;
+  width: 43vw;
   height: 70vh;
   color: #000;
   box-sizing: border-box;
@@ -206,6 +206,7 @@ const Container = styled.div`
   border: 1px solid #ccc;
   padding-top:10px ;
   position: relative;
+  margin-left: 2vw;
   background-color: #ffffff;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
   &:hover {
