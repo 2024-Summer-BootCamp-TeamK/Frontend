@@ -271,7 +271,7 @@ const Container = styled.div`
   border-radius: 20px;
   background-color: #fefdf6;
   flex-direction: column;
-  gap: 1vh;
+  gap: 2vh;
 `;
 
 const ContentWrapper = styled.div`
@@ -336,7 +336,7 @@ const ToggleswitchContainer = styled.div`
   display: flex;
   justify-content: center;
   width: 100%;
-  margin-top: 12vh;
+  margin-top: 13vh;
   z-index: 1;
 `;
 
@@ -347,7 +347,7 @@ const StyledOrangebutton = styled(Orangebutton)`
   position: relative;
   left: 50%;
   transform: translateX(-50%);
-  margin-top: 20px; /* 버튼과 섹션 간의 간격 추가 */
+  margin-top: 14vh; /* 버튼과 섹션 간의 간격 추가 */
   padding: 10px 20px; /* 버튼 패딩 추가 */
   background-color: #e7470a; /* 버튼 배경색 추가 */
   color: white;

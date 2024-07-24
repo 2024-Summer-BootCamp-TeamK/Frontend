@@ -213,7 +213,7 @@ const AireviewedIconWrapper = styled.div`
   width: 100%;
   display: flex;
   justify-content: center;
-  margin-top: 13vh;
+  margin-top: 14vh;
 `;
 
 const Container = styled.div`
@@ -225,7 +225,7 @@ const Container = styled.div`
   height: 75vh;
   gap: 10vh;
   border-radius: 20px;
-  margin-top: 0px;
+  margin-top: 2vh;
   box-sizing: border-box;
   overflow: auto;
   border: px solid #ccc;
@@ -239,7 +239,7 @@ const Container = styled.div`
 
 const TextContainer = styled.div`
   background-color: #fff;
-  overflow:hidden;
+  overflow-y: auto; 
   padding: 10px;
   box-sizing: border-box;
   color: #000000;
@@ -247,7 +247,6 @@ const TextContainer = styled.div`
   margin-top: 10px;
   padding-left: 20px;
   white-space: pre-wrap;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 
   .p {
     margin-bottom: 3px;
@@ -269,7 +268,7 @@ const HighlightLegend = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-top: 20px;
+  margin-top: 15px;
 `;
 
 const LegendItem = styled.div`
