@@ -24,7 +24,7 @@ const Orangebutton = styled.button`
   }
 
   &:active {
-    transform: scale(1.1);
+    transform: scale(0.9);
     outline: none; /* 포커스 시 outline 제거 */
   }
 
