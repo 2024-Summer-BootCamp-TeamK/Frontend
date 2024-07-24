@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
-import suggestcontract from "../images/suggestcontract.svg";
 import { modifiedContract } from "../services/getModifiedContract";
 import * as pdfjsLib from "pdfjs-dist";
 
@@ -15,7 +14,8 @@ const Aireviewresult = ({ contractId }) => {
     const fetchContent = async () => {
       try {
         if (contractId) {
-          const url = await modifiedContract(contractId);
+          const type = "result";
+          const url = await modifiedContract(contractId, type);
           setPdfUrl(url);
         } else {
           console.error("contractId is not provided.");
@@ -39,8 +39,7 @@ const Aireviewresult = ({ contractId }) => {
         containerRef.current.innerHTML = ''; // Clear previous content
         for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
           const page = await pdf.getPage(pageNum);
-          const viewport = page.getViewport({ scale: 1 });
-
+          const viewport = page.getViewport({ scale: 1.3 });
           const canvas = document.createElement("canvas");
           const context = canvas.getContext("2d");
           canvas.height = viewport.height;
@@ -91,10 +90,13 @@ const Wrapper = styled.div`
 
 const ButtonWrapper = styled.div`
   position: absolute;
-
 `;
 
 const OriginalContractButton = styled.div`
+  display:flex;
+  justify-content: center;
+  align-items: center;
+  width: 9vw;
   background-color: #141F7B;
   color: white;
   border: none;
@@ -106,7 +108,7 @@ const OriginalContractButton = styled.div`
 `;
 
 const Container = styled.div`
-  width: 45vw;
+  width: 40vw;
   height: 68vh; 
   overflow-y: scroll;
   padding: 20px;
