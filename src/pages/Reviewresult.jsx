@@ -14,7 +14,7 @@ import logoSrc from "../images/logo.svg";
 
 const Reviewresult = () => {
   const location = useLocation();
-  const { contractMain, contractToxin } = location.state || {};
+  const { contractId, contractMain, contractToxin } = location.state || {};
 
   return (
     <>
@@ -33,10 +33,11 @@ const Reviewresult = () => {
         <ContentWrapper>
           <Container>
             <ComponentWrapper>
-              <Aireviewresult contractData={contractMain} />
+              <Aireviewresult contractDataMain={contractMain}  contractDataToxin={contractToxin}/>
             </ComponentWrapper>
             <ComponentWrapper>
               <Suggestion
+                contractId = {contractId}
                 contractMain={contractMain}
                 contractToxin={contractToxin}
               />
@@ -80,15 +81,18 @@ const Container = styled.div`
   width: 100%; /* 전체 너비를 100%로 설정 */
   box-sizing: border-box; /* 박스 크기 계산에 패딩과 테두리를 포함합니다. */
   background-color: #fefdf6; /* 배경색 설정 */
-  border-radius: 20px; /* 둥근 모서리 설정 */
+  border-radius: 10px; /* 둥근 모서리 설정 */
   margin: 0; /* 전체 컨테이너의 여백을 0으로 설정 */
+  padding-left: 50px;
+  padding-top: 50px;
+
 `;
 
 const ComponentWrapper = styled.div`
   flex: 1;
   max-width: 800px; /* 컴포넌트의 최대 너비를 설정합니다. 원하는 값으로 변경하세요. */
   box-sizing: border-box;
-  overflow: auto; /* 개별 컴포넌트 내부 스크롤 허용 */
+  
 `;
 
 export default Reviewresult;

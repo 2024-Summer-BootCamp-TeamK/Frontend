@@ -1,5 +1,17 @@
 FROM node:20-alpine 
 
+# 필수 시스템 라이브러리 설치
+RUN apk update && apk add --no-cache \
+    build-base \
+    pkgconfig \
+    cairo-dev \
+    pango-dev \
+    jpeg-dev \
+    giflib-dev \
+    librsvg-dev \
+    pixman-dev
+
+
 # 컨테이너 내부 작업 디렉토리를 /app/frontend로 설정
 WORKDIR /app/frontend
 
