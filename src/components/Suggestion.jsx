@@ -410,4 +410,4 @@ const ModifiedMessage = styled.div`
   width: auto;
   display: inline-block;
   vertical-align: middle;
-`;
+`; 
