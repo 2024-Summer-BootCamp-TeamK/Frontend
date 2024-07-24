@@ -1,12 +1,12 @@
 import axios from 'axios';
 import api from "./api";
 
-export const modifiedContract = async (contractId) => {
+export const modifiedContract = async (contractId, type) => {
     try {
         const url = `/contracts/${contractId}/result`;
         const response = await api.get(url);
-        const s3Url = response.data.result_url;
-
+        const s3Url = type == 'origin' ? response.data.origin_url : response.data.result_url ;
+        
         // S3에서 파일 가져오기
         const fileResponse = await axios.get(s3Url, { responseType: 'blob' });
         
