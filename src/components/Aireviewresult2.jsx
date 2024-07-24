@@ -43,7 +43,7 @@ const Aireviewresult = ({ contractId }) => {
 
           const canvas = document.createElement("canvas");
           const context = canvas.getContext("2d");
-          canvas.height = viewport.height-30;
+          canvas.height = viewport.height;
           canvas.width = viewport.width;
 
           const renderContext = {
@@ -63,9 +63,11 @@ const Aireviewresult = ({ contractId }) => {
   return (
     <Wrapper>
       <Container ref={containerRef}>
-        <AireviewedIconWrapper>
-          <AireviewedIcon data={suggestcontract} type="image/svg+xml" />
-        </AireviewedIconWrapper>
+        <div>
+          <AireviewedIconWrapper>
+            <AireviewedIcon data={suggestcontract} type="image/svg+xml" />
+          </AireviewedIconWrapper>
+        </div>
         <Content>
           {!pdfDoc ? (
             <p>로딩 중...</p>
