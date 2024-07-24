@@ -43,7 +43,7 @@ const Aireviewresult = ({ contractId }) => {
 
           const canvas = document.createElement("canvas");
           const context = canvas.getContext("2d");
-          canvas.height = viewport.height;
+          canvas.height = viewport.height-30;
           canvas.width = viewport.width;
 
           const renderContext = {
