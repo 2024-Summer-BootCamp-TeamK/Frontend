@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
+import { useNavigate } from "react-router-dom";
 import Header from "../components/Header";
 import Orangebutton from "../components/Orangebutton";
 import logoSrc from "../images/logo.svg";
@@ -17,6 +18,7 @@ import Textanimation from "../components/Textanimation";
 
 const Mainpage = () => {
   const [isScrolled, setIsScrolled] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -50,7 +52,7 @@ const Mainpage = () => {
         <img src={main1_3Src} alt="main1_3" />
       </SvgRow>
       <ButtonCenter>
-        <Orangebutton>계약서 검토 받으러 가기</Orangebutton>
+        <Orangebutton onClick={() => navigate('/category')}>계약서 검토 받으러 가기</Orangebutton>
       </ButtonCenter>
       <SvgRow>
         <img src={main2_1Src} alt="main2_1" />
@@ -60,7 +62,7 @@ const Mainpage = () => {
         <img src={main2_3Src} alt="main2_3" />
       </SvgRow>
       <ButtonCenter>
-        <Orangebutton>상대방과 계약서 검토하러 가기</Orangebutton>
+        <Orangebutton onClick={() => navigate('/fileuploadshare')}>상대방과 계약서 검토하러 가기</Orangebutton>
       </ButtonCenter>
       <ImageContainer>
         <img src={mainendSrc} alt="mainend" />

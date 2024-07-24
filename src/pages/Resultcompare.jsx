@@ -1,7 +1,6 @@
 import React, { useCallback } from "react";
 import styled from "styled-components";
 import Button from "../components/Button";
-import Buttonall from "../components/Button";
 import Suggestion from "../components/Suggestion";
 import Aireviewresult2 from "../components/Aireviewresult2";
 import Originalcontract from "../components/Originalcontract";
