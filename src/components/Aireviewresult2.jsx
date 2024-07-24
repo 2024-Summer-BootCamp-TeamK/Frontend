@@ -52,6 +52,11 @@ const Aireviewresult = ({ contractId }) => {
           };
           await page.render(renderContext).promise;
 
+
+          canvas.style.maxHeight = "500px"; // 원하는 높이로 설정
+          canvas.style.overflow = "hidden";
+
+
           containerRef.current.appendChild(canvas);
         }
       }
