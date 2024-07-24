@@ -22,13 +22,10 @@ const Originalcontract = () => {
 
   return (
     <Wrapper>
+      <ButtonWrapper>
+        <OriginalContractButton>기존 계약서</OriginalContractButton>
+      </ButtonWrapper>
       <Container>
-        <OriginalcontractWrapper>
-          <Originalcontractsvg
-            data={originalcontractsvg}
-            type="image/svg+xml"
-          />
-        </OriginalcontractWrapper>
         <Content>
           <p>{content}</p>
         </Content>
@@ -43,33 +40,37 @@ export default Originalcontract;
 const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
-  align-items: center; /* 중앙 정렬 */
-  margin-top: 9vh; /* 헤더와의 간격 조정 */
+  align-items: flex-start;
+  margin-top: 13vh;
+  padding-left: 2vw;
 `;
 
-const OriginalcontractWrapper = styled.div`
-  display: flex;
-  justify-content: center;
-  margin-top: -20px; /* 아이콘과 컨테이너 사이의 간격 조정 */
-  margin-bottom: -40px; /* 아이콘과 컨테이너 사이의 간격 조정 */
+const ButtonWrapper = styled.div`
+  position: absolute;
+
 `;
 
-const Originalcontractsvg = styled.object`
-  width: 150px;
-  height: 10vh;
-  border-radius: 20px;
+const OriginalContractButton = styled.div`
+  background-color: #141F7B;
+  color: white;
+  border: none;
+  border-radius: 10px 10px 0px 0px;
+  padding: 13px 20px;
+  font-size: 20px;
+  margin-bottom:10px;
+  font-weight: 700;
+  cursor: pointer;
 `;
 
 const Container = styled.div`
   width: 45vw;
-  height: 75vh; /* 뷰포트 높이를 가득 채움 */
+  height: 68vh; 
   overflow-y: scroll;
-  padding: 20px;
   box-sizing: border-box;
-  border-right: 1px solid #ccc;
-  position: relative; /* 아이콘 배치를 위해 relative 설정 */
+  margin-top: 5vh;
+  position: relative; 
   background-color: #ffffff;
-  border-radius: 20px;
+  border-radius: 0px 10px 10px 10px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   color: #000000;
 
@@ -83,5 +84,5 @@ const Content = styled.div`
   background-color: #ffffff;
   padding: 20px;
   box-sizing: border-box;
-  margin-top: 20px; /* 아이콘과 내용 사이에 여백 추가 */
+  
 `;

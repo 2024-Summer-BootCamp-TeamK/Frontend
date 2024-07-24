@@ -37,13 +37,13 @@ const Resultcompare = () => {
         <MainContent>
           <Container>
             <ComponentWrapper>
-              <Originalcontract contractId={contractId} /> {/* contractId를 Originalcontract에 전달 */}
+              <Originalcontract contractId={contractId} /> 
             </ComponentWrapper>
             <ArrowWrapper>
               <ArrowImage data={arrow2Src} type="image/svg+xml" />
             </ArrowWrapper>
             <ComponentWrapper>
-              <Aireviewresult2 contractId={contractId} /> {/* contractId를 Aireviewresult2에 전달 */}
+              <Aireviewresult2 contractId={contractId} />
             </ComponentWrapper>
           </Container>
           <ButtonsWrapper>
@@ -69,15 +69,14 @@ const MainContent = styled.div`
 
 const Container = styled.div`
   display: flex;
-  flex-direction: row; /* 두 컴포넌트를 가로로 나란히 배치합니다. */
+  flex-direction: row;
   align-items: center;
-  gap: 2vw; /* 두 컴포넌트 사이의 간격을 설정합니다. 원하는 값으로 변경하세요. */
-  padding: 1vw; /* 전체 컨테이너의 패딩을 설정합니다. */
+  gap: 2vw; 
+  padding: 1vw;
 `;
 
 const ComponentWrapper = styled.div`
-  width: 100%;
-  max-width: 800px; /* 컴포넌트의 최대 너비를 설정합니다. 원하는 값으로 변경하세요. */
+  width: 90%;
   box-sizing: border-box;
 `;
 
@@ -85,11 +84,12 @@ const ArrowWrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  margin-top: 13vh;
 `;
 
 const ArrowImage = styled.object`
-  width: 3vw; /* 화살표 이미지의 너비를 설정합니다. 원하는 값으로 변경하세요. */
-  height: auto; /* 이미지의 높이는 자동으로 설정됩니다. */
+  width: 3vw; 
+  height: auto; 
 `;
 
 const ButtonsWrapper = styled.div`
