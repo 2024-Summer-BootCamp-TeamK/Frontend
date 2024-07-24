@@ -62,10 +62,10 @@ const Aireviewresult = ({ contractId }) => {
 
   return (
     <Wrapper>
-      <AireviewedIconWrapper>
+      <Container ref={containerRef}>
+        <AireviewedIconWrapper>
           <AireviewedIcon data={suggestcontract} type="image/svg+xml" />
         </AireviewedIconWrapper>
-      <Container ref={containerRef}>
         <Content>
           {!pdfDoc ? (
             <p>로딩 중...</p>
@@ -91,7 +91,7 @@ const Wrapper = styled.div`
 const AireviewedIconWrapper = styled.div`
   display: flex;
   justify-content: center;
-  margin-top: -20px; /* 아이콘과 컨테이너 사이의 간격 조정 */
+  margin-top: -30px; /* 아이콘과 컨테이너 사이의 간격 조정 */
   margin-bottom: -40px;
 `;
 
@@ -103,7 +103,7 @@ const AireviewedIcon = styled.object`
 
 const Container = styled.div`
   width: 45vw;
-  height: 75vh; /* 뷰포트 높이를 가득 채움 */
+  height: 55vh; /* 뷰포트 높이를 가득 채움 */
   overflow-y: scroll;
   padding: 20px;
   box-sizing: border-box;
