@@ -14,8 +14,12 @@ import {
 import logoSrc from "../images/logo.svg";
 import Orangebutton from "../components/Orangebutton";
 import arrow2Src from "../images/arrow2.svg"; // 추가할 SVG 이미지 경로
+import { useLocation } from "react-router-dom";
 
 const Resultcompare = () => {
+  const location = useLocation();
+  const { contractId } = location.state || {}; // 네비게이션 상태에서 contractId 추출
+
   return (
     <>
       <div>
@@ -33,13 +37,13 @@ const Resultcompare = () => {
         <MainContent>
           <Container>
             <ComponentWrapper>
-              <Originalcontract />
+              <Originalcontract contractId={contractId} /> {/* contractId를 Originalcontract에 전달 */}
             </ComponentWrapper>
             <ArrowWrapper>
               <ArrowImage data={arrow2Src} type="image/svg+xml" />
             </ArrowWrapper>
             <ComponentWrapper>
-              <Aireviewresult2 />
+              <Aireviewresult2 contractId={contractId} /> {/* contractId를 Aireviewresult2에 전달 */}
             </ComponentWrapper>
           </Container>
           <ButtonsWrapper>

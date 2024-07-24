@@ -6,6 +6,9 @@ import ModifiyviewSrc from "../images/Modifiyview.svg"; // 이미지 경로 확�
 import LabelImage from "../images/label.svg"; // label.svg 이미지 경로 추가
 import axios from "axios"; // Axios 추가
 import { updateContractById } from "../services/updateContractService";
+import { useNavigate } from "react-router-dom"; // useNavigate 훅 import 추가
+
+import ArticleDetail from "./ArticleDetail";
 
 const GlobalStyle = createGlobalStyle`
   *,
@@ -20,7 +23,7 @@ const GlobalStyle = createGlobalStyle`
   }
   body {
     min-height: 100vh;
-    padding: 2rem;
+    padding
     color: white;
     font-family: semi-bold;
     display: grid;
@@ -29,10 +32,21 @@ const GlobalStyle = createGlobalStyle`
   }
 `;
 
-const Suggestion = ({ contractMain, contractToxin }) => {
+const Suggestion = ({ contractId, contractMain, contractToxin }) => {
   const [currentSection, setCurrentSection] = useState(0); // 현재 섹션 상태
   const [currentText, setCurrentText] = useState("main"); // 현재 텍스트 파일 상태
-  const [selectedArticleIds, setSelectedArticleIds] = useState([]); // 선택된 계약서 ID 배열 상태
+  const [selectedArticleIds, setSelectedArticleIds] = useState(() => {
+    // localStorage에서 초기값 가져오기
+    const savedIds = localStorage.getItem("selectedArticleIds");
+    return savedIds ? JSON.parse(savedIds) : [];
+  }); // 선택된 계약서 ID 배열 상태
+  const [modifiedSections, setModifiedSections] = useState(() => {
+    // localStorage에서 초기값 가져오기
+    const savedSections = localStorage.getItem("modifiedSections");
+    return savedSections ? JSON.parse(savedSections) : [];
+  }); // 수정된 섹션 상태
+
+  const navigate = useNavigate(); // useNavigate 훅 선언
 
   const mainSections = contractMain.articles.map(
     (article, index) => `주요조항 ${index + 1}`
@@ -69,24 +83,74 @@ const Suggestion = ({ contractMain, contractToxin }) => {
         : contractToxin.articles[currentSection];
 
     if (currentArticle && currentArticle.articleId) {
-      // 중복 체크: 이미 선택된 계약서 ID인지 확인
+      // 중복 체크: 이미 선택된 조항 ID인지 확인
       if (!selectedArticleIds.includes(currentArticle.articleId)) {
-        setSelectedArticleIds((prev) => [...prev, currentArticle.articleId]); // 계약서 ID 추가
-        console.log("선택된 계약서 ID:", currentArticle.articleId); // 추가된 ID 확인
+
+        setSelectedArticleIds((prev) => {
+          const newIds = [...prev, currentArticle.articleId];
+          localStorage.setItem("selectedArticleIds", JSON.stringify(newIds)); // localStorage에 저장
+          return newIds;
+        }); // 계약서 ID 추가
+
+        // 수정된 섹션 상태 업데이트
+        setModifiedSections((prev) => {
+          const newModifiedSections = [...prev];
+          newModifiedSections[currentSection] = true; // 현재 섹션을 수정된 섹션으로 표시
+          localStorage.setItem(
+            "modifiedSections",
+            JSON.stringify(newModifiedSections)
+          ); // localStorage에 저장
+          return newModifiedSections;
+        });
+
+        console.log("선택된 조항 ID:", currentArticle.articleId); // 추가된 ID 확인
       } else {
-        console.warn("계약서 ID가 이미 선택되었습니다.", currentArticle.articleId);
+        console.warn(
+          " ID가 이미 선택되었습니다.",
+          currentArticle.articleId
+        );
       }
     } else {
-      console.warn("현재 계약서가 없습니다.");
+      console.warn("현재 조항이 없습니다.");
+    }
+  };
+
+  const handleCancelModifyClick = () => {
+    const currentArticle =
+      currentText === "main"
+        ? contractMain.articles[currentSection]
+        : contractToxin.articles[currentSection];
+
+    if (currentArticle && currentArticle.articleId) {
+      // 선택된 계약서 ID에서 현재 섹션의 ID만 제거
+      setSelectedArticleIds((prev) => {
+        const newIds = prev.filter((id) => id !== currentArticle.articleId); // 계약서 ID 제거
+        localStorage.setItem("selectedArticleIds", JSON.stringify(newIds)); // localStorage에 저장
+        return newIds;
+      });
+      setModifiedSections((prev) => {
+        const newModifiedSections = [...prev];
+        newModifiedSections[currentSection] = false; // 현재 섹션을 수정되지 않은 섹션으로 표시
+        localStorage.setItem(
+          "modifiedSections",
+          JSON.stringify(newModifiedSections)
+        ); // localStorage에 저장
+        return newModifiedSections;
+      });
+      console.log("제거된 계약서 ID:", currentArticle.articleId); // 제거된 ID 확인
     }
   };
 
   const handleSubmit = async () => {
     try {
       console.log("전송할 계약서 ID 배열:", selectedArticleIds); // 전송할 ID 배열 확인
-      const data = await updateContractById(contractMain.contractId, selectedArticleIds);
+      const data = await updateContractById(
+        contractMain.contractId,
+        selectedArticleIds
+      );
       console.log("서버 응답:", data);
-      setSelectedArticleIds([]); // 전송 후 배열 초기화
+      // 배열 및 localStorage 초기화 코드를 제거했습니다.
+      navigate("/Resultcompare", { state: { contractId } }); // contractId와 함께 네비게이트
     } catch (error) {
       console.error("서버에 데이터 전송 중 오류 발생:", error);
     }
@@ -107,8 +171,7 @@ const Suggestion = ({ contractMain, contractToxin }) => {
     <Container>
       <GlobalStyle />
       <ToggleswitchContainer>
-        <Toggleswitch onChange={toggleText} />{" "}
-        {/* 텍스트 파일을 토글하는 스위치 */}
+        <Toggleswitch onChange={toggleText} />
       </ToggleswitchContainer>
       <ContentWrapper>
         <NavButton onClick={handlePrevClick} disabled={currentSection === 0}>
@@ -117,66 +180,41 @@ const Suggestion = ({ contractMain, contractToxin }) => {
         <Content>
           <Section className="active">
             <SectionContent className="slider__content">
-              <SectionTitle>
-                {sections[currentSection]}
-              </SectionTitle>
+              <SectionTitle>{sections[currentSection]}</SectionTitle>
               <SectionText className="slider__text">
                 {currentArticle ? (
                   <>
-                    <p style={{ textAlign: "left" }}>
-                      <img
-                        src={LabelImage}
-                        alt="label 이미지"
-                        style={{ marginRight: "5px", verticalAlign: "middle" }}
-                      />
-                      <span style={{ fontWeight: "bold" }}>
-                        계약서 내부 조항:
-                      </span><br /> {/* 줄 바꿈 추가 */}
-                      {currentArticle.sentence}
-                    </p>  
-
-                    <p style={{ textAlign: "left" }}>
-                      <img
-                        src={LabelImage}
-                        alt="label 이미지"
-                        style={{ marginRight: "5px", verticalAlign: "middle" }}
-                      />
-                      <span style={{ fontWeight: "bold" }}>법:</span><br /> {/* 줄 바꿈 추가 */}
-                      {currentArticle.law}
-                    </p>
-                    <p style={{ textAlign: "left" }}>
-                      <img
-                        src={LabelImage}
-                        alt="label 이미지"
-                        style={{ marginRight: "5px", verticalAlign: "middle" }}
-                      />
-                      <span style={{ fontWeight: "bold" }}>설명:</span><br /> {/* 줄 바꿈 추가 */}
-                      {currentArticle.description}
-                    </p>
-                    {currentArticle.recommend && (
-                      <p style={{ textAlign: "left" }}>
-                        <img
-                          src={LabelImage}
-                          alt="label 이미지"
-                          style={{
-                            marginRight: "5px",
-                            verticalAlign: "middle",
-                          }}
-                        />
-                        <span style={{ fontWeight: "bold" }}>추천:</span><br /> {/* 줄 바꿈 추가 */}
-                        {currentArticle.recommend}
-                      </p>
-                    )}
+                  <ArticleDetail title="계약서 내부 조항" content={currentArticle.sentence}/>
+                  <ArticleDetail title="법" content={currentArticle.law}/>
+                  <ArticleDetail title="상세 설명" content={currentArticle.description}/>
+                 {currentArticle.recommend && (
+                  <ArticleDetail title="수정 제안" content={currentArticle.recommend}/>
+                  )}
                   </>
                 ) : (
                   <p>데이터를 불러오는 중입니다...</p>
                 )}
               </SectionText>
               {currentText === "toxin" && ( // 각 세션에 버튼 표시
-                <StyledOrangebutton onClick={handleModifyClick}>
-                  추천안으로 수정하기
+              <>
+                <StyledOrangebutton
+                  onClick={
+                    modifiedSections[currentSection]
+                      ? handleCancelModifyClick
+                      : handleModifyClick
+                  }
+                >
+                  {modifiedSections[currentSection]
+                    ? "추천안으로 수정 취소하기"
+                    : "추천안으로 수정하기"}
                 </StyledOrangebutton>
-              )}
+              
+              {currentText === "toxin" &&
+                modifiedSections[currentSection] && ( // 수정 여부에 따라 메시지 표시
+                  <ModifiedMessage>수정안 담김</ModifiedMessage>
+                )}
+              </>
+            )}
             </SectionContent>
           </Section>
         </Content>
@@ -196,7 +234,10 @@ const Suggestion = ({ contractMain, contractToxin }) => {
           />
         ))}
       </ProgressContainer>
-      <StyledOrangebutton onClick={handleSubmit}>
+      <StyledOrangebutton
+
+        onClick={handleSubmit}
+      >
         <img src={ModifiyviewSrc} alt="modifyview" />
         수정안 보기
       </StyledOrangebutton>
@@ -226,12 +267,15 @@ const ContentWrapper = styled.div`
   display: flex;
   align-items: center;
   width: 100%;
-  height: 100%;
+  height: 90%;
+ 
 `;
 
 const NavButton = styled.button`
   background-color: #e7470a;
   color: white;
+  font-size: 14px;
+  
   border: none;
   padding: 10px 20px;
   margin: 0 10px;
@@ -247,7 +291,7 @@ const NavButton = styled.button`
 const Content = styled.div`
   display: flex;
   flex-direction: column;
-  height: 100%;
+  height: 70%;
   overflow-y: auto; /* 세로 스크롤 추가 */
   scroll-snap-type: y mandatory;
   scroll-behavior: smooth;
@@ -297,6 +341,8 @@ const SectionTitle = styled.div`
   margin-bottom: 20px;
   display: flex;
   align-items: center; /* 수직 정렬 추가 */
+  justify-content: center; /* 수평 가운데 정렬 */
+  align-items: center;
 `;
 
 const SectionText = styled.div`
@@ -309,12 +355,13 @@ const SectionText = styled.div`
 
 const ProgressContainer = styled.div`
   position: absolute;
-  bottom: 20px;
+  top: 80px;
   width: 90%;
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 10px;
+  gap: 15px;
+  margin-top:20px; 
 `;
 
 const ProgressDot = styled.div`
@@ -338,6 +385,7 @@ const StyledOrangebutton = styled(Orangebutton)`
   align-items: center;
   justify-content: center;
   position: relative;
+
   left: 50%;
   transform: translateX(-50%);
   margin-top: 20px;
@@ -354,3 +402,18 @@ const StyledOrangebutton = styled(Orangebutton)`
     margin-right: 10px;
   }
 `;
+
+const ModifiedMessage = styled.div`
+  margin-top: 10px;
+  padding: 5px 10px;
+  border: 1px solid #e7470a;
+  background-color: #fff3e0; /* 연한 배경색 */
+  color: #e7470a;
+  border-radius: 5px;
+  text-align: center;
+  font-weight: bold;
+  font-size: 14px; /* 폰트 크기 조정 */
+  width: auto;
+  display: inline-block;
+  vertical-align: middle;
+`; 

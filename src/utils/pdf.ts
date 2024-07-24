@@ -2,24 +2,12 @@ import { readAsArrayBuffer } from './asyncReader';
 import { getAsset } from './prepareAssets';
 import { normalize } from './helpers';
 
-export async function save(
-  pdfFile: File,
-  objects: Attachments[],
-  name: string
-) {
+export async function save(pdfFile, objects, name) {
   const PDFLib = await getAsset('PDFLib');
   const download = await getAsset('download');
-  let pdfDoc: {
-    getPages: () => any[];
-    embedFont: (arg0: unknown) => any;
-    embedJpg: (arg0: unknown) => any;
-    embedPng: (arg0: unknown) => any;
-    embedPdf: (arg0: any) => [any] | PromiseLike<[any]>;
-    save: () => any;
-  };
+  let pdfDoc;
 
   try {
-    // File 객체가 제대로 전달되는지 확인
     if (!(pdfFile instanceof Blob)) {
       throw new Error('The provided pdfFile is not a Blob');
     }
@@ -32,10 +20,10 @@ export async function save(
   const pagesProcesses = pdfDoc.getPages().map(async (page, pageIndex) => {
     const pageObjects = objects[pageIndex];
     const pageHeight = page.getHeight();
-    const embedProcesses = pageObjects.map(async (object: Attachment) => {
+    const embedProcesses = pageObjects.map(async (object) => {
       if (object.type === 'image') {
-        const { file, x, y, width, height } = object as ImageAttachment;
-        let img: any;
+        const { file, x, y, width, height } = object;
+        let img;
         try {
           if (!(file instanceof Blob)) {
             throw new Error('The provided file is not a Blob');
@@ -57,15 +45,7 @@ export async function save(
           throw e;
         }
       } else if (object.type === 'text') {
-        const {
-          x,
-          y,
-          text,
-          lineHeight,
-          size,
-          fontFamily,
-          width,
-        } = object as TextAttachment;
+        const { x, y, text, lineHeight, size, fontFamily, width } = object;
         const pdfFont = await pdfDoc.embedFont(fontFamily);
         return () =>
           page.drawText(text, {
@@ -77,15 +57,7 @@ export async function save(
             y: pageHeight - size! - y,
           });
       } else if (object.type === 'drawing') {
-        const {
-          x,
-          y,
-          path,
-          stroke,
-          strokeWidth,
-          scaleX,
-          scaleY
-        } = object as DrawingAttachment;
+        const { x, y, path, stroke, strokeWidth, scaleX, scaleY } = object;
         const {
           pushGraphicsState,
           setLineCap,
@@ -96,7 +68,6 @@ export async function save(
           rgb,
         } = PDFLib;
         return () => {
-
           page.pushOperators(
             pushGraphicsState(),
             setLineCap(LineCapStyle.Round),
@@ -113,21 +84,23 @@ export async function save(
             ),
             borderWidth: strokeWidth,
             x,
-            y: pageHeight - y ,
-            scale: Math.min( scaleX, scaleY),
+            y: pageHeight - y,
+            scale: Math.min(scaleX, scaleY),
           });
           page.pushOperators(popGraphicsState());
         };
       }
     });
-    // embed objects in order
-    const drawProcesses: any[] = await Promise.all(embedProcesses);
+    const drawProcesses = await Promise.all(embedProcesses);
     drawProcesses.forEach((p) => p());
   });
   await Promise.all(pagesProcesses);
+
   try {
     const pdfBytes = await pdfDoc.save();
-    download(pdfBytes, name, 'application/pdf');
+    const pdfBlob = new Blob([pdfBytes], { type: 'application/pdf' });
+    download(pdfBytes, name, 'application/pdf'); // PDF 파일 다운로드
+    return pdfBlob;
   } catch (e) {
     console.log('Failed to save PDF.');
     throw e;
