@@ -57,9 +57,9 @@ const ContractDetails = () => {
 
   useEffect(() => {
     if (contractMain && contractToxin) {
-      navigate("/reviewresult", { state: { contractMain, contractToxin } });
+      navigate("/reviewresult", { state: {contractId, contractMain, contractToxin } });
     }
-  }, [contractMain, contractToxin, navigate]);
+  }, [contractMain, contractToxin, navigate, contractId]);
 
   if (error) {
     return <div>Error: {error}</div>;

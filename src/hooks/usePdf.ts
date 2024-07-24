@@ -10,7 +10,7 @@ export interface Pdf {
 export const usePdf = () => {
   const [name, setName] = useState('');
   const [pageIndex, setPageIndex] = useState(0);
-  const [dimensions, setDimensions] = useState<Dimensions>();
+  const [dimensions, setDimensions] = useState();
   const [file, setFile] = useState<File>();
   const [pages, setPages] = useState<any>([]);
   const [isMultiPage, setIsMultiPage] = useState(false);
@@ -49,15 +49,17 @@ export const usePdf = () => {
     setIsLastPage(_pages.length === 1);
   };
 
-  const savePdf = async (attachments: Attachments[]) => {
-    if (isSaving || !file) return;
+  const savePdf = async (attachments) => {
+    if (isSaving || !file) return null;
 
     setIsSaving(true);
 
     try {
-      await save(file, attachments, name);
+      const savedPdfBlob = await save(file, attachments, name);
+      return savedPdfBlob;
     } catch (e) {
       console.log(e);
+      return null;
     } finally {
       setIsSaving(false);
     }
