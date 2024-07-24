@@ -91,7 +91,7 @@ const ComponentWrapper = styled.div`
   flex: 1;
   max-width: 800px; /* 컴포넌트의 최대 너비를 설정합니다. 원하는 값으로 변경하세요. */
   box-sizing: border-box;
-  overflow: auto; /* 개별 컴포넌트 내부 스크롤 허용 */
+  
 `;
 
 export default Reviewresult;
