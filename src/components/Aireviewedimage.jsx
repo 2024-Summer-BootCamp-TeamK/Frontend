@@ -4,9 +4,9 @@ import styled from "styled-components";
 const Swit = styled.label`
   --_switch-bg-clr: #f9e6d8; /* Background color of the switch */
   --_switch-padding: 3px; /* Padding around button */
-  --_slider-bg-clr: #e7470a; /* Slider color unchecked */
+  --_slider-bg-clr: #e95725; /* Slider color unchecked */
 
-  --_label-padding: 0.8rem 1.8rem; /* Padding around the labels - this gives the switch its global width and height */
+  --_label-padding: 0.95rem 1.8rem; /* Padding around the labels - this gives the switch its global width and height */
   --_switch-easing: cubic-bezier(
     0.47,
     1.64,
