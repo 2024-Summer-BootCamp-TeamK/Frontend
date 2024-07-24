@@ -22,6 +22,7 @@ import {
 import logoSrc from "../images/logo.svg";
 import { useLocation } from 'react-router-dom';
 import * as pdfjsLib from 'pdfjs-dist';
+import documentService from '../services/putPdfService';  // import documentService
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/2.6.347/pdf.worker.min.js`;
 
@@ -101,7 +102,21 @@ const PdfEditor = () => {
     afterUploadAttachment: addAttachment,
   });
 
-  const handleSavePdf = () => savePdf(allPageAttachments);
+  const handleSavePdf = async () => {
+    try {
+      const savedPdfBlob = await savePdf(allPageAttachments);
+      console.log("저장 완료", savedPdfBlob); // savedPdfBlob을 로그로 출력
+
+      if (savedPdfBlob) {
+        console.log("수정한다 이제");
+        const pdfFile = new File([savedPdfBlob], `${name}.pdf`, { type: 'application/pdf' });
+        await documentService.updateDocument(documentId, pdfFile); // 객체의 메서드로 호출
+        console.log('Document updated successfully');
+      }
+    } catch (error) {
+      console.error('Error updating document:', error);
+    }
+  };
 
   // 웹소켓 연결 설정
   useEffect(() => {
@@ -129,8 +144,8 @@ const PdfEditor = () => {
           addAttachment(message.payload); // 서버에서 전달된 드로잉 추가
         }
         if (message.type === 'update_drawing') {
-            update( message.payload); 
-          }
+          update( message.payload); 
+        }
       };
       websocket.onerror = (error) => {
         console.error('웹소켓 에러: ', error);
