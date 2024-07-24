@@ -13,24 +13,8 @@ import {
 } from '../components/Headerall';
 import logoSrc from '../images/logo.svg'; // logo.svg 파일 경로를 올바르게 설정
 
-const Container = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-`;
-
-const FileName = styled.h5`
-  margin: 20px 0;
-  margin-top: 150px;
-  font-size: 16px;
-  color: #c0c0c0;
-  text-align: center;
-`;
-
 const Key = () => {
-    const navigate = useNavigate(); // useNavigate 훅을 사용하여 navigate 함수 가져오기
+    const navigate = useNavigate(); 
     const location = useLocation();
     const { pdfFile } = location.state || {}; // state에서 file 가져오기
     const fileName = pdfFile ? pdfFile.name : '! 업로드 된 파일이 없습니다'; // 파일 이름 추출
@@ -55,3 +39,20 @@ const Key = () => {
 };
 
 export default Key;
+
+
+const Container = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-bottom:5vh;
+`;
+
+const FileName = styled.h5`
+  margin: 20px 0;
+  margin-top: 150px;
+  font-size: 16px;
+  color: #c0c0c0;
+  text-align: center;
+`;

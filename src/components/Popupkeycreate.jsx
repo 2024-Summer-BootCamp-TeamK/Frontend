@@ -3,26 +3,92 @@ import styled, { keyframes } from 'styled-components';
 import axios from 'axios';
 import contractShare from '../services/share_API';
 
+const Popupkeycreate = ({ closePopup, pdfFile }) => {
+  const [email, setEmail] = useState('');
+  const [showAlert, setShowAlert] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  const handleEmailChange = (e) => {
+    setEmail(e.target.value);
+  };
+
+  const handleConfirm = async () => {
+    setLoading(true); // Show the loading spinner
+    const formData = new FormData();
+    formData.append('email', email);
+    formData.append('pdfFile', pdfFile);
+    try {
+      const data = await contractShare(formData);
+      console.log('공유계약서 업로드 성공:', data);
+      setShowAlert(true); // Show the custom alert
+      // 성공 시 추가 작업
+    } catch (error) {
+      console.error('공유계약서 업로드 에러:', error.data?.data || error.message);
+      alert('계약서 공유에 실패했습니다.');
+      // 에러 처리 추가
+    } finally {
+      setLoading(false); // Hide the loading spinner
+    }
+  };
+
+  const handleCloseAlert = () => {
+    setShowAlert(false);
+  };
+
+  return (
+    <>
+      <PopupWrapper>
+        <PopupTitle>
+          화면 공유 링크와 접속 비밀번호를 <br /> 전달받을 이메일을 입력해주세요
+        </PopupTitle>
+        <FormGroup>
+          <Emailform>이메일 :</Emailform>
+          <EmailInput
+            type="email"
+            placeholder="이메일 주소를 입력해주세요."
+            value={email}
+            onChange={handleEmailChange}
+          />
+        </FormGroup>
+        <ConfirmButton onClick={handleConfirm}>이메일 전송</ConfirmButton>
+      </PopupWrapper>
+      {loading && (
+        <LoadingOverlay className="loading" />
+      )}
+      {showAlert && (
+        <CustomAlert>
+          <AlertTitle>전송 완료</AlertTitle>
+          <AlertMessage>이메일을 확인해주세요</AlertMessage>
+          <AlertButton onClick={handleCloseAlert}>확인</AlertButton>
+        </CustomAlert>
+      )}
+    </>
+  );
+};
+
+export default Popupkeycreate;
+
+
 const PopupWrapper = styled.div`
   display: flex;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -40%);
   flex-direction: column;
   align-items: center;
   justify-content: center;
   background-color: white;
-  border: 5px solid #141F7B;
-  border-radius: 30px;
+  border: 3px solid #141F7B;
+  border-radius: 20px;
   padding: 40px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-  width: 50%; /* 기본 너비 */
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
+  width: 50%;
   height: 50%; /* 기본 높이 */
-  max-width: 600px; /* 최대 너비 */
-  max-height: 400px; /* 최대 높이 */
-  min-width: 300px; /* 최소 너비 */
-  min-height: 200px; /* 최소 높이 */
-  position: fixed; /* 고정 위치 설정 */
-  top: calc(100% - 320px); 
-  left: 50%;
-  transform: translate(-50%, -50%);
+  max-width: 600px; 
+  max-height: 400px; 
+  min-width: 300px; 
+  min-height: 200px; 
+  position: fixed; 
   z-index: 1; /* 기본 z-index 설정 */
 `;
 
@@ -47,12 +113,13 @@ const Emailform = styled.h4`
   color: #141F7B;
   font-size: 17px;
   margin-right: 10px;
-  white-space: nowrap; /* 텍스트 줄바꿈 방지 */
-  flex-shrink: 0; /* 크기 고정 */
+  white-space: nowrap; 
+  flex-shrink: 0; 
+  padding-top: 1.1vh;
 `;
 
 const EmailInput = styled.input`
-  flex: 1; /* 남은 공간 채우기 */
+  flex: 1; 
   padding: 10px;
   border: 1px solid #ccc;
   border-radius: 10px;
@@ -97,6 +164,9 @@ const CustomAlert = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
+   top: 50%;
+  left: 50%;
+  transform: translate(-50%, -40%);
   background-color: white;
   border: 5px solid #141F7B;
   border-radius: 30px;
@@ -109,8 +179,6 @@ const CustomAlert = styled.div`
   min-width: 300px; /* 최소 너비 */
   min-height: 200px; /* 최소 높이 */
   position: fixed; /* 고정 위치 설정 */
-  top: 58.5%;
-  left: 50%;
   transform: translate(-50%, -50%);
   z-index: 1000; /* 높은 z-index 설정 */
 `;
@@ -194,68 +262,3 @@ const LoadingOverlay = styled.div`
     box-shadow: rgba(0, 0, 0, 0.75) 1.5em 0 0 0, rgba(0, 0, 0, 0.75) 1.1em 1.1em 0 0, rgba(0, 0, 0, 0.75) 0 1.5em 0 0, rgba(0, 0, 0, 0.75) -1.1em 1.1em 0 0, rgba(0, 0, 0, 0.75) -1.5em 0 0 0, rgba(0, 0, 0, 0.75) -1.1em -1.1em 0 0, rgba(0, 0, 0, 0.75) 0 -1.5em 0 0, rgba(0, 0, 0, 0.75) 1.1em -1.1em 0 0;
   }
 `;
-
-const Popupkeycreate = ({ closePopup, pdfFile }) => {
-  const [email, setEmail] = useState('');
-  const [showAlert, setShowAlert] = useState(false);
-  const [loading, setLoading] = useState(false);
-
-  const handleEmailChange = (e) => {
-    setEmail(e.target.value);
-  };
-
-  const handleConfirm = async () => {
-    setLoading(true); // Show the loading spinner
-    const formData = new FormData();
-    formData.append('email', email);
-    formData.append('pdfFile', pdfFile);
-    try {
-      const data = await contractShare(formData);
-      console.log('공유계약서 업로드 성공:', data);
-      setShowAlert(true); // Show the custom alert
-      // 성공 시 추가 작업
-    } catch (error) {
-      console.error('공유계약서 업로드 에러:', error.data?.data || error.message);
-      alert('계약서 공유에 실패했습니다.');
-      // 에러 처리 추가
-    } finally {
-      setLoading(false); // Hide the loading spinner
-    }
-  };
-
-  const handleCloseAlert = () => {
-    setShowAlert(false);
-  };
-
-  return (
-    <>
-      <PopupWrapper>
-        <PopupTitle>
-          화면 공유 링크와 접속 비밀번호를 <br /> 전달받을 이메일을 입력해주세요
-        </PopupTitle>
-        <FormGroup>
-          <Emailform>이메일 :</Emailform>
-          <EmailInput
-            type="email"
-            placeholder="이메일 주소를 입력해주세요."
-            value={email}
-            onChange={handleEmailChange}
-          />
-        </FormGroup>
-        <ConfirmButton onClick={handleConfirm}>이메일 전송</ConfirmButton>
-      </PopupWrapper>
-      {loading && (
-        <LoadingOverlay className="loading" />
-      )}
-      {showAlert && (
-        <CustomAlert>
-          <AlertTitle>전송 완료</AlertTitle>
-          <AlertMessage>이메일을 확인해주세요</AlertMessage>
-          <AlertButton onClick={handleCloseAlert}>확인</AlertButton>
-        </CustomAlert>
-      )}
-    </>
-  );
-};
-
-export default Popupkeycreate;
