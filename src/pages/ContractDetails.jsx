@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { getContractMainById, getContractToxinById } from "../services/contractService";
 import { getTaskStatusById } from "../services/taskService";
-import LoadingTemp from "../components/LoadingTemp";
+import Loading from "./Loading";
 
 const ContractDetails = () => {
   const { contractId } = useParams();
@@ -66,7 +66,7 @@ const ContractDetails = () => {
   }
 
   if (!contractMain || !contractToxin) {
-    return <LoadingTemp />;
+    return <Loading />;
   }
 
   return null;
