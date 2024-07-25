@@ -21,10 +21,6 @@ COPY package*.json ./
 # package.json에 있는 dependencies를 설치
 RUN npm install
 
-RUN npm uninstall pdfjs-dist
-
-RUN npm install pdfjs-dist@3.11.147
-
 # /app/frontend에 있는 모든 파일들을 복사 (소스 코드)
 COPY . .
 
