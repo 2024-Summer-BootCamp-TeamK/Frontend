@@ -27,9 +27,7 @@ function App() {
       <Router>
         <Routes>
           <Route path="/category" element={<Category />} />
-
           <Route path="/loading" element={<Loading/>} />
-
           <Route path="/" element={<Mainpage />} />
           <Route path="/fileupload" element={<Fileupload />} />
           <Route path="/fileuploadshare" element={<Fileuploadshare />} />
@@ -40,11 +38,8 @@ function App() {
           <Route path="/key" element={<Key />} />
           <Route path="/keyinput/:documentId" element={<Keyinput />} />
           <Route path="/carousel" element={<Carousel />} />
-
           <Route path="/contract/:contractId" element={<ContractDetails />} />
-
           <Route path="/pdf-editor" element={<PdfEditor />} />
-
         </Routes>
       </Router>
     </>
