@@ -5,6 +5,61 @@ import eyeOnSrc from "../images/Eye_on.svg";
 import eyeOffSrc from "../images/Eye_off.svg";
 import accessDocument from '../services/access_API';
 
+const Popupkeyinput = ({ documentId, onSuccess }) => {
+  const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState(null);
+
+  const handlePasswordChange = (e) => {
+    setPassword(e.target.value);
+  };
+
+  const handleTogglePassword = () => {
+    setShowPassword(!showPassword);
+  };
+
+  const handleConfirm = async () => {
+    try {
+      const data = await accessDocument(documentId, password);
+      if (data.check) {
+        onSuccess(password); // Pass password to onSuccess
+      } else {
+        setError('Invalid password');
+      }
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
+  return (
+    <PopupWrapper>
+      <KeyContainer>
+        <KeyImage src={keySrc} alt="Key Icon" />
+      </KeyContainer>
+      <PopupTitle>
+        계약서의 보안을 위해 설정된 비밀번호를 입력해주세요.
+      </PopupTitle>
+      <PWInputWrapper>
+        <PWInput
+          type={showPassword ? "text" : "password"}
+          placeholder="비밀번호를 입력해주세요."
+          value={password}
+          onChange={handlePasswordChange}
+        />
+        <ToggleButton onClick={handleTogglePassword}>
+          <ToggleIcon src={showPassword ? eyeOffSrc : eyeOnSrc} alt="Toggle Password Visibility" />
+        </ToggleButton>
+      </PWInputWrapper>
+      {error && <div style={{ color: 'red' }}>{error}</div>}
+      <ConfirmButton onClick={handleConfirm}>확인</ConfirmButton>
+    </PopupWrapper>
+  );
+};
+
+export default Popupkeyinput;
+
+
+
 const PopupWrapper = styled.div`
   position: fixed;
   top: 50%;
@@ -12,7 +67,7 @@ const PopupWrapper = styled.div`
   transform: translate(-50%, -50%);
   background-color: white;
   border: 5px solid #141F7B;
-  border-radius: 30px;
+  border-radius: 20px;
   padding: 20px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
   width: 50%;
@@ -115,56 +170,3 @@ const ConfirmButton = styled.button`
     outline: none;
   }
 `;
-
-const Popupkeyinput = ({ documentId, onSuccess }) => {
-  const [password, setPassword] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
-  const [error, setError] = useState(null);
-
-  const handlePasswordChange = (e) => {
-    setPassword(e.target.value);
-  };
-
-  const handleTogglePassword = () => {
-    setShowPassword(!showPassword);
-  };
-
-  const handleConfirm = async () => {
-    try {
-      const data = await accessDocument(documentId, password);
-      if (data.check) {
-        onSuccess(password); // Pass password to onSuccess
-      } else {
-        setError('Invalid password');
-      }
-    } catch (err) {
-      setError(err.message);
-    }
-  };
-
-  return (
-    <PopupWrapper>
-      <KeyContainer>
-        <KeyImage src={keySrc} alt="Key Icon" />
-      </KeyContainer>
-      <PopupTitle>
-        계약서의 보안을 위해 설정된 비밀번호를 입력해주세요.
-      </PopupTitle>
-      <PWInputWrapper>
-        <PWInput
-          type={showPassword ? "text" : "password"}
-          placeholder="비밀번호를 입력해주세요."
-          value={password}
-          onChange={handlePasswordChange}
-        />
-        <ToggleButton onClick={handleTogglePassword}>
-          <ToggleIcon src={showPassword ? eyeOffSrc : eyeOnSrc} alt="Toggle Password Visibility" />
-        </ToggleButton>
-      </PWInputWrapper>
-      {error && <div style={{ color: 'red' }}>{error}</div>}
-      <ConfirmButton onClick={handleConfirm}>확인</ConfirmButton>
-    </PopupWrapper>
-  );
-};
-
-export default Popupkeyinput;

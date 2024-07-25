@@ -16,7 +16,7 @@ import uploadIconSrc from "../images/upload-icon.svg";
 const FileUploadShare = () => {
   const [fileName, setFileName] = useState(null);
   const [file, setFile] = useState(null);
-  const navigate = useNavigate();
+  const navigate = useNavigate(); // useNavigate 훅 사용
 
   const onDrop = useCallback((acceptedFiles) => {
     setFileName(acceptedFiles[0].name);
@@ -43,8 +43,8 @@ const FileUploadShare = () => {
             <Logo data={logoSrc} type="image/svg+xml" />
           </LogoContainer>
           <ButtonContainer>
-            <Button>AI 검토 받으러 가기</Button>
-            <Button>상대방과 계약서 검토하기</Button>
+            <Button onClick={() => navigate('/category')}>AI 검토 받으러 가기</Button>
+            <Button onClick={() => navigate('/fileuploadshare')}>상대방과 계약서 검토하기</Button>
           </ButtonContainer>
         </Headerall>
       </div>

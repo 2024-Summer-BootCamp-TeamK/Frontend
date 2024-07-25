@@ -1,5 +1,4 @@
 import React from 'react';
-import styled from 'styled-components';
 import { useParams, useNavigate } from 'react-router-dom';
 import Popupkeyinput from '../components/Popupkeyinput';
 import Button from '../components/Button';
@@ -26,8 +25,8 @@ const Keyinput = () => {
                     <Logo data={logoSrc} type="image/svg+xml" />
                 </LogoContainer>
                 <ButtonContainer>
-                    <Button>AI 검토 받으러 가기</Button>
-                    <Button>상대방과 계약서 검토하기</Button>
+                    <Button onClick={() => navigate('/category')}>AI 검토 받으러 가기</Button>
+                    <Button onClick={() => navigate('/fileuploadshare')}>상대방과 계약서 검토하기</Button>
                 </ButtonContainer>
             </Headerall>
             <div>

@@ -8,15 +8,15 @@ const Switch = styled.label`
   --_slider-bg-clr-on: #e95725; /* Slider color checked */
   --_slider-txt-clr: #ffffff;
   --_inactive-txt-clr: #888888; /* Inactive text color */
-  --_label-padding: 0.5rem 1.5rem; /* Padding around the labels - this gives the switch its global width and height */
+  --_label-padding: 0.8rem 1.8rem; /* Padding around the labels - this gives the switch its global width and height */
   --_switch-easing: cubic-bezier(0.47, 1.64, 0.41, 0.8); /* Easing on toggle switch */
-  --_font-size: 1rem;
+  --_font-size: 1.13rem;
 
   width: fit-content;
   display: flex;
   justify-content: center;
   position: relative;
-  border-radius: 9999px;
+  border-radius: 10px;
   cursor: pointer;
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -70,7 +70,7 @@ const Switch = styled.label`
 
   /* Switch hover */
   &:hover::after {
-    inset: -0.25rem;
+    inset: -0.1rem;
   }
 
   /* Checked - move slider to right */
@@ -87,10 +87,12 @@ const Switch = styled.label`
   }
   > input:checked ~ span:last-of-type {
     opacity: 1;
-    color: initial; /* Active text color */
+    color: #fff;
+    font-weight: bold;
   }
   > span:first-of-type {
-    color: initial;
+    color: #fff;
+    font-weight: bold;
   }
 
   @media (max-width: 768px) {

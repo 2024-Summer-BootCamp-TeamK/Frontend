@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import styled, { createGlobalStyle } from "styled-components";
 import Orangebutton from "./Orangebutton";
 import Toggleswitch from "./Toggleswitch";
@@ -28,17 +29,19 @@ const GlobalStyle = createGlobalStyle`
   }
 `;
 
-const Suggestion = ({ contractMain, contractToxin }) => {
+const Suggestion = ({ contractId, contractMain, contractToxin }) => {
   const [currentSection, setCurrentSection] = useState(0);
   const [currentText, setCurrentText] = useState("main");
   const [selectedArticleIds, setSelectedArticleIds] = useState(() => {
-    const savedIds = localStorage.getItem("selectedArticleIds");
+    const savedIds = sessionStorage.getItem("selectedArticleIds");
     return savedIds ? JSON.parse(savedIds) : [];
   });
   const [modifiedSections, setModifiedSections] = useState(() => {
-    const savedSections = localStorage.getItem("modifiedSections");
+    const savedSections = sessionStorage.getItem("modifiedSections");
     return savedSections ? JSON.parse(savedSections) : [];
   });
+
+  const navigate = useNavigate();
 
   const mainSections = contractMain.articles.map(
     (article, index) => `주요조항 ${index + 1}`
@@ -80,14 +83,14 @@ const Suggestion = ({ contractMain, contractToxin }) => {
 
         setSelectedArticleIds((prev) => {
           const newIds = [...prev, currentArticle.articleId];
-          localStorage.setItem("selectedArticleIds", JSON.stringify(newIds));
+          sessionStorage.setItem("selectedArticleIds", JSON.stringify(newIds));
           return newIds;
         });
 
         setModifiedSections((prev) => {
           const newModifiedSections = [...prev];
           newModifiedSections[currentSection] = true;
-          localStorage.setItem(
+          sessionStorage.setItem(
             "modifiedSections",
             JSON.stringify(newModifiedSections)
           );
@@ -95,6 +98,7 @@ const Suggestion = ({ contractMain, contractToxin }) => {
         });
 
         console.log("선택된 계약서 ID:", currentArticle.articleId);
+
       } else {
         console.warn(
           " ID가 이미 선택되었습니다.",
@@ -139,12 +143,16 @@ const Suggestion = ({ contractMain, contractToxin }) => {
         selectedArticleIds
       );
       console.log("서버 응답:", data);
+      
       // 로컬 스토리지 초기화
       localStorage.removeItem("selectedArticleIds");
       localStorage.removeItem("modifiedSections");
       setSelectedArticleIds([]);
       setModifiedSections([]);
 
+      // 수정안 보기 
+      navigate("/Resultcompare", { state: { contractId } });
+      
     } catch (error) {
       console.error("서버에 데이터 전송 중 오류 발생:", error);
     }
@@ -169,7 +177,7 @@ const Suggestion = ({ contractMain, contractToxin }) => {
       </ToggleswitchContainer>
       <ContentWrapper>
         <NavButton onClick={handlePrevClick} disabled={currentSection === 0}>
-          이전
+        {"<"}
         </NavButton>
         <Content>
           <ProgressContainer>
@@ -209,22 +217,21 @@ const Suggestion = ({ contractMain, contractToxin }) => {
               </SectionText>
               {currentText === "toxin" && (
                 <>
-                  <StyledOrangebutton
+                  <ModifyButton
                     onClick={
                       modifiedSections[currentSection]
-                        ? handleCancelModifyClick
-                        : handleModifyClick
+                      ? handleCancelModifyClick
+                      : handleModifyClick
                     }
-                  >
-                    {modifiedSections[currentSection]
-                      ? "추천안으로 수정 취소하기"
-                      : "추천안으로 수정하기"}
-                  </StyledOrangebutton>
+                    >
+                     {modifiedSections[currentSection] ? "취소"
+                      :  "수정할래요!"}
+                  </ModifyButton>
+                      {currentText === "toxin" &&
+                        modifiedSections[currentSection] && (
+                          <ModifiedMessage>수정안 담김</ModifiedMessage>
+                        )}
 
-                  {currentText === "toxin" &&
-                    modifiedSections[currentSection] && (
-                      <ModifiedMessage>수정안 담김</ModifiedMessage>
-                    )}
                 </>
               )}
             </SectionContent>
@@ -234,14 +241,16 @@ const Suggestion = ({ contractMain, contractToxin }) => {
           onClick={handleNextClick}
           disabled={currentSection === sections.length - 1}
         >
-          다음
+         {">"}
         </NavButton>
       </ContentWrapper>
       <StyledOrangebutton
         style={{
           height: "100%;",
-          top: "-13%",
+          top: "-10%",
           position: "relative",
+          backgroundColor: "#e7470a",
+          color: "#fff",
           left: "12%",
           width: "auto",
           alignItems: "center",
@@ -252,7 +261,7 @@ const Suggestion = ({ contractMain, contractToxin }) => {
         onClick={handleSubmit}
       >
         <img src={ModifiyviewSrc} alt="modifyview" />
-        수정안 보기
+        최종수정안 보기
       </StyledOrangebutton>
     </Container>
   );
@@ -267,34 +276,45 @@ const Container = styled.div`
   position: relative;
   overflow: hidden;
   padding: 20px;
-  margin-top: 1vh;
   border-radius: 20px;
   background-color: #fefdf6;
   flex-direction: column;
-  gap: 1vh;
+  margin-left: 3vw;
+  gap: 2vh;
 `;
 
 const ContentWrapper = styled.div`
   display: flex;
   align-items: flex-start;
   width: 100%;
-  height: 130vh;
+  height: 100vh;
 `;
 
 const NavButton = styled.button`
-  background-color: #e7470a;
-  color: white;
-  font-size: 14px;
+  background-color: #e95725;
+  display: flex;
+  justify-content: center;
   align-items: center;
+  width: 1.2vw;
+  color: white;
+  font-size: 1vw;
+  font-weight: bold; 
   border: none;
-  padding: 10px 20px;
-  margin: 0 10px;
   cursor: pointer;
-  border-radius: 5px;
-  margin-top: 35vh;
+  border-radius: 50%;
+  margin-top: 32vh;
+  
   &:disabled {
     background-color: #ccc;
     cursor: not-allowed;
+  }
+
+  &:active { 
+   outline: none;
+  }
+
+  &:focus {
+    outline: none;
   }
 `;
 
@@ -308,6 +328,8 @@ const Content = styled.div`
   align-items: flex-start;
   position: relative;
   border-radius: 20px;
+  margin-left: 1vw;
+  margin-right: 1vw;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   background-color: #ffffff;
   &:hover {
@@ -336,7 +358,7 @@ const ToggleswitchContainer = styled.div`
   display: flex;
   justify-content: center;
   width: 100%;
-  margin-top: 12vh;
+  margin-top: 15vh;
   z-index: 1;
 `;
 
@@ -347,18 +369,56 @@ const StyledOrangebutton = styled(Orangebutton)`
   position: relative;
   left: 50%;
   transform: translateX(-50%);
-  margin-top: 20px; /* 버튼과 섹션 간의 간격 추가 */
-  padding: 10px 20px; /* 버튼 패딩 추가 */
-  background-color: #e7470a; /* 버튼 배경색 추가 */
-  color: white;
-  border: none;
-  border-radius: 5px;
+  margin-top: 2vh;
+  padding: 8px 13px; 
+  border: 1px solid #e7470a;
+  border-radius: 10px;
   cursor: pointer;
 
   img {
-    width: 20px;
-    height: 20px;
-    margin-right: 10px;
+
+    width: 2.4vw;
+    height: 2.4vh;
+    margin-right: 3px;
+  }
+`;
+
+
+const ModifyButton = styled.button`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #ffffff;
+  color: #e7470a;
+  font-weight: bolde
+  margin-top: 2vh;
+  padding: 10px 13px; 
+  border: 1px solid #e7470a;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: transform 0.3s ease, box-shadow 0.2s ease, border 0.2s ease, background-color 0.2s ease, color 0.2s ease;
+
+  img {
+    width: 2.1vw;
+    height: 2.1vh;
+}
+  
+  &:active {
+    outline: none; 
+    transform: scale(1);
+  }
+  
+  &:focus {
+    outline: none;
+  }
+    
+  &:hover {
+    border: 1px solid #e7470a;
+    background-color: #e7470a;
+    color: #fff;
   }
 `;
 
@@ -376,12 +436,12 @@ const Section = styled.div`
   padding: 30px;
   color: #000000;
   opacity: 0; /* 초기 상태에서 opacity를 0으로 설정 */
-  transform: translateY(25px);
+  transform: translateY(10px);
   transition: all 0.4s;
 
   &.active {
     opacity: 1;
-    transform: translateY(0);
+    transform: translateY(10);
   }
 `;
 
@@ -398,9 +458,9 @@ const SectionTitle = styled.div`
   align-items: center; /* 수직 정렬 추가 */
   justify-content: center; /* 수평 가운데 정렬 */
   margin-top: 5px;
-`;
-
-const SectionText = styled.div`
+  `;
+  
+  const SectionText = styled.div`
   color: #4e4a67;
   margin-bottom: 30px;
   line-height: 1.5em;

@@ -1,13 +1,14 @@
 import React, { useEffect } from "react";
 import Lottie from "react-lottie";
+import { useNavigate } from "react-router-dom";
 import animationData2 from "../lottie/Loading3.json";
 import Button from "../components/Button";
 import styled, { createGlobalStyle, keyframes } from "styled-components";
 import {
-    Headerall,
-    LogoContainer,
-    Logo,
-    ButtonContainer,
+  Headerall,
+  LogoContainer,
+  Logo,
+  ButtonContainer,
 } from "../components/Headerall";
 import logoSrc from "../images/logo.svg";
 
@@ -38,121 +39,6 @@ const loadingAnimation = keyframes`
   }
 `;
 
-
-const Document = styled.div`
-  width: 15em;
-  height: 25em;
-  position: relative;
-  cursor: pointer;
-
-  &.loading .bottom .bar:nth-child(2)::before {
-    animation: ${loadingAnimation} 1s infinite;
-  }
-
-  &.loading .bottom .bar:nth-child(3)::before {
-    animation: ${loadingAnimation} 1s 0.1s infinite;
-  }
-
-  &.loading .bottom .bar:nth-child(4)::before {
-    animation: ${loadingAnimation} 1s 0.2s infinite;
-  }
-
-  &:hover .bottom .bar, &:hover .bottom .icon {
-    background: ${activeColor};
-  }
-
-  &:hover .bottom .icon.fa {
-    color: ${activeColor};
-  }
-
-  .name {
-    color: ${bgColor};
-    width: 100%;
-    text-align: center;
-    font-size: 1.5em;
-    line-height: 2em;
-    padding: 1em 0;
-  }
-
-  .bottom {
-    width: 15em;
-    height: 15em;
-    background-color: ${bgColor};
-    padding-top: 5em;
-    box-sizing: border-box;
-
-    .icon {
-      position: absolute;
-      width: 5em;
-      height: 5em;
-      background: #ccc;
-      margin: 0 auto;
-      border-radius: 0.5em;
-      top: 4em;
-      left: 3em;
-      padding: 0.5em;
-      box-sizing: border-box;
-      text-align: center;
-
-      span {
-        font-size: 3.5em;
-        font-weight: bold;
-        color: ${bgColor};
-        line-height: 1.25em;
-      }
-    }
-
-    .bar, .icon {
-      transition: all 0.5s;
-    }
-
-    .fa.icon {
-      background-color: transparent;
-      color: #ccc;
-      font-size: 5em;
-      top: 0.25em;
-      left: 0em;
-      text-align: left;
-    }
-
-    .bar {
-      width: 10em;
-      height: 1em;
-      border-radius: 0.5em;
-      background: #ccc;
-      margin: 1.25em auto;
-      position: relative;
-
-      &::before {
-        content: '';
-        position: absolute;
-        left: 0;
-        top: 10%;
-        height: 80%;
-        width: 0%;
-        background-color: ${activeColor};
-      }
-    }
-  }
-
-  .top {
-    width: 10em;
-    height: 5em;
-    background-color: ${bgColor};
-
-    &::before {
-      content: '';
-      position: absolute;
-      width: 0;
-      height: 0;
-      right: 0;
-      border-top: solid 5em transparent;
-      border-left: 5em solid ${foldColor};
-      box-shadow: -0.5em 0.5em 0.5em #ccc;
-    }
-  }
-`;
-
 const Container = styled.div`
   display: flex;
   flex-direction: column;
@@ -160,9 +46,7 @@ const Container = styled.div`
   align-items: center;
   height: 100vh;
   padding-top: 10em; // 여기서 상단 패딩을 추가합니다.
-
 `;
-
 
 const animationDuration = '10s'; // 원하는 애니메이션 지속 시간 설정
 
@@ -226,7 +110,7 @@ const Wrapper = styled.div`
     left: -25px;
     top: -50px;
     font-size: 12px;
-    font-color: #FFFFF;
+    color: #fff; /* Changed to white */
     font-weight: bold;
     width: 44px;
     height: 25px;
@@ -261,7 +145,33 @@ const Wrapper = styled.div`
   }
 `;
 
+const LogoButton = styled.button`
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  z-index: 5;
+  outline: none;
+
+  &:focus {
+    outline: none; /* Ensures no outline appears when the button is focused */
+  }
+`;
+
+const LogoWrapper = styled.div`
+  position: relative;
+  display: inline-block;
+  width: fit-content;
+`;
+
 const Loading = () => {
+  const navigate = useNavigate(); // useNavigate 훅 사용
+
   useEffect(() => {
     let interval = setInterval(increment, 100); // 15초 동안 100%로 증가하도록 수정
     let current = 0;
@@ -297,7 +207,6 @@ const Loading = () => {
     };
   }, []);
 
-
   const defaultOptions2 = {
     loop: true,
     autoplay: true,
@@ -306,31 +215,35 @@ const Loading = () => {
       preserveAspectRatio: "xMidYMid slice"
     }
   };
+
   return (
     <>
       <GlobalStyle />
       <div>
         <Headerall>
           <LogoContainer>
-            <Logo data={logoSrc} type="image/svg+xml" />
+            <LogoWrapper>
+              <Logo data={logoSrc} type="image/svg+xml" />
+              <LogoButton onClick={() => navigate('/')} />
+            </LogoWrapper>
           </LogoContainer>
           <ButtonContainer>
-            <Button>AI 검토 받으러 가기</Button>
-            <Button>상대방과 계약서 검토하기</Button>
+            <Button onClick={() => navigate('/category')}>AI 검토 받으러 가기</Button>
+            <Button onClick={() => navigate('/fileuploadshare')}>상대방과 계약서 검토하기</Button>
           </ButtonContainer>
         </Headerall>
       </div>
       <Container>
-        <Lottie 
-            options={defaultOptions2} 
-            loop
-            autoplay
-            height={400} 
-            width={400} />
+        <Lottie
+          options={defaultOptions2}
+          loop
+          autoplay
+          height={400}
+          width={400} />
         <Wrapper>
           <div className="load-bar">
             <div className="load-bar-inner" data-loading="0">
-                <span id="counter"></span>
+              <span id="counter"></span>
             </div>
           </div>
           <h1>계약서를 검토중입니다...</h1>

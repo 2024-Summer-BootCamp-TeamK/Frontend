@@ -1,10 +1,9 @@
 import React, { useCallback, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import styled from "styled-components";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from 'react-router-dom';
 import Button from "../components/Button";
 import ReviewStartButtonComponent from "../components/ReviewStartButtonComponent";
-import { useLocation } from 'react-router-dom';
 import contractUpload from '../services/fileupload_API';
 
 import {
@@ -16,15 +15,14 @@ import {
 import logoSrc from "../images/logo.svg";
 import uploadIconSrc from "../images/upload-icon.svg";
 
-const FileUpload = () => {
-  const [file, setFile] = useState(null);
+const Fileupload = () => {
   const [fileName, setFileName] = useState(null);
-  const navigate = useNavigate();
+  const [file, setFile] = useState(null);
   const location = useLocation();
+  const navigate = useNavigate(); // useNavigate 훅 사용
   const category = location.state?.category;
 
   const onDrop = useCallback((acceptedFiles) => {
-    setFile(acceptedFiles[0]);
     setFileName(acceptedFiles[0].name);
     setFile(acceptedFiles[0]);
     console.log(acceptedFiles);
@@ -43,9 +41,12 @@ const FileUpload = () => {
     formData.append('category', category);
 
     try {
-      const response = await contractUpload(formData);
-      console.log('계약서 업로드 성공:', response);
-      alert('계약서 업로드 성공! 계약서 ID: ' + response.contractId);
+      const data = await contractUpload(formData);
+      console.log('계약서 업로드 성공:', data);
+      alert('계약서 업로드 성공! 계약서 ID: ' + data.contractId);
+
+      navigate(`/contract/${data.contractId}`);
+
     } catch (error) {
       console.error('계약서 업로드 에러:', error.message);
       alert('계약서 업로드에 실패했습니다.');
@@ -60,8 +61,8 @@ const FileUpload = () => {
             <Logo data={logoSrc} type="image/svg+xml" />
           </LogoContainer>
           <ButtonContainer>
-            <Button>AI 검토 받으러 가기</Button>
-            <Button>상대방과 계약서 검토하기</Button>
+            <Button onClick={() => navigate('/category')}>AI 검토 받으러 가기</Button>
+            <Button onClick={() => navigate('/fileuploadshare')}>상대방과 계약서 검토하기</Button>
           </ButtonContainer>
         </Headerall>
       </div>
@@ -76,7 +77,7 @@ const FileUpload = () => {
             {isDragActive ? (
               <p>파일을 여기에 놓으세요 ...</p>
             ) : (
-              <p>{fileName ? `업로드된 파일: ${fileName}` : ''}</p>
+              <p>{fileName ? `업로드된 파일 : ${fileName}` : ''}</p>
             )}
           </DropZoneText>
         </DropZone>
@@ -88,7 +89,7 @@ const FileUpload = () => {
   );
 };
 
-export default FileUpload;
+export default Fileupload;
 
 // 스타일 컴포넌트 정의
 const Wrapper = styled.div`
@@ -116,13 +117,13 @@ const DropZone = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  padding-bottom: 50px;
-  transform: translate(-50%, -50%);
+  padding-bottom: 50px; /* 문구를 아래쪽으로 배치 */
+  transform: translate(-50%, -50%); /* 중앙 정렬을 위한 transform */
 `;
 
 const DropZoneText = styled.div`
   display: flex;
-  align-items: center;
+  align-items:center;
   justify-content: center;
   flex-direction: column;
 
@@ -139,19 +140,19 @@ const DropZoneText = styled.div`
     color: ${(props) => (props.isFileUploaded ? '#000000' : '#a6a6a6')}; /* 파일이 업로드된 경우 검정색, 아니면 회색 */
     font-weight: 600;
     position: absolute;
-    bottom: 25px;
+    bottom: 25px; /* 텍스트를 아래쪽으로 배치 */
     left: 50%;
     transform: translateX(-50%);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    max-width: 90%;
+    white-space: nowrap; /* 텍스트를 한 줄로 표시 */
+    overflow: hidden; /* 넘치는 텍스트 숨기기 */
+    text-overflow: ellipsis; /* 넘치는 텍스트를 말줄임표(...)로 표시 */
+    max-width: 90%; /* 최대 너비 설정 */
   }
 
   img {
-    width: 4.5vw;
-    height: auto;
-    background: transparent;
+    width: 4.5vw; /* 이미지의 너비를 줄임 */
+    height: auto; /* 이미지의 높이를 줄임 */
+    background: transparent; /* 이미지 배경 투명하게 설정 */
   }
 `;
 
@@ -165,12 +166,12 @@ const ButtonContainerStyled = styled.div`
 const YellowBox = styled.div`
   width: 140px;
   height: 170px;
-  background-color: #ffd700;
+  background-color: #FFD700; /* 노란색 */
   border-radius: 20px;
   display: flex;
   justify-content: center;
   align-items: center;
-  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2); /* 그림자 */
   margin-bottom: 10px;
 `;
 

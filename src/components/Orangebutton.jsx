@@ -10,22 +10,22 @@ const Orangebutton = styled.button`
   font-weight: bold;
   cursor: pointer;
   box-sizing: border-box;
-  transition: transform 0.2s ease, box-shadow 0.2s ease, border 0.2s ease, background-color 0.2s ease, color 0.2s ease;
+  transition: transform 0.3s ease, box-shadow 0.2s ease, border 0.2s ease, background-color 0.2s ease, color 0.2s ease;
   margin: 0;
   z-index: 1;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   position: relative;
 
   &:hover {
-    background-color: #e7470a; /* hover 시 배경색 */
+    background-color: #e7470a; 
     color: #ffffff; /* hover 시 글씨색 */
-    border: 2px solid #e7470a;
+    border: 1px solid #e7470a;
     box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
   }
 
   &:active {
-    transform: scale(0.9);
-    outline: none; /* 포커스 시 outline 제거 */
+    transform: scale(1);
+    
   }
 
   &:focus {

@@ -7,6 +7,7 @@ const Button = ({ children, onClick, isActive }) => (
   </StyledButton>
 );
 
+
 export default Button;
 
 const StyledButton = styled.button`
