@@ -247,8 +247,8 @@ const PdfEditor = () => {
                           left: pos.x,
                           top: pos.y,
                           backgroundColor: 'red',
-                          width: '10px',
-                          height: '10px',
+                          width: '7px',
+                          height: '7px',
                           borderRadius: '50%',
                         }}
                       />

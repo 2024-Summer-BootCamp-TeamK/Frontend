@@ -213,22 +213,21 @@ const AireviewedIconWrapper = styled.div`
   width: 100%;
   display: flex;
   justify-content: center;
-  margin-top: 13vh;
+  margin-top: 15vh;
 `;
 
 const Container = styled.div`
-
+  overflow: scroll;
   position: relative;
   display: flex;
   justify-content: center;
   width: 100%;
-  height: 75vh;
+  height: 70vh;
   gap: 10vh;
-  border-radius: 20px;
-  margin-top: 0px;
+  border-radius: 20px 0px 0px 20px;
+  margin-top: 2vh;
   box-sizing: border-box;
   overflow: auto;
-  border: px solid #ccc;
   padding-top: 10px;
   background-color: #ffffff;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -239,15 +238,13 @@ const Container = styled.div`
 
 const TextContainer = styled.div`
   background-color: #fff;
-  overflow:hidden;
-  padding: 10px;
   box-sizing: border-box;
   color: #000000;
   font-size: 14px;
-  margin-top: 10px;
-  padding-left: 20px;
+  margin-top: 15px;
+  margin-bottom: 15px;
+
   white-space: pre-wrap;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 
   .p {
     margin-bottom: 3px;
@@ -275,17 +272,18 @@ const HighlightLegend = styled.div`
 const LegendItem = styled.div`
   display: flex;
   align-items: center;
-  margin: 0 13px;
+  margin: 0 15px;
   color: #000;
   font-weight:bold;
+  font-size: 15px;
   
   &::before {
     color: #000;
     content: "";
-    width: 14px;
-    height: 14px;
+    width: 15px;
+    height: 15px;
     background-color: ${({ color }) => color};
     border-radius: 50%;
-    margin-right: 5px;
+    margin-right: 8px;
   }
 `;

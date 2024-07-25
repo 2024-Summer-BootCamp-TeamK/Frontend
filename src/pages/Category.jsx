@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import styled, { createGlobalStyle, keyframes, css } from "styled-components";
-import { useNavigate } from 'react-router-dom'; // useNavigate import 추가
+import { useNavigate } from 'react-router-dom';
 import Button from "../components/Button";
 import arrowLSrc from '../images/arrowL.svg';
 import arrowRSrc from '../images/arrowR.svg';
@@ -118,17 +118,15 @@ const Category = () => {
   return (
     <>
       <GlobalStyle />
-      <div>
-        <Headerall>
-          <LogoContainer>
-            <Logo data={logoSrc} type="image/svg+xml" />
-          </LogoContainer>
-          <ButtonContainer>
-            <Button>AI 검토 받으러 가기</Button>
-            <Button>상대방과 계약서 검토하기</Button>
-          </ButtonContainer>
-        </Headerall>
-      </div>
+      <Headerall>
+        <LogoContainer>
+          <Logo data={logoSrc} type="image/svg+xml" />
+        </LogoContainer>
+        <ButtonContainer>
+          <Button onClick={() => navigate('/category')}>AI 검토 받으러 가기</Button>
+          <Button onClick={() => navigate('/fileuploadshare')}>상대방과 계약서 검토하기</Button>
+        </ButtonContainer>
+      </Headerall>
       <Title>계약서의 카테고리를 선택해주세요</Title>
       <Container style={{ height: 'calc(100vh - 120px)' }}>
         <Carousel style={{ height: '70%' }}>
@@ -166,7 +164,7 @@ const Title = styled.h1`
   margin: 20px 0 20px 0;
   font-size: 35px;
   color: #141F7B;
-  margin-top: 200px;
+  margin-top: 220px;
 `;
 
 const Container = styled.div`

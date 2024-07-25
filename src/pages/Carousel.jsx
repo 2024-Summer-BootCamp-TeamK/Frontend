@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import * as pdfjsLib from 'pdfjs-dist';
 import 'pdfjs-dist/web/pdf_viewer.css';
 import SignatureCanvas from 'react-signature-canvas';
+import { useNavigate } from 'react-router-dom';
 import { PDFDocument, rgb } from 'pdf-lib';
 import Draggable from 'react-draggable';
 import Button from "../components/Button";
@@ -14,7 +15,6 @@ import {
 } from "../components/Headerall";
 import logoSrc from "../images/logo.svg";
 import shareInfoIcon from "../images/share-info-icon.svg";
-import shareLobotIcon from "../images/share-lobot.svg";
 
 // PDF.js worker 설정
 pdfjsLib.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/2.6.347/pdf.worker.min.js`;
@@ -33,6 +33,7 @@ const ContractShare = () => {
   const canvasRef = useRef(null);
   const containerRef = useRef(null);
   const sigCanvas = useRef(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (ws) {
@@ -104,26 +105,26 @@ const ContractShare = () => {
     setPageNumber(newPageNumber);
     ws.send(JSON.stringify({ type: 'scroll', payload: { pageNumber: newPageNumber } }));
   };
-  
+
   // 페이지 연동 웹소켓
   const handleNextPage = () => {
     const newPageNumber = Math.min(pageNumber + 1, pdfDoc.numPages);
     setPageNumber(newPageNumber);
     ws.send(JSON.stringify({ type: 'scroll', payload: { pageNumber: newPageNumber } }));
   };
-  
+
   const handleSign = (event) => {
     const canvas = canvasRef.current;
     const ctx = canvas.getContext('2d');
     const rect = canvas.getBoundingClientRect();
     const x = event.clientX - rect.left;
     const y = event.clientY - rect.top;
-    
+
     ctx.fillStyle = 'red';
     ctx.font = '20px Arial';
     ctx.fillText('Signature', x, y);
   };
-  
+
   // 마우스 포인터 연동 웹소켓
   const handleMouseMove = (event) => {
     const canvas = canvasRef.current;
@@ -193,8 +194,8 @@ const ContractShare = () => {
           <Logo data={logoSrc} type="image/svg+xml" />
         </LogoContainer>
         <HeaderButtonContainer>
-          <Button>AI 검토 받으러 가기</Button>
-          <Button>상대방과 계약서 검토하기</Button>
+          <Button onClick={() => navigate('/category')}>AI 검토 받으러 가기</Button>
+          <Button onClick={() => navigate('/fileuploadshare')}>상대방과 계약서 검토하기</Button>
         </HeaderButtonContainer>
       </Headerall>
       {!ws ? (

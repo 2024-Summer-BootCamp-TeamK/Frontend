@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React from "react";
 import styled from "styled-components";
 import Button from "../components/Button";
 import Aireviewresult2 from "../components/Aireviewresult2";
@@ -12,11 +12,16 @@ import {
 import logoSrc from "../images/logo.svg";
 import Orangebutton from "../components/Orangebutton";
 import arrow2Src from "../images/arrow2.svg"; // 추가할 SVG 이미지 경로
-import { useLocation } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const Resultcompare = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const { contractId } = location.state || {}; // 네비게이션 상태에서 contractId 추출
+eReviewWithCounterpart
+  const handleFileUploadShareClick = () => {
+    navigate("/fileuploadshare", { state: { contractId } });
+  };
 
   return (
     <>
@@ -45,7 +50,9 @@ const Resultcompare = () => {
             </ComponentWrapper>
           </Container>
           <ButtonsWrapper>
-            <Orangebutton>상대방과 검토하기</Orangebutton>
+            <Orangebutton onClick= {handleFileUploadShareClick} >
+              상대방과 검토하기
+            </Orangebutton>
             <Orangebutton>
               &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;PDF 저장
               &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
