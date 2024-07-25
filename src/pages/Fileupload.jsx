@@ -44,7 +44,9 @@ const Fileupload = () => {
       const data = await contractUpload(formData);
       console.log('계약서 업로드 성공:', data);
       alert('계약서 업로드 성공! 계약서 ID: ' + data.contractId);
-      navigate('/Reviewresult'); // 업로드 성공 후 페이지 이동
+
+      navigate(`/contract/${data.contractId}`);
+
     } catch (error) {
       console.error('계약서 업로드 에러:', error.message);
       alert('계약서 업로드에 실패했습니다.');
