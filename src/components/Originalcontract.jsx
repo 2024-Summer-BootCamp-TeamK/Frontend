@@ -2,10 +2,9 @@ import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
 import { modifiedContract } from "../services/getModifiedContract";
 import * as pdfjsLib from "pdfjs-dist";
-import workerSrc from 'pdfjs-dist/build/pdf.worker.entry';
+import 'pdfjs-dist/build/pdf.worker.entry';  // import worker entry without default
 
-pdfjsLib.GlobalWorkerOptions.workerSrc = workerSrc;
-
+pdfjsLib.GlobalWorkerOptions.workerSrc = `/node_modules/pdfjs-dist/build/pdf.worker.js`;
 
 const Originalcontract = ({contractId}) => {
   const [pdfUrl, setPdfUrl] = useState("");
