@@ -122,6 +122,7 @@ const PdfEditor = () => {
   useEffect(() => {
     if (documentId) {
       const websocket = new WebSocket(`ws://localhost/ws/documents/${documentId}/`);
+   
       websocket.onopen = () => {
         console.log('연결 성공');
       };
