@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { modifiedContract } from "../services/getModifiedContract";
 import * as pdfjsLib from "pdfjs-dist";
 
-pdfjsLib.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
+pdfjsLib.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`;
 
 const Originalcontract = ({contractId}) => {
   const [pdfUrl, setPdfUrl] = useState("");
