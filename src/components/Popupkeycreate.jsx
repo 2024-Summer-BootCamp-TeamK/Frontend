@@ -71,7 +71,7 @@ export default Popupkeycreate;
 
 const PopupWrapper = styled.div`
   display: flex;
-  top: 50%;
+  top: 45.5%;
   left: 50%;
   transform: translate(-50%, -40%);
   flex-direction: column;
@@ -169,7 +169,7 @@ const CustomAlert = styled.div`
   transform: translate(-50%, -40%);
   background-color: white;
   border: 5px solid #141F7B;
-  border-radius: 30px;
+  border-radius: 20px;
   padding: 40px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
   width: 50%; /* 기본 너비 */

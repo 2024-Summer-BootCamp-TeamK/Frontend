@@ -8,11 +8,9 @@ import Fileuploadshare from "./pages/Fileuploadshare";
 import Reviewresult from "./pages/Reviewresult";
 import Resultcompare from "./pages/Resultcompare";
 import Category from "./pages/Category";
-import Sign from "./pages/Sign";
 import Key from "./pages/Key.jsx";
 import Keyinput from "./pages/Keyinput.jsx";
 import Popupexplain from "./components/Popupexlain.jsx";
-import Carousel from "./pages/Carousel";
 
 import ContractDetails from "./pages/ContractDetails.jsx";
 
@@ -28,18 +26,16 @@ function App() {
         <Routes>
           <Route path="/category" element={<Category />} />
 
-          <Route path="/loading" element={<Loading/>} />
+          <Route path="/loading" element={<Loading />} />
 
           <Route path="/" element={<Mainpage />} />
           <Route path="/fileupload" element={<Fileupload />} />
           <Route path="/fileuploadshare" element={<Fileuploadshare />} />
           <Route path="/Reviewresult" element={<Reviewresult />} />
           <Route path="/Resultcompare" element={<Resultcompare />} />
-          <Route path="/Sign" element={<Sign />} />
           <Route path="/explain" element={<Popupexplain />} />
           <Route path="/key" element={<Key />} />
           <Route path="/keyinput/:documentId" element={<Keyinput />} />
-          <Route path="/carousel" element={<Carousel />} />
 
           <Route path="/contract/:contractId" element={<ContractDetails />} />
 
