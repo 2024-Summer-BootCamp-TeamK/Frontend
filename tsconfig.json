@@ -20,7 +20,7 @@
       "jsx": "react"
     },
     "include": [
-      "src/", "src/types/index.d.ts"
+      "src/", "src/types/index.d.ts", "./node_modules/@types"
     ]
   }
   
