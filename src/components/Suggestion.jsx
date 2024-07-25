@@ -34,11 +34,11 @@ const Suggestion = ({ contractMain, contractToxin }) => {
   const [currentSection, setCurrentSection] = useState(0);
   const [currentText, setCurrentText] = useState("main");
   const [selectedArticleIds, setSelectedArticleIds] = useState(() => {
-    const savedIds = localStorage.getItem("selectedArticleIds");
+    const savedIds = sessionStorage.getItem("selectedArticleIds");
     return savedIds ? JSON.parse(savedIds) : [];
   });
   const [modifiedSections, setModifiedSections] = useState(() => {
-    const savedSections = localStorage.getItem("modifiedSections");
+    const savedSections = sessionStorage.getItem("modifiedSections");
     return savedSections ? JSON.parse(savedSections) : [];
   });
 
@@ -82,14 +82,14 @@ const Suggestion = ({ contractMain, contractToxin }) => {
 
         setSelectedArticleIds((prev) => {
           const newIds = [...prev, currentArticle.articleId];
-          localStorage.setItem("selectedArticleIds", JSON.stringify(newIds));
+          sessionStorage.setItem("selectedArticleIds", JSON.stringify(newIds));
           return newIds;
         });
 
         setModifiedSections((prev) => {
           const newModifiedSections = [...prev];
           newModifiedSections[currentSection] = true;
-          localStorage.setItem(
+          sessionStorage.setItem(
             "modifiedSections",
             JSON.stringify(newModifiedSections)
           );
