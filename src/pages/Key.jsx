@@ -14,7 +14,7 @@ import {
 import logoSrc from '../images/logo.svg'; // logo.svg 파일 경로를 올바르게 설정
 
 const Key = () => {
-    const navigate = useNavigate(); 
+    const navigate = useNavigate();
     const location = useLocation();
     const { pdfFile } = location.state || {}; // state에서 file 가져오기
     const fileName = pdfFile ? pdfFile.name : '! 업로드 된 파일이 없습니다'; // 파일 이름 추출
@@ -23,7 +23,7 @@ const Key = () => {
         <>
             <Headerall>
                 <LogoContainer>
-                    <Logo src={logoSrc} alt="Logo" />
+                    <Logo data={logoSrc} type="image/svg+xml" />
                 </LogoContainer>
                 <ButtonContainer>
                     <Button onClick={() => navigate('/category')}>AI 검토 받으러 가기</Button>
