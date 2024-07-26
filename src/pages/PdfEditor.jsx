@@ -123,6 +123,7 @@ const PdfEditor = () => {
     if (documentId) {
       const websocket = new WebSocket(`ws://www.lawbot.store/ws/documents/${documentId}/`);
 
+
       websocket.onopen = () => {
         console.log('연결 성공');
       };
