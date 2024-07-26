@@ -1,12 +1,26 @@
 import React from "react";
-import styled, { css } from "styled-components";
+import styled, { css, createGlobalStyle } from "styled-components";
+
+const GlobalStyle = createGlobalStyle`
+  @font-face {
+    font-family: 'MangoDdobak-B';
+    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/2405-3@1.1/MangoDdobak-B.woff2') format('woff2');
+    font-style: normal;
+  }
+
+  body {
+    font-family: 'MangoDdobak-B', sans-serif;
+  }
+`;
 
 const Button = ({ children, onClick, isActive }) => (
-  <StyledButton onClick={onClick} isActive={isActive}>
-    {children}
-  </StyledButton>
+  <>
+    <GlobalStyle />
+    <StyledButton onClick={onClick} isActive={isActive}>
+      {children}
+    </StyledButton>
+  </>
 );
-
 
 export default Button;
 
@@ -27,7 +41,8 @@ const StyledButton = styled.button`
   margin: 0;
   z-index: 1;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  position: flex;
+  font-family: 'MangoDdobak-B', sans-serif;
+    -webkit-text-stroke: 0.5px #141F7B;
 
   ${({ isActive }) =>
     isActive &&
@@ -51,7 +66,7 @@ const StyledButton = styled.button`
     box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
     background-color: #141f7b;
     color: white;
-    border: 2px solid #141f7b;    
+    border: 2px solid #141f7b;
 
     /* 이미지 대비 */
     img {
