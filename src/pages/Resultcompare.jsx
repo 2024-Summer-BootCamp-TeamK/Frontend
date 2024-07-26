@@ -19,7 +19,6 @@ const Resultcompare = () => {
   const navigate = useNavigate();
   const { contractId } = location.state || {}; // 네비게이션 상태에서 contractId 추출
 
-  
   const handleFileUploadShareClick = () => {
     navigate("/fileuploadshare", { state: { contractId } });
   };

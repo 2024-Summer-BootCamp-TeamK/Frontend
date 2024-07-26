@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import styled, { createGlobalStyle } from "styled-components";
 import Orangebutton from "./Orangebutton";
 import Toggleswitch from "./Toggleswitch";
 import ModifiyviewSrc from "../images/Modifiyview.svg"; // 이미지 경로 확인
 import ArticleDetail from "./ArticleDetail";
 import { updateContractById } from "../services/updateContractService";
-import checkImg from "../images/check.svg";
-import checkWhiteImg from "../images/check_white.svg";
 
 const GlobalStyle = createGlobalStyle`
   *,
@@ -30,17 +29,19 @@ const GlobalStyle = createGlobalStyle`
   }
 `;
 
-const Suggestion = ({ contractMain, contractToxin }) => {
+const Suggestion = ({ contractId, contractMain, contractToxin }) => {
   const [currentSection, setCurrentSection] = useState(0);
   const [currentText, setCurrentText] = useState("main");
   const [selectedArticleIds, setSelectedArticleIds] = useState(() => {
-    const savedIds = localStorage.getItem("selectedArticleIds");
+    const savedIds = sessionStorage.getItem("selectedArticleIds");
     return savedIds ? JSON.parse(savedIds) : [];
   });
   const [modifiedSections, setModifiedSections] = useState(() => {
-    const savedSections = localStorage.getItem("modifiedSections");
+    const savedSections = sessionStorage.getItem("modifiedSections");
     return savedSections ? JSON.parse(savedSections) : [];
   });
+
+  const navigate = useNavigate();
 
   const mainSections = contractMain.articles.map(
     (article, index) => `주요조항 ${index + 1}`
@@ -82,14 +83,14 @@ const Suggestion = ({ contractMain, contractToxin }) => {
 
         setSelectedArticleIds((prev) => {
           const newIds = [...prev, currentArticle.articleId];
-          localStorage.setItem("selectedArticleIds", JSON.stringify(newIds));
+          sessionStorage.setItem("selectedArticleIds", JSON.stringify(newIds));
           return newIds;
         });
 
         setModifiedSections((prev) => {
           const newModifiedSections = [...prev];
           newModifiedSections[currentSection] = true;
-          localStorage.setItem(
+          sessionStorage.setItem(
             "modifiedSections",
             JSON.stringify(newModifiedSections)
           );
@@ -97,6 +98,7 @@ const Suggestion = ({ contractMain, contractToxin }) => {
         });
 
         console.log("선택된 계약서 ID:", currentArticle.articleId);
+
       } else {
         console.warn(
           " ID가 이미 선택되었습니다.",
@@ -141,12 +143,16 @@ const Suggestion = ({ contractMain, contractToxin }) => {
         selectedArticleIds
       );
       console.log("서버 응답:", data);
+      
       // 로컬 스토리지 초기화
       localStorage.removeItem("selectedArticleIds");
       localStorage.removeItem("modifiedSections");
       setSelectedArticleIds([]);
       setModifiedSections([]);
 
+      // 수정안 보기 
+      navigate("/Resultcompare", { state: { contractId } });
+      
     } catch (error) {
       console.error("서버에 데이터 전송 중 오류 발생:", error);
     }

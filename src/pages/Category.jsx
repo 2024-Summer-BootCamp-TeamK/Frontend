@@ -28,11 +28,11 @@ const GlobalStyle = createGlobalStyle`
 `;
 
 const items = [
-  { id: 1, label: "계약서 1" },
-  { id: 2, label: "계약서 2" },
+  { id: 1, label: "임대차 계약서" },
+  { id: 2, label: "매매 계약서 " },
   { id: 3, label: "근로 계약서" },
-  { id: 4, label: "계약서 4" },
-  { id: 5, label: "계약서 5" },
+  { id: 4, label: "증여 계약서" },
+  { id: 5, label: "채무이행 계약서" },
 ];
 
 // 카드 슬라이더 애니메이션
