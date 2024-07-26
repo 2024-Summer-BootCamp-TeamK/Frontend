@@ -223,7 +223,7 @@ const PdfEditor = () => {
             </Grid.Column>
             <Grid.Column width={10}>
               {currentPage && (
-                <StyledSegment style={{ marginTop: '80px' }} data-testid="page" compact stacked={isMultiPage && !isLastPage}>
+                <StyledSegment style={{ display: 'flex', justifyContent: 'center',marginTop: '80px' }} data-testid="page" compact stacked={isMultiPage && !isLastPage}>
                   <div style={{ position: 'relative' }} ref={canvasRef}>
                     <Page dimensions={dimensions} updateDimensions={setDimensions} page={currentPage} />
                     {dimensions && (
