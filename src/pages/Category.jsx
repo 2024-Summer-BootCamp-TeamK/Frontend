@@ -165,6 +165,7 @@ const Title = styled.h1`
   font-size: 35px;
   color: #141F7B;
   margin-top: 220px;
+   -webkit-text-stroke: 0.7px #141F7B; 
 `;
 
 const Container = styled.div`
@@ -182,14 +183,8 @@ const Carousel = styled.div`
   align-items: center;
   width: 100%;
   height: calc(100vh - 200px); // 150px을 뺀 높이 설정
-  margin-top: -80px; // 상단 마진 설정
+  margin-top: -150px; // 상단 마진 설정
   overflow: visible; // overflow visible로 변경
-`;
-
-const CardSlider = styled.div`
-  display: flex;
-  justify-content: center;
-  transition: transform 0.5s ease-in-out;
 `;
 
 const CarouselItem = styled.div`
@@ -253,7 +248,7 @@ const ButtonL = styled.button`
   border: none;
   position: absolute;
   left: calc(50% - 250px); // 원하는 위치로 조정
-  top: 45%;
+  top: 40%;
   transform: translateY(-50%);
   cursor: pointer;
   padding: 0;
@@ -273,7 +268,7 @@ const ButtonR = styled.button`
   border: none;
   position: absolute;
   right: calc(50% - 250px); // 원하는 위치로 조정
-  top: 45%;
+  top: 40%;
   transform: translateY(-50%);
   cursor: pointer;
   padding: 0;
