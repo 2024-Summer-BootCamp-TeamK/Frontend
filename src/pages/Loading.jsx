@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import Lottie from "react-lottie";
 import { useNavigate } from "react-router-dom";
 import animationData2 from "../lottie/Loading3.json";
-import Button from "../components/Button";
+import Button from "../components/Button2";
 import styled, { createGlobalStyle, keyframes } from "styled-components";
 import {
   Headerall,

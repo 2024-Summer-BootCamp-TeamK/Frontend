@@ -1,7 +1,7 @@
 import React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import Popupkeyinput from '../components/Popupkeyinput';
-import Button from '../components/Button';
+import Button from '../components/Button2';
 import {
     Headerall,
     LogoContainer,

@@ -12,7 +12,7 @@ import { useUploader, UploadTypes } from '../hooks/useUploader';
 import { Page } from '../components/PdfEditorComponent/Page';
 import { Attachments } from '../components/PdfEditorComponent/Attachments';
 import { fetchPdfDocument } from '../services/pdfService';
-import Button from "../components/Button";
+import Button from "../components/Button2";
 import {
   Headerall,
   LogoContainer,
@@ -121,7 +121,7 @@ const PdfEditor = () => {
   // 웹소켓 연결 설정
   useEffect(() => {
     if (documentId) {
-      const websocket = new WebSocket(`ws://www.lawbot.store/ws/documents/${documentId}/`);
+      const websocket = new WebSocket(`wss://lawbot.store/ws/documents/${documentId}/`);
 
 
       websocket.onopen = () => {

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import styled, { createGlobalStyle, keyframes, css } from "styled-components";
 import { useNavigate } from 'react-router-dom';
-import Button from "../components/Button";
+import Button from "../components/Button2";
 import arrowLSrc from '../images/arrowL.svg';
 import arrowRSrc from '../images/arrowR.svg';
 import fileSrc from "../images/file.svg";

@@ -1,7 +1,7 @@
 import React from "react";
 import { useLocation } from "react-router-dom";
 import styled from "styled-components";
-import Button from "../components/Button";
+import Button from "../components/Button2";
 import Suggestion from "../components/Suggestion";
 import Aireviewresult from "../components/Aireviewresult";
 import {

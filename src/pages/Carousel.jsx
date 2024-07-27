@@ -6,7 +6,7 @@ import SignatureCanvas from 'react-signature-canvas';
 import { useNavigate } from 'react-router-dom';
 import { PDFDocument, rgb } from 'pdf-lib';
 import Draggable from 'react-draggable';
-import Button from "../components/Button";
+import Button from "../components/Button2";
 import {
   Headerall,
   LogoContainer,

@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import { useLocation } from 'react-router-dom';
 import Popupkeycreate from '../components/Popupkeycreate';
-import Button from '../components/Button';
+import Button from '../components/Button2';
 
 import {
     Headerall,

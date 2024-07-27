@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import Button from "../components/Button";
+import Button from "../components/Button2";
 import Aireviewresult2 from "../components/Aireviewresult2";
 import Originalcontract from "../components/Originalcontract";
 import {

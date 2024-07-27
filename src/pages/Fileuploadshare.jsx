@@ -2,7 +2,7 @@ import React, { useCallback, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
-import Button from "../components/Button";
+import Button from "../components/Button2";
 import ReviewStartButtonComponent from "../components/ReviewStartButtonComponent";
 import {
   Headerall,
