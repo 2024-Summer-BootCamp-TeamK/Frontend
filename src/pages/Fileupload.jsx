@@ -19,7 +19,7 @@ const Fileupload = () => {
   const [fileName, setFileName] = useState(null);
   const [file, setFile] = useState(null);
   const location = useLocation();
-  const navigate = useNavigate(); // useNavigate 훅 사용
+  const navigate = useNavigate();
   const category = location.state?.category;
 
   const onDrop = useCallback((acceptedFiles) => {
@@ -77,7 +77,7 @@ const Fileupload = () => {
             {isDragActive ? (
               <p>파일을 여기에 놓으세요 ...</p>
             ) : (
-              <p>{fileName ? `업로드된 파일 : ${fileName}` : ''}</p>
+              <p>{fileName ? `업로드된 파일 : ${fileName}` : 'PDF형식의 파일만 업로드 가능합니다'}</p>
             )}
           </DropZoneText>
         </DropZone>
