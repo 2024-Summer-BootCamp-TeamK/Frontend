@@ -6,6 +6,7 @@ import Toggleswitch from "./Toggleswitch";
 import ModifiyviewSrc from "../images/Modifiyview.svg"; // 이미지 경로 확인
 import ArticleDetail from "./ArticleDetail";
 import { updateContractById } from "../services/updateContractService";
+import Popuploading from "../components/Popuploading"; // Popuploading 임포트
 
 const GlobalStyle = createGlobalStyle`
   *,
@@ -30,6 +31,8 @@ const GlobalStyle = createGlobalStyle`
 `;
 
 const Suggestion = ({ contractId, contractMain, contractToxin }) => {
+  const [loading, setLoading] = useState(false); // 로딩 상태 추가
+
   const [currentSection, setCurrentSection] = useState(0);
   const [currentText, setCurrentText] = useState("main");
   const [selectedArticleIds, setSelectedArticleIds] = useState(() => {
@@ -80,7 +83,6 @@ const Suggestion = ({ contractId, contractMain, contractToxin }) => {
     if (currentArticle && currentArticle.articleId) {
       // 중복 체크: 이미 선택된 조항 ID인지 확인
       if (!selectedArticleIds.includes(currentArticle.articleId)) {
-
         setSelectedArticleIds((prev) => {
           const newIds = [...prev, currentArticle.articleId];
           sessionStorage.setItem("selectedArticleIds", JSON.stringify(newIds));
@@ -98,12 +100,8 @@ const Suggestion = ({ contractId, contractMain, contractToxin }) => {
         });
 
         console.log("선택된 계약서 ID:", currentArticle.articleId);
-
       } else {
-        console.warn(
-          " ID가 이미 선택되었습니다.",
-          currentArticle.articleId
-        );
+        console.warn(" ID가 이미 선택되었습니다.", currentArticle.articleId);
       }
     } else {
       console.warn("현재 조항이 없습니다.");
@@ -135,7 +133,7 @@ const Suggestion = ({ contractId, contractMain, contractToxin }) => {
     }
   };
 
-  const handleSubmit = async () => {
+  const handleSubmit = async () => { setLoading(true);
     try {
       console.log("전송할 계약서 ID 배열:", selectedArticleIds);
       const data = await updateContractById(
@@ -143,19 +141,18 @@ const Suggestion = ({ contractId, contractMain, contractToxin }) => {
         selectedArticleIds
       );
       console.log("서버 응답:", data);
-      
+
       // 로컬 스토리지 초기화
       localStorage.removeItem("selectedArticleIds");
       localStorage.removeItem("modifiedSections");
       setSelectedArticleIds([]);
       setModifiedSections([]);
-
-      // 수정안 보기 
+     
+      // 수정안 보기
       navigate("/Resultcompare", { state: { contractId } });
-      
     } catch (error) {
       console.error("서버에 데이터 전송 중 오류 발생:", error);
-    }
+      setLoading(false); }
   };
 
   useEffect(() => {
@@ -169,15 +166,15 @@ const Suggestion = ({ contractId, contractMain, contractToxin }) => {
       ? contractMain.articles[currentSection]
       : contractToxin.articles[currentSection];
 
-  return (
+  return (    
     <Container>
-      <GlobalStyle />
+      <GlobalStyle /> {loading && <Popuploading />}
       <ToggleswitchContainer>
         <Toggleswitch onChange={toggleText} />
       </ToggleswitchContainer>
       <ContentWrapper>
         <NavButton onClick={handlePrevClick} disabled={currentSection === 0}>
-        {"<"}
+          {"<"}
         </NavButton>
         <Content>
           <ProgressContainer>
@@ -220,18 +217,16 @@ const Suggestion = ({ contractId, contractMain, contractToxin }) => {
                   <ModifyButton
                     onClick={
                       modifiedSections[currentSection]
-                      ? handleCancelModifyClick
-                      : handleModifyClick
+                        ? handleCancelModifyClick
+                        : handleModifyClick
                     }
-                    >
-                     {modifiedSections[currentSection] ? "취소"
-                      :  "수정할래요!"}
+                  >
+                    {modifiedSections[currentSection] ? "취소" : "수정할래요!"}
                   </ModifyButton>
-                      {currentText === "toxin" &&
-                        modifiedSections[currentSection] && (
-                          <ModifiedMessage>수정안 담김</ModifiedMessage>
-                        )}
-
+                  {currentText === "toxin" &&
+                    modifiedSections[currentSection] && (
+                      <ModifiedMessage>수정안 담김</ModifiedMessage>
+                    )}
                 </>
               )}
             </SectionContent>
@@ -241,7 +236,7 @@ const Suggestion = ({ contractId, contractMain, contractToxin }) => {
           onClick={handleNextClick}
           disabled={currentSection === sections.length - 1}
         >
-         {">"}
+          {">"}
         </NavButton>
       </ContentWrapper>
       <StyledOrangebutton
@@ -262,7 +257,7 @@ const Suggestion = ({ contractId, contractMain, contractToxin }) => {
       >
         <img src={ModifiyviewSrc} alt="modifyview" />
         최종수정안 보기
-      </StyledOrangebutton>
+      </StyledOrangebutton >
     </Container>
   );
 };
@@ -298,19 +293,19 @@ const NavButton = styled.button`
   width: 1.2vw;
   color: white;
   font-size: 1vw;
-  font-weight: bold; 
+  font-weight: bold;
   border: none;
   cursor: pointer;
   border-radius: 50%;
   margin-top: 32vh;
-  
+
   &:disabled {
     background-color: #ccc;
     cursor: not-allowed;
   }
 
-  &:active { 
-   outline: none;
+  &:active {
+    outline: none;
   }
 
   &:focus {
@@ -370,19 +365,17 @@ const StyledOrangebutton = styled(Orangebutton)`
   left: 50%;
   transform: translateX(-50%);
   margin-top: 2vh;
-  padding: 8px 13px; 
+  padding: 8px 13px;
   border: 1px solid #e7470a;
   border-radius: 10px;
   cursor: pointer;
 
   img {
-
     width: 2.4vw;
     height: 2.4vh;
     margin-right: 3px;
   }
 `;
-
 
 const ModifyButton = styled.button`
   display: flex;
@@ -458,9 +451,9 @@ const SectionTitle = styled.div`
   align-items: center; /* 수직 정렬 추가 */
   justify-content: center; /* 수평 가운데 정렬 */
   margin-top: 5px;
-  `;
-  
-  const SectionText = styled.div`
+`;
+
+const SectionText = styled.div`
   color: #4e4a67;
   margin-bottom: 30px;
   line-height: 1.5em;
