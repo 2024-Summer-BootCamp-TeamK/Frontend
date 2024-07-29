@@ -7,11 +7,16 @@ import accessDocument from '../services/access_API';
 
 const Popupkeyinput = ({ documentId, onSuccess }) => {
   const [password, setPassword] = useState('');
+  const [username, setUsername] = useState(''); // 사용자 이름 상태 추가
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState(null);
 
   const handlePasswordChange = (e) => {
     setPassword(e.target.value);
+  };
+
+  const handleUsernameChange = (e) => {
+    setUsername(e.target.value);
   };
 
   const handleTogglePassword = () => {
@@ -22,7 +27,7 @@ const Popupkeyinput = ({ documentId, onSuccess }) => {
     try {
       const data = await accessDocument(documentId, password);
       if (data.check) {
-        onSuccess(password); // Pass password to onSuccess
+        onSuccess(password, username); // Pass username to onSuccess
       } else {
         setError('Invalid password');
       }
@@ -39,8 +44,16 @@ const Popupkeyinput = ({ documentId, onSuccess }) => {
       <PopupTitle>
         계약서의 보안을 위해 설정된 비밀번호를 입력해주세요.
       </PopupTitle>
-      <PWInputWrapper>
-        <PWInput
+      <InputWrapper>
+        <Input
+          type="text"
+          placeholder="이름을 입력해주세요."
+          value={username}
+          onChange={handleUsernameChange}
+        />
+      </InputWrapper>
+      <InputWrapper>
+        <Input
           type={showPassword ? "text" : "password"}
           placeholder="비밀번호를 입력해주세요."
           value={password}
@@ -49,16 +62,14 @@ const Popupkeyinput = ({ documentId, onSuccess }) => {
         <ToggleButton onClick={handleTogglePassword}>
           <ToggleIcon src={showPassword ? eyeOffSrc : eyeOnSrc} alt="Toggle Password Visibility" />
         </ToggleButton>
-      </PWInputWrapper>
-      {error && <div style={{ color: 'red' }}>{error}</div>}
+      </InputWrapper>
+      {error && <ErrorText>{error}</ErrorText>}
       <ConfirmButton onClick={handleConfirm}>확인</ConfirmButton>
     </PopupWrapper>
   );
 };
 
 export default Popupkeyinput;
-
-
 
 const PopupWrapper = styled.div`
   position: fixed;
@@ -105,27 +116,28 @@ const PopupTitle = styled.h2`
   text-align: center;
 `;
 
-const PWInputWrapper = styled.div`
+const InputWrapper = styled.div`
   width: 80%;
   position: relative;
+  display: flex;
+  align-items: center;
+  margin-top: 20px;
 `;
 
-const PWInput = styled.input`
+const Input = styled.input`
   width: 100%;
   padding: 10px;
   border: 1px solid #ccc;
   border-radius: 5px;
-  margin-top: 20px;
   background-color: white;
   color: black;
   font-size: 16px;
+  box-sizing: border-box;
 `;
 
 const ToggleButton = styled.button`
   position: absolute;
-  top: 70%;
   right: 10px;
-  transform: translateY(-50%);
   background: none;
   border: none;
   cursor: pointer;
@@ -169,4 +181,9 @@ const ConfirmButton = styled.button`
     color: #141F7B;
     outline: none;
   }
+`;
+
+const ErrorText = styled.div`
+  color: red;
+  margin-top: 10px;
 `;
