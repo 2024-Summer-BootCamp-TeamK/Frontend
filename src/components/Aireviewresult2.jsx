@@ -1,11 +1,12 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, forwardRef, useImperativeHandle } from "react";
 import styled from "styled-components";
 import { modifiedContract } from "../services/getModifiedContract";
 import * as pdfjsLib from "pdfjs-dist";
+import jsPDF from "jspdf"; // jspdf 임포트
+
 pdfjsLib.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.js`;
 
-
-const Aireviewresult = ({ contractId }) => {
+const Aireviewresult2 = forwardRef(({ contractId }, ref) => {
   const [pdfUrl, setPdfUrl] = useState("");
   const [pdfDoc, setPdfDoc] = useState(null);
   const containerRef = useRef(null);
@@ -59,6 +60,10 @@ const Aireviewresult = ({ contractId }) => {
     renderPDF();
   }, [pdfUrl]);
 
+  useImperativeHandle(ref, () => ({
+    getPdfUrl: () => pdfUrl
+  }));
+
   return (
     <Wrapper>
       <ButtonWrapper>
@@ -75,9 +80,9 @@ const Aireviewresult = ({ contractId }) => {
       </Container>
     </Wrapper>
   );
-};
+});
 
-export default Aireviewresult;
+export default Aireviewresult2;
 
 // Styled-components
 const Wrapper = styled.div`
