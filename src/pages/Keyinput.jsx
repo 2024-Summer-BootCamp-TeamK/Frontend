@@ -14,8 +14,8 @@ const Keyinput = () => {
     const { documentId } = useParams();
     const navigate = useNavigate();
 
-    const handleSuccess = (password) => {
-        navigate(`/pdf-editor`, { state: { documentId, password } });
+    const handleSuccess = (password, username) => {
+        navigate(`/pdf-editor`, { state: { documentId, password, username } });
     };
 
     return (
