@@ -4,18 +4,29 @@ import axios from 'axios';
 import contractShare from '../services/share_API';
 
 const Popupkeycreate = ({ closePopup, pdfFile }) => {
-  const [email, setEmail] = useState('');
+  const [emails, setEmails] = useState(['']);
   const [showAlert, setShowAlert] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const handleEmailChange = (e) => {
-    setEmail(e.target.value);
+  const handleEmailChange = (index, value) => {
+    const newEmails = [...emails];
+    newEmails[index] = value;
+    setEmails(newEmails);
+  };
+
+  const addEmailField = () => {
+    setEmails([...emails, '']);
+  };
+
+  const removeEmailField = (index) => {
+    const newEmails = emails.filter((_, i) => i !== index);
+    setEmails(newEmails);
   };
 
   const handleConfirm = async () => {
     setLoading(true); // Show the loading spinner
     const formData = new FormData();
-    formData.append('email', email);
+    emails.forEach(email => formData.append('emails', email));
     formData.append('pdfFile', pdfFile);
     try {
       const data = await contractShare(formData);
@@ -41,15 +52,23 @@ const Popupkeycreate = ({ closePopup, pdfFile }) => {
         <PopupTitle>
           화면 공유 링크와 접속 비밀번호를 <br /> 전달받을 이메일을 입력해주세요
         </PopupTitle>
-        <FormGroup>
-          <Emailform>이메일 :</Emailform>
-          <EmailInput
-            type="email"
-            placeholder="이메일 주소를 입력해주세요."
-            value={email}
-            onChange={handleEmailChange}
-          />
-        </FormGroup>
+        <EmailContainer>
+          {emails.map((email, index) => (
+            <FormGroup key={index}>
+              <Emailform>이메일 {index + 1}:</Emailform>
+              <EmailInput
+                type="email"
+                placeholder="이메일 주소를 입력해주세요."
+                value={email}
+                onChange={(e) => handleEmailChange(index, e.target.value)}
+              />
+              {index > 0 && (
+                <RemoveEmailButton onClick={() => removeEmailField(index)}>-</RemoveEmailButton>
+              )}
+            </FormGroup>
+          ))}
+        </EmailContainer>
+        <AddEmailButton onClick={addEmailField}>+</AddEmailButton>
         <ConfirmButton onClick={handleConfirm}>이메일 전송</ConfirmButton>
       </PopupWrapper>
       {loading && (
@@ -68,12 +87,8 @@ const Popupkeycreate = ({ closePopup, pdfFile }) => {
 
 export default Popupkeycreate;
 
-
 const PopupWrapper = styled.div`
   display: flex;
-  top: 45.5%;
-  left: 50%;
-  transform: translate(-50%, -40%);
   flex-direction: column;
   align-items: center;
   justify-content: center;
@@ -83,12 +98,14 @@ const PopupWrapper = styled.div`
   padding: 40px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
   width: 50%;
-  height: 50%; /* 기본 높이 */
   max-width: 600px; 
-  max-height: 400px; 
   min-width: 300px; 
-  min-height: 200px; 
+  max-height: 80vh; /* 최대 높이 */
+  overflow-y: auto; /* 내용이 넘치면 스크롤 */
   position: fixed; 
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   z-index: 1; /* 기본 z-index 설정 */
 `;
 
@@ -102,11 +119,16 @@ const PopupTitle = styled.h2`
   text-align: center; /* 텍스트 중앙 정렬 추가 */
 `;
 
+const EmailContainer = styled.div`
+  width: 100%;
+  margin-top: 20px;
+`;
+
 const FormGroup = styled.div`
   display: flex;
   width: 100%;
   align-items: center;
-  margin-top: 50px;
+  margin-top: 10px; /* 여백을 줄였습니다. */
 `;
 
 const Emailform = styled.h4`
@@ -128,6 +150,48 @@ const EmailInput = styled.input`
   color: black;
 `;
 
+const AddEmailButton = styled.button`
+  margin-top: 10px; /* 여백을 추가했습니다. */
+  padding: 5px 10px;
+  font-size: 16px;
+  cursor: pointer;
+  border: none;
+  background-color: #141F7B; /* 기본 버튼 색상 */
+  color: white; /* 글자 색상 */
+  text-align: center;
+  border-radius: 5px;
+
+  &:hover {
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+  }
+  &:active,
+  &:focus {
+    background-color: #fefdf6; /* 눌렸을 때 배경색 */
+    color: #141F7B; /* 눌렸을 때 글씨색 */
+    outline: none; /* 포커스 시 outline 제거 */
+  }
+`;
+
+const RemoveEmailButton = styled.button`
+  margin-left: 10px; /* 여백을 추가했습니다. */
+  padding: 5px 10px;
+  font-size: 16px;
+  cursor: pointer;
+  border: none;
+  background-color: red; /* 기본 버튼 색상 */
+  color: white; /* 글자 색상 */
+  text-align: center;
+  border-radius: 5px;
+
+  &:hover {
+    background-color: darkred;
+  }
+  &:active,
+  &:focus {
+    outline: none; /* 포커스 시 outline 제거 */
+  }
+`;
+
 const ConfirmButton = styled.button`
   display: flex;
   justify-content: center;
@@ -141,7 +205,7 @@ const ConfirmButton = styled.button`
   color: white; /* 글자 색상 */
   text-align: center;
   border-radius: 100px;
-  margin-top: 50px;
+  margin-top: 20px; /* 여백을 줄였습니다. */
 
   &:hover {
     box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
@@ -164,7 +228,7 @@ const CustomAlert = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-   top: 50%;
+  top: 50%;
   left: 50%;
   transform: translate(-50%, -40%);
   background-color: white;
@@ -240,6 +304,7 @@ const LoadingOverlay = styled.div`
     width: 100%;
     height: 100%;
     background-color: rgba(0,0,0,0.3);
+
   }
 
   &:not(:required) {
