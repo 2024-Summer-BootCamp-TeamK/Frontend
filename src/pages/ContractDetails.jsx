@@ -50,7 +50,7 @@ const ContractDetails = () => {
       }
     };
 
-    const intervalId = setInterval(checkTaskStatus, 5000);
+    const intervalId = setInterval(checkTaskStatus, 15000);
 
     return () => clearInterval(intervalId);
   }, [mainTaskId, toxinTaskId, contractMain, contractToxin]);
