@@ -100,7 +100,7 @@ const Mainpage = () => {
       <MainContainer>
         <Header logoSrc={logoSrc} isScrolled={isScrolled} />
 
-        <ImageContainer>
+        <FirstImageContainer>
           <img src={main1Src} alt="main1" />
           <TextOverlayContainer>
             <TextOverlayLine id="text-overlay1">
@@ -110,7 +110,7 @@ const Mainpage = () => {
               CONTRACT&nbsp;WITH&nbsp;US
             </TextOverlayLine>
           </TextOverlayContainer>
-        </ImageContainer>
+        </FirstImageContainer>
         <ImageContainer>
           <img src={main2Src} alt="main2" />
         </ImageContainer>
@@ -150,6 +150,25 @@ const MainContainer = styled.div`
   position: relative;
 `;
 
+const FirstImageContainer = styled.div`
+  text-align: center;
+  margin: 0;
+  border: none;
+  position: relative;
+  z-index: 1; 
+
+  img {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    object-position: center;
+    margin-top: -100px;
+    border: none;
+    position: relative;
+    z-index: 1;
+  }
+`;
+
 const ImageContainer = styled.div`
   text-align: center;
   margin: 0;
@@ -187,6 +206,7 @@ const TextOverlayLine = styled.div`
   padding: 5px 0; /* 텍스트 위아래 공간 조정 */
   margin-top: 20px;
   font-family: 'Rakkas', serif !important; /* 폰트 적용에 !important 추가 */
+  text-shadow: 1px 1px 0 #E7470A, -1px -1px 0 #E7470A, 1px -1px 0 #E7470A, -1px 1px 0 #E7470A;
 
   span {
     display: inline-block;
