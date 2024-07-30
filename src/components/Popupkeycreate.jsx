@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import axios from 'axios';
 import contractShare from '../services/share_API';
 
-const Popupkeycreate = ({ closePopup, pdfFile }) => {
+const Popupkeycreate = ({ closePopup, pdfFile, handleConfirm }) => {
   const [emails, setEmails] = useState(['']);
 
   const handleEmailChange = (index, value) => {
@@ -25,20 +25,12 @@ const Popupkeycreate = ({ closePopup, pdfFile }) => {
     setEmails(newEmails);
   };
 
-  const handleConfirm = async () => {
+  const handleLocalConfirm = async () => {
     const formData = new FormData();
     const emailString = emails.join(',');
     formData.append('emails', emailString);
     formData.append('pdfFile', pdfFile);
-    try {
-      const data = await contractShare(formData);
-      console.log('공유계약서 업로드 성공:', data);
-      // 성공 시 추가 작업
-    } catch (error) {
-      console.error('공유계약서 업로드 에러:', error.data?.data || error.message);
-      alert('계약서 공유에 실패했습니다.');
-      // 에러 처리 추가
-    }
+    handleConfirm(formData); // 부모 컴포넌트의 handleConfirm 호출
   };
 
   return (
@@ -65,7 +57,7 @@ const Popupkeycreate = ({ closePopup, pdfFile }) => {
           </FormGroup>
         ))}
       </EmailContainer>
-      <ConfirmButton onClick={handleConfirm}>이메일 전송</ConfirmButton>
+      <ConfirmButton onClick={handleLocalConfirm}>이메일 전송</ConfirmButton>
     </PopupWrapper>
   );
 };

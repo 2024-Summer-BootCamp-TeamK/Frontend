@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { useLocation } from 'react-router-dom';
 import Popupkeycreate from '../components/Popupkeycreate';
 import Button from '../components/Button';
+import contractShare from '../services/share_API';
 
 import {
     Headerall,
@@ -59,11 +60,13 @@ const Key = () => {
             </Container>
             {loading && <LoadingOverlay />}
             {showAlert && (
-                <CustomAlert>
-                    <AlertTitle>전송 완료</AlertTitle>
-                    <AlertMessage>이메일을 확인해주세요</AlertMessage>
-                    <AlertButton onClick={handleCloseAlert}>확인</AlertButton>
-                </CustomAlert>
+                <AlertBackground>
+                    <CustomAlert>
+                        <AlertTitle>전송 완료</AlertTitle>
+                        <AlertMessage>이메일을 확인해주세요</AlertMessage>
+                        <AlertButton onClick={handleCloseAlert}>확인</AlertButton>
+                    </CustomAlert>
+                </AlertBackground>
             )}
         </>
     );
@@ -87,28 +90,32 @@ const FileName = styled.h5`
   text-align: center;
 `;
 
-// The rest of your styled-components
+const AlertBackground = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* 반투명한 검정 배경 */
+  z-index: 1000; /* 높은 z-index 설정 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
 const CustomAlert = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -40%);
   background-color: white;
   border: 5px solid #141F7B;
   border-radius: 20px;
   padding: 40px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
   width: 50%; /* 기본 너비 */
-  height: 50%; /* 기본 높이 */
   max-width: 600px; /* 최대 너비 */
-  max-height: 400px; /* 최대 높이 */
   min-width: 300px; /* 최소 너비 */
-  min-height: 200px; /* 최소 높이 */
-  position: fixed; /* 고정 위치 설정 */
-  z-index: 1000; /* 높은 z-index 설정 */
 `;
 
 const AlertTitle = styled.h3`
