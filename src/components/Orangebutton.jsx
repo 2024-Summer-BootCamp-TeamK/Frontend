@@ -19,7 +19,7 @@ const Orangebutton = styled.button`
   &:hover {
     background-color: #e7470a; 
     color: #ffffff; /* hover 시 글씨색 */
-    border: 1px solid #e7470a;
+    border: 2px solid #e7470a;
     box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
   }
 
