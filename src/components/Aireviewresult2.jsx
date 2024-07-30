@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef, forwardRef, useImperativeHandle } f
 import styled from "styled-components";
 import { modifiedContract } from "../services/getModifiedContract";
 import * as pdfjsLib from "pdfjs-dist";
-import jsPDF from "jspdf"; // jspdf 임포트
+// import jsPDF from "jspdf"; // jspdf 임포트
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.js`;
 

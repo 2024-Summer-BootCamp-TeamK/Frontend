@@ -13,17 +13,20 @@ import main2_1Src from "../images/main2-1.svg";
 import main2_2Src from "../images/main2-2.svg";
 import main2_3Src from "../images/main2-3.svg";
 import mainendSrc from "../images/mainend.svg";
-// import Textanimation from "../components/Textanimation";
 import { useNavigate } from 'react-router-dom';
 import UseIntersectionObserver from '../components/UseIntersectionObserver';
 
 // Import the font using createGlobalStyle
 const GlobalStyle = createGlobalStyle`
   @font-face {
-  font-family: "Rakkas", serif;
-    src: url('@import url('https://fonts.googleapis.com/css2?family=Anton+SC&family=Rakkas&display=swap'););
+    font-family: "Rakkas", serif;
+    src: url('https://fonts.googleapis.com/css2?family=Anton+SC&family=Rakkas&display=swap');
     font-weight: 400;
     font-style: normal;
+  }
+  
+  body {
+    font-family: 'Rakkas', serif;
   }
 `;
 
@@ -149,7 +152,6 @@ const MainContainer = styled.div`
 
 const ImageContainer = styled.div`
   text-align: center;
-  height: 100%;
   margin: 0;
   border: none;
   position: relative;
@@ -179,11 +181,12 @@ const TextOverlayContainer = styled.div`
 
 const TextOverlayLine = styled.div`
   color: #E7470A;
-  font-size: 5vw; /* 뷰포트 크기에 맞춰 폰트 크기 조정 */
+  font-size: 3vw; /* 뷰포트 크기에 맞춰 폰트 크기 조정 */
   font-weight: bold;
-  line-height: 1.2; /* 줄 간격 조정 */
-  padding: 10px 0; /* 텍스트 위아래 공간 조정 */
-  font-family: 'Cafe24Decobox', sans-serif;
+  line-height: 1; /* 줄 간격 조정 */
+  padding: 5px 0; /* 텍스트 위아래 공간 조정 */
+  margin-top: 20px;
+  font-family: 'Rakkas', serif !important; /* 폰트 적용에 !important 추가 */
 
   span {
     display: inline-block;
@@ -202,22 +205,19 @@ const TextOverlayLine = styled.div`
 
   @media (max-width: 768px) {
     font-size: 2.5vw; /* 768px 이하 화면에서 폰트 크기 조정 */
-    line-height: 1.5; /* 768px 이하 화면에서 줄 간격 조정 */
+    line-height: 0.5; /* 768px 이하 화면에서 줄 간격 조정 */
   }
 
   @media (max-width: 576px) {
-    font-size: 2vw; /* Adjust font size for screens smaller than 576px */
-    line-height: 1.6; /* Adjust line-height for this screen size */
+    font-size: 2vw; /* 576px 이하 화면에서 폰트 크기 조정 */
+    line-height: 0.5; /* 576px 이하 화면에서 줄 간격 조정 */
   }
 
   @media (max-width: 480px) {
-    font-size: 1.5vw; /* Adjust font size for screens smaller than 480px */
-    line-height: 1.7; /* Adjust line-height for this screen size */
+    font-size: 1.5vw; /* 480px 이하 화면에서 폰트 크기 조정 */
+    line-height: 0.5; /* 480px 이하 화면에서 줄 간격 조정 */
   }
 `;
-
-
-
 
 const SvgRow = styled.div`
   display: flex;
