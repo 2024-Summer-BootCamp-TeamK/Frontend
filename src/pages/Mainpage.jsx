@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import styled, { keyframes, css } from "styled-components";
+import styled, { keyframes, css, createGlobalStyle } from "styled-components";
 import Header from "../components/Header";
 import Orangebutton from "../components/Orangebutton";
 import logoSrc from "../images/logo.svg";
@@ -13,9 +13,19 @@ import main2_1Src from "../images/main2-1.svg";
 import main2_2Src from "../images/main2-2.svg";
 import main2_3Src from "../images/main2-3.svg";
 import mainendSrc from "../images/mainend.svg";
-import Textanimation from "../components/Textanimation";
+// import Textanimation from "../components/Textanimation";
 import { useNavigate } from 'react-router-dom';
 import UseIntersectionObserver from '../components/UseIntersectionObserver';
+
+// Import the font using createGlobalStyle
+const GlobalStyle = createGlobalStyle`
+  @font-face {
+  font-family: "Rakkas", serif;
+    src: url('@import url('https://fonts.googleapis.com/css2?family=Anton+SC&family=Rakkas&display=swap'););
+    font-weight: 400;
+    font-style: normal;
+  }
+`;
 
 const fadeInDown = keyframes`
   0% {
@@ -25,6 +35,19 @@ const fadeInDown = keyframes`
   100% {
     opacity: 1;
     transform: translateZ(0);
+  }
+`;
+
+const cliptext = keyframes`
+  0% {
+    clip-path: polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%);
+    transform: translateY(100%);
+  }
+  95% {
+    transform: translateY(0%);
+  }
+  100% {
+    clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%);
   }
 `;
 
@@ -50,43 +73,69 @@ const Mainpage = () => {
     };
   }, []);
 
-  return (
-    <MainContainer>
-      <Header logoSrc={logoSrc} isScrolled={isScrolled} />
+  useEffect(() => {
+    const applyAnimation = (id, delay = 0) => {
+      const dom = document.getElementById(id);
+      const chars = dom.innerText.split("");
+      dom.innerHTML = "";
+      chars.forEach((char, index) => {
+        const span = document.createElement("span");
+        span.innerText = char;
+        span.style.animationDelay = `${0.1 * index + delay}s`;
+        span.classList.add('clip');
+        dom.appendChild(span);
+      });
+    };
 
-      <ImageContainer>
-        <img src={main1Src} alt="main1" />
-        <TextAnimationContainer>
-          <Textanimation />
-        </TextAnimationContainer>
-      </ImageContainer>
-      <ImageContainer>
-        <img src={main2Src} alt="main2" />
-      </ImageContainer>
-      <SvgRow>
-        <AnimatedImage ref={ref1_1} src={main1_1Src} alt="main1_1" inView={inView1_1} />
-        <img src={arrowSrc} alt="arrow1" className="arrow" />
-        <AnimatedImage ref={ref1_2} src={main1_2Src} alt="main1_2" inView={inView1_2} />
-        <img src={arrowSrc} alt="arrow2" className="arrow" />
-        <AnimatedImage ref={ref1_3} src={main1_3Src} alt="main1_3" inView={inView1_3} />
-      </SvgRow>
-      <ButtonCenter>
-        <Orangebutton onClick={() => navigate('/category')}>계약서 검토 받으러 가기</Orangebutton>
-      </ButtonCenter>
-      <SvgRow>
-        <AnimatedImage ref={ref2_1} src={main2_1Src} alt="main2_1" inView={inView2_1} />
-        <img src={arrowSrc} alt="arrow3" className="arrow" />
-        <AnimatedImage ref={ref2_2} src={main2_2Src} alt="main2_2" inView={inView2_2} />
-        <img src={arrowSrc} alt="arrow4" className="arrow" />
-        <AnimatedImage ref={ref2_3} src={main2_3Src} alt="main2_3" inView={inView2_3} />
-      </SvgRow>
-      <ButtonCenter>
-        <Orangebutton onClick={() => navigate('/fileuploadshare')}>상대방과 계약서 검토하러 가기</Orangebutton>
-      </ButtonCenter>
-      <ImageContainer>
-        <img src={mainendSrc} alt="mainend" />
-      </ImageContainer>
-    </MainContainer>
+    applyAnimation("text-overlay1");
+    applyAnimation("text-overlay2", 1.5); // `text-overlay2`는 1.5초 지연
+  }, []);
+
+  return (
+    <>
+      <GlobalStyle />
+      <MainContainer>
+        <Header logoSrc={logoSrc} isScrolled={isScrolled} />
+
+        <ImageContainer>
+          <img src={main1Src} alt="main1" />
+          <TextOverlayContainer>
+            <TextOverlayLine id="text-overlay1">
+              SHARE&nbsp;YOUR
+            </TextOverlayLine>
+            <TextOverlayLine id="text-overlay2" offset>
+              CONTRACT&nbsp;WITH&nbsp;US
+            </TextOverlayLine>
+          </TextOverlayContainer>
+        </ImageContainer>
+        <ImageContainer>
+          <img src={main2Src} alt="main2" />
+        </ImageContainer>
+        <SvgRow>
+          <AnimatedImage ref={ref1_1} src={main1_1Src} alt="main1_1" inView={inView1_1} />
+          <img src={arrowSrc} alt="arrow1" className="arrow" />
+          <AnimatedImage ref={ref1_2} src={main1_2Src} alt="main1_2" inView={inView1_2} />
+          <img src={arrowSrc} alt="arrow2" className="arrow" />
+          <AnimatedImage ref={ref1_3} src={main1_3Src} alt="main1_3" inView={inView1_3} />
+        </SvgRow>
+        <ButtonCenter>
+          <Orangebutton onClick={() => navigate('/category')}>계약서 검토 받으러 가기</Orangebutton>
+        </ButtonCenter>
+        <SvgRow>
+          <AnimatedImage ref={ref2_1} src={main2_1Src} alt="main2_1" inView={inView2_1} />
+          <img src={arrowSrc} alt="arrow3" className="arrow" />
+          <AnimatedImage ref={ref2_2} src={main2_2Src} alt="main2_2" inView={inView2_2} />
+          <img src={arrowSrc} alt="arrow4" className="arrow" />
+          <AnimatedImage ref={ref2_3} src={main2_3Src} alt="main2_3" inView={inView2_3} />
+        </SvgRow>
+        <ButtonCenter>
+          <Orangebutton onClick={() => navigate('/fileuploadshare')}>상대방과 계약서 검토하러 가기</Orangebutton>
+        </ButtonCenter>
+        <ImageContainer>
+          <img src={mainendSrc} alt="mainend" />
+        </ImageContainer>
+      </MainContainer>
+    </>
   );
 };
 
@@ -118,16 +167,57 @@ const ImageContainer = styled.div`
   }
 `;
 
-const TextAnimationContainer = styled.div`
+const TextOverlayContainer = styled.div`
   position: absolute;
-  top: 50%;
-  width: 60%;
-  height: 80%;
-  left: 13%;
-  transform: translate(-50%, -50%);
-  pointer-events: none;
-  z-index: 10 !important;
+  top: 10%; /* 첫 번째 줄의 시작 위치 */
+  left: 55%;
+  transform: translateX(-50%);
+  z-index: 2;
+  text-align: left;
+  width: 100%;
 `;
+
+const TextOverlayLine = styled.div`
+  color: #E7470A;
+  font-size: 5vw; /* 뷰포트 크기에 맞춰 폰트 크기 조정 */
+  font-weight: bold;
+  line-height: 1.2; /* 줄 간격 조정 */
+  padding: 10px 0; /* 텍스트 위아래 공간 조정 */
+  font-family: 'Cafe24Decobox', sans-serif;
+
+  span {
+    display: inline-block;
+    animation: ${cliptext} 1s ease-in-out both;
+  }
+
+  @media (max-width: 1200px) {
+    font-size: 3vw; /* 1200px 이하 화면에서 폰트 크기 조정 */
+    line-height: 1; /* 1200px 이하 화면에서 줄 간격 조정 */
+  }
+
+  @media (max-width: 992px) {
+    font-size: 2.5vw; /* 992px 이하 화면에서 폰트 크기 조정 */
+    line-height: 1; /* 992px 이하 화면에서 줄 간격 조정 */
+  }
+
+  @media (max-width: 768px) {
+    font-size: 2.5vw; /* 768px 이하 화면에서 폰트 크기 조정 */
+    line-height: 1.5; /* 768px 이하 화면에서 줄 간격 조정 */
+  }
+
+  @media (max-width: 576px) {
+    font-size: 2vw; /* Adjust font size for screens smaller than 576px */
+    line-height: 1.6; /* Adjust line-height for this screen size */
+  }
+
+  @media (max-width: 480px) {
+    font-size: 1.5vw; /* Adjust font size for screens smaller than 480px */
+    line-height: 1.7; /* Adjust line-height for this screen size */
+  }
+`;
+
+
+
 
 const SvgRow = styled.div`
   display: flex;
