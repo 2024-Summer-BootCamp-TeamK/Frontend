@@ -13,6 +13,7 @@ import {
 import logoSrc from "../images/logo.svg";
 import uploadIconSrc from "../images/upload-icon.svg";
 
+
 const FileUploadShare = () => {
   const [fileName, setFileName] = useState(null);
   const [file, setFile] = useState(null);
@@ -59,8 +60,7 @@ const FileUploadShare = () => {
             {isDragActive ? (
               <p>파일을 여기에 놓으세요 ...</p>
             ) : (
-              <p>{fileName ? `업로드된 파일: ${fileName}` : ''}</p>
-            )}
+              <p>{fileName ? `업로드된 파일 : ${fileName}` : 'PDF형식의 파일만 업로드 가능합니다'}</p>)}
           </DropZoneText>
         </DropZone>
       </Wrapper>

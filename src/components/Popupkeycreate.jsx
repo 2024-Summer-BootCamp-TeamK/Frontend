@@ -1,79 +1,71 @@
 import React, { useState } from 'react';
-import styled, { keyframes } from 'styled-components';
+import styled from 'styled-components';
 import axios from 'axios';
 import contractShare from '../services/share_API';
 
-const Popupkeycreate = ({ closePopup, pdfFile }) => {
-  const [email, setEmail] = useState('');
-  const [showAlert, setShowAlert] = useState(false);
-  const [loading, setLoading] = useState(false);
+const Popupkeycreate = ({ closePopup, pdfFile, handleConfirm }) => {
+  const [emails, setEmails] = useState(['']);
 
-  const handleEmailChange = (e) => {
-    setEmail(e.target.value);
+  const handleEmailChange = (index, value) => {
+    const newEmails = [...emails];
+    newEmails[index] = value;
+    setEmails(newEmails);
   };
 
-  const handleConfirm = async () => {
-    setLoading(true); // Show the loading spinner
-    const formData = new FormData();
-    formData.append('email', email);
-    formData.append('pdfFile', pdfFile);
-    try {
-      const data = await contractShare(formData);
-      console.log('공유계약서 업로드 성공:', data);
-      setShowAlert(true); // Show the custom alert
-      // 성공 시 추가 작업
-    } catch (error) {
-      console.error('공유계약서 업로드 에러:', error.data?.data || error.message);
-      alert('계약서 공유에 실패했습니다.');
-      // 에러 처리 추가
-    } finally {
-      setLoading(false); // Hide the loading spinner
+  const addEmailField = () => {
+    if (emails.length < 5) {
+      setEmails([...emails, '']);
+    } else {
+      alert('You can add up to 5 email addresses only.');
     }
   };
 
-  const handleCloseAlert = () => {
-    setShowAlert(false);
+  const removeEmailField = (index) => {
+    const newEmails = emails.filter((_, i) => i !== index);
+    setEmails(newEmails);
+  };
+
+  const handleLocalConfirm = async () => {
+    const formData = new FormData();
+    const emailString = emails.join(',');
+    formData.append('emails', emailString);
+    formData.append('pdfFile', pdfFile);
+    handleConfirm(formData); // 부모 컴포넌트의 handleConfirm 호출
   };
 
   return (
-    <>
-      <PopupWrapper>
-        <PopupTitle>
-          화면 공유 링크와 접속 비밀번호를 <br /> 전달받을 이메일을 입력해주세요
-        </PopupTitle>
-        <FormGroup>
-          <Emailform>이메일 :</Emailform>
-          <EmailInput
-            type="email"
-            placeholder="이메일 주소를 입력해주세요."
-            value={email}
-            onChange={handleEmailChange}
-          />
-        </FormGroup>
-        <ConfirmButton onClick={handleConfirm}>이메일 전송</ConfirmButton>
-      </PopupWrapper>
-      {loading && (
-        <LoadingOverlay className="loading" />
-      )}
-      {showAlert && (
-        <CustomAlert>
-          <AlertTitle>전송 완료</AlertTitle>
-          <AlertMessage>이메일을 확인해주세요</AlertMessage>
-          <AlertButton onClick={handleCloseAlert}>확인</AlertButton>
-        </CustomAlert>
-      )}
-    </>
+    <PopupWrapper>
+      <PopupTitle>
+        화면 공유 링크와 접속 비밀번호를 <br /> 전달받을 이메일을 입력해주세요
+      </PopupTitle>
+      <EmailContainer>
+        {emails.map((email, index) => (
+          <FormGroup key={index}>
+            <Emailform>이메일 {index + 1}:</Emailform>
+            <EmailInput
+              type="email"
+              placeholder="이메일 주소를 입력해주세요."
+              value={email}
+              onChange={(e) => handleEmailChange(index, e.target.value)}
+            />
+            {index === 0 && (
+              <AddEmailButton onClick={addEmailField}>+</AddEmailButton>
+            )}
+            {index > 0 && (
+              <RemoveEmailButton onClick={() => removeEmailField(index)}>-</RemoveEmailButton>
+            )}
+          </FormGroup>
+        ))}
+      </EmailContainer>
+      <ConfirmButton onClick={handleLocalConfirm}>이메일 전송</ConfirmButton>
+    </PopupWrapper>
   );
 };
 
 export default Popupkeycreate;
 
-
 const PopupWrapper = styled.div`
   display: flex;
-  top: 45.5%;
-  left: 50%;
-  transform: translate(-50%, -40%);
   flex-direction: column;
   align-items: center;
   justify-content: center;
@@ -83,12 +75,14 @@ const PopupWrapper = styled.div`
   padding: 40px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
   width: 50%;
-  height: 50%; /* 기본 높이 */
   max-width: 600px; 
-  max-height: 400px; 
   min-width: 300px; 
-  min-height: 200px; 
+  max-height: 80vh; /* 최대 높이 */
+  overflow-y: auto; /* 내용이 넘치면 스크롤 */
   position: fixed; 
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   z-index: 1; /* 기본 z-index 설정 */
 `;
 
@@ -102,11 +96,16 @@ const PopupTitle = styled.h2`
   text-align: center; /* 텍스트 중앙 정렬 추가 */
 `;
 
+const EmailContainer = styled.div`
+  width: 100%;
+  margin-top: 20px;
+`;
+
 const FormGroup = styled.div`
   display: flex;
-  width: 100%;
   align-items: center;
-  margin-top: 50px;
+  width: 100%;
+  margin-top: 10px; /* 여백을 줄였습니다. */
 `;
 
 const Emailform = styled.h4`
@@ -128,6 +127,46 @@ const EmailInput = styled.input`
   color: black;
 `;
 
+const AddEmailButton = styled.button`
+  margin-left: 10px; /* 첫 번째 입력창 오른쪽에 배치될 여백을 추가했습니다. */
+  padding: 5px 10px;
+  font-size: 16px;
+  cursor: pointer;
+  border: none;
+  background-color: #141F7B; /* 기본 버튼 색상 */
+  color: white; /* 글자 색상 */
+  text-align: center;
+  border-radius: 5px;
+
+  &:hover {
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+  }
+  &:active,
+  &:focus {
+    outline: none; /* 포커스 시 outline 제거 */
+  }
+`;
+
+const RemoveEmailButton = styled.button`
+  margin-left: 10px; /* 여백을 추가했습니다. */
+  padding: 5px 10px;
+  font-size: 16px;
+  cursor: pointer;
+  border: none;
+  background-color: red; /* 기본 버튼 색상 */
+  color: white; /* 글자 색상 */
+  text-align: center;
+  border-radius: 5px;
+
+  &:hover {
+    background-color: darkred;
+  }
+  &:active,
+  &:focus {
+    outline: none; /* 포커스 시 outline 제거 */
+  }
+`;
+
 const ConfirmButton = styled.button`
   display: flex;
   justify-content: center;
@@ -141,7 +180,7 @@ const ConfirmButton = styled.button`
   color: white; /* 글자 색상 */
   text-align: center;
   border-radius: 100px;
-  margin-top: 50px;
+  margin-top: 20px; /* 여백을 줄였습니다. */
 
   &:hover {
     box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
@@ -156,109 +195,5 @@ const ConfirmButton = styled.button`
     fill: rgba(255, 255, 255, 0.8); /* fill 속성에 투명도가 80%인 흰색 적용 */
     stroke: #edeac5; /* stroke 속성 설정 */
     stroke-width: 1; /* stroke-width 속성 설정 */
-  }
-`;
-
-const CustomAlert = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-   top: 50%;
-  left: 50%;
-  transform: translate(-50%, -40%);
-  background-color: white;
-  border: 5px solid #141F7B;
-  border-radius: 20px;
-  padding: 40px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-  width: 50%; /* 기본 너비 */
-  height: 50%; /* 기본 높이 */
-  max-width: 600px; /* 최대 너비 */
-  max-height: 400px; /* 최대 높이 */
-  min-width: 300px; /* 최소 너비 */
-  min-height: 200px; /* 최소 높이 */
-  position: fixed; /* 고정 위치 설정 */
-  transform: translate(-50%, -50%);
-  z-index: 1000; /* 높은 z-index 설정 */
-`;
-
-const AlertTitle = styled.h3`
-  margin: 0;
-  font-size: 25px;
-  color: black;
-`;
-
-const AlertMessage = styled.p`
-  margin: 10px 0 0;
-  font-size: 18px;
-  color: gray;
-`;
-
-const AlertButton = styled.button`
-  margin-top: 20px;
-  padding: 10px 20px;
-  font-size: 14px;
-  color: white;
-  background-color: #141F7B;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-
-  &:hover {
-    background-color: #0f146b;
-  }
-`;
-
-const spinner = keyframes`
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
-`;
-
-const LoadingOverlay = styled.div`
-  position: fixed;
-  z-index: 999;
-  height: 2em;
-  width: 2em;
-  overflow: visible;
-  margin: auto;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  right: 0;
-
-  &:before {
-    content: '';
-    display: block;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0,0,0,0.3);
-  }
-
-  &:not(:required) {
-    font: 0/0 a;
-    color: transparent;
-    text-shadow: none;
-    background-color: transparent;
-    border: 0;
-  }
-
-  &:not(:required):after {
-    content: '';
-    display: block;
-    font-size: 10px;
-    width: 1em;
-    height: 1em;
-    margin-top: -0.5em;
-    animation: ${spinner} 1500ms infinite linear;
-    border-radius: 0.5em;
-    box-shadow: rgba(0, 0, 0, 0.75) 1.5em 0 0 0, rgba(0, 0, 0, 0.75) 1.1em 1.1em 0 0, rgba(0, 0, 0, 0.75) 0 1.5em 0 0, rgba(0, 0, 0, 0.75) -1.1em 1.1em 0 0, rgba(0, 0, 0, 0.75) -1.5em 0 0 0, rgba(0, 0, 0, 0.75) -1.1em -1.1em 0 0, rgba(0, 0, 0, 0.75) 0 -1.5em 0 0, rgba(0, 0, 0, 0.75) 1.1em -1.1em 0 0;
   }
 `;

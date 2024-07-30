@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import styled from "styled-components";
 import Button from "../components/Button2";
 import Aireviewresult2 from "../components/Aireviewresult2";
@@ -11,16 +11,29 @@ import {
 } from "../components/Headerall";
 import logoSrc from "../images/logo.svg";
 import Orangebutton from "../components/Orangebutton";
-import arrow2Src from "../images/arrow2.svg"; // 추가할 SVG 이미지 경로
+import arrow2Src from "../images/arrow2.svg";
 import { useNavigate, useLocation } from "react-router-dom";
 
 const Resultcompare = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { contractId } = location.state || {}; // 네비게이션 상태에서 contractId 추출
+  const { contractId } = location.state || {};
+  const aireviewRef = useRef();
 
   const handleFileUploadShareClick = () => {
     navigate("/fileuploadshare", { state: { contractId } });
+  };
+
+  const handleDownloadClick = () => {
+    const pdfUrl = aireviewRef.current.getPdfUrl();
+    if (pdfUrl) {
+      const link = document.createElement('a');
+      link.href = pdfUrl;
+      link.download = 'modified_contract.pdf';
+      link.click();
+    } else {
+      alert('PDF URL이 없습니다.');
+    }
   };
 
   return (
@@ -40,20 +53,20 @@ const Resultcompare = () => {
         <MainContent>
           <Container>
             <ComponentWrapper>
-              <Originalcontract contractId={contractId} /> 
+              <Originalcontract contractId={contractId} />
             </ComponentWrapper>
             <ArrowWrapper>
               <ArrowImage data={arrow2Src} type="image/svg+xml" />
             </ArrowWrapper>
             <ComponentWrapper>
-              <Aireviewresult2 contractId={contractId} />
+              <Aireviewresult2 ref={aireviewRef} contractId={contractId} />
             </ComponentWrapper>
           </Container>
           <ButtonsWrapper>
-            <Orangebutton onClick= {handleFileUploadShareClick} >
+            <Orangebutton onClick={handleFileUploadShareClick}>
               상대방과 검토하기
             </Orangebutton>
-            <Orangebutton>
+            <Orangebutton onClick={handleDownloadClick}>
               &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;PDF 저장
               &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             </Orangebutton>

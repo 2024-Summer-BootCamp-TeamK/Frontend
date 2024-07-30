@@ -3,9 +3,9 @@ import styled from "styled-components";
 const Orangebutton = styled.button`
   background-color: #ffffff;
   color: #e7470a;
-  padding: 10px 20px;
+  padding: 20px 20px; /* padding-top 값을 증가시킴 */
   border: 2px solid #e7470a;
-  border-radius: 20px;
+  border-radius: 30px;
   font-size: 17px;
   font-weight: bold;
   cursor: pointer;
@@ -19,7 +19,7 @@ const Orangebutton = styled.button`
   &:hover {
     background-color: #e7470a; 
     color: #ffffff; /* hover 시 글씨색 */
-    border: 1px solid #e7470a;
+    border: 2px solid #e7470a;
     box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
   }
 

@@ -183,7 +183,7 @@ const Carousel = styled.div`
   align-items: center;
   width: 100%;
   height: calc(100vh - 200px); // 150px을 뺀 높이 설정
-  margin-top: -150px; // 상단 마진 설정
+  margin-top: -170px; // 상단 마진 설정
   overflow: visible; // overflow visible로 변경
 `;
 
@@ -248,7 +248,7 @@ const ButtonL = styled.button`
   border: none;
   position: absolute;
   left: calc(50% - 250px); // 원하는 위치로 조정
-  top: 40%;
+  top: 37%;
   transform: translateY(-50%);
   cursor: pointer;
   padding: 0;
@@ -256,6 +256,10 @@ const ButtonL = styled.button`
 
   &:hover {
     opacity: 0.8;
+  }
+
+    &:focus {
+    outline: none;
   }
 
   @media (max-width: 768px) {
@@ -268,7 +272,7 @@ const ButtonR = styled.button`
   border: none;
   position: absolute;
   right: calc(50% - 250px); // 원하는 위치로 조정
-  top: 40%;
+  top: 37%;
   transform: translateY(-50%);
   cursor: pointer;
   padding: 0;

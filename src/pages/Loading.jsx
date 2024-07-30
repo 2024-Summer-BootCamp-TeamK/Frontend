@@ -12,23 +12,9 @@ import {
 } from "../components/Headerall";
 import logoSrc from "../images/logo.svg";
 
-const GlobalStyle = createGlobalStyle`
-  * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-  }
-
-  body {
-    width: 100%;
-    height: 100vh;
-    overflow: hidden;
-  }
-`;
-
-const bgColor = '#DFDFDF';
-const foldColor = '#F7F7F6';
-const activeColor = '#868686';
+const bgColor = "#DFDFDF";
+const foldColor = "#F7F7F6";
+const activeColor = "#868686";
 
 const loadingAnimation = keyframes`
   from {
@@ -48,7 +34,7 @@ const Container = styled.div`
   padding-top: 10em; // 여기서 상단 패딩을 추가합니다.
 `;
 
-const animationDuration = '10s'; // 원하는 애니메이션 지속 시간 설정
+const animationDuration = "10s"; // 원하는 애니메이션 지속 시간 설정
 
 const loaderAnimation = keyframes`
   from { width: 0%; }
@@ -71,8 +57,8 @@ const Wrapper = styled.div`
     background: #dcdbd7;
     position: relative;
     box-shadow:
-      0 1px 0 rgba(255,255,255,0.8),
-      inset 0 2px 3px rgba(0,0,0,0.2);
+      0 1px 0 rgba(255, 255, 255, 0.8),
+      inset 0 2px 3px rgba(0, 0, 0, 0.2);
   }
 
   .load-bar:hover .load-bar-inner,
@@ -86,11 +72,11 @@ const Wrapper = styled.div`
     border-radius: inherit;
     position: relative;
     background: #c2d7ac;
-    background: linear-gradient(#F6D767, #FAD23F);
+    background: linear-gradient(#f6d767, #fad23f);
     box-shadow:
-      inset 0 1px 0 rgba(255,255,255,1),
-      0 1px 5px rgba(0,0,0,0.3),
-      0 4px 5px rgba(0,0,0,0.3);
+      inset 0 1px 0 rgba(255, 255, 255, 1),
+      0 1px 5px rgba(0, 0, 0, 0.3),
+      0 4px 5px rgba(0, 0, 0, 0.3);
     animation: ${loaderAnimation} ${animationDuration} linear forwards;
   }
 
@@ -99,14 +85,14 @@ const Wrapper = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
-    background: #141F7B;
-    background: linear-gradient(#141F7B, #141F7B);
+    background: #141f7b;
+    background: linear-gradient(#141f7b, #141f7b);
     padding: 5px 10px;
     border-radius: 0.4em;
-    box-shadow: 
-      inset 0 1px 0 rgba(255,255,255,2),
-      0 2px 4px 1px rgba(0,0,0,0.1),
-      0 1px 3px 1px rgba(0,0,0,0.1);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 2),
+      0 2px 4px 1px rgba(0, 0, 0, 0.1),
+      0 1px 3px 1px rgba(0, 0, 0, 0.1);
     left: -25px;
     top: -50px;
     font-size: 12px;
@@ -122,21 +108,21 @@ const Wrapper = styled.div`
     position: absolute;
     width: 8px;
     height: 8px;
-    background: #141F7B;
+    background: #141f7b;
     transform: rotate(45deg);
     left: 50%;
     margin-left: -4px;
     bottom: -4px;
     box-shadow:
-      3px 3px 4px rgba(0,0,0,0.2),
-      1px 1px 1px 1px rgba(0,0,0,0.1);
+      3px 3px 4px rgba(0, 0, 0, 0.2),
+      1px 1px 1px 1px rgba(0, 0, 0, 0.1);
     border-radius: 0 0 3px 0;
   }
 
   h1 {
     font-size: 34px;
     padding: 30px 0 8px 0;
-    color: #141F7B;
+    color: #141f7b;
     text-align: center;
   }
 
@@ -178,14 +164,16 @@ const Loading = () => {
 
     function increment() {
       current++;
-      document.getElementById('counter').innerHTML = Math.min(current, 100) + '%';
-      document.querySelector('.load-bar-inner').style.width = Math.min(current, 100) + '%';
+      document.getElementById("counter").innerHTML =
+        Math.min(current, 100) + "%";
+      document.querySelector(".load-bar-inner").style.width =
+        Math.min(current, 100) + "%";
       if (current === 100) {
         clearInterval(interval);
       }
     }
 
-    const loadBar = document.querySelector('.load-bar');
+    const loadBar = document.querySelector(".load-bar");
 
     function pauseInterval() {
       clearInterval(interval);
@@ -197,13 +185,13 @@ const Loading = () => {
       }
     }
 
-    loadBar.addEventListener('mouseover', pauseInterval);
-    loadBar.addEventListener('mouseout', resumeInterval);
+    loadBar.addEventListener("mouseover", pauseInterval);
+    loadBar.addEventListener("mouseout", resumeInterval);
 
     return () => {
       clearInterval(interval);
-      loadBar.removeEventListener('mouseover', pauseInterval);
-      loadBar.removeEventListener('mouseout', resumeInterval);
+      loadBar.removeEventListener("mouseover", pauseInterval);
+      loadBar.removeEventListener("mouseout", resumeInterval);
     };
   }, []);
 
@@ -212,24 +200,25 @@ const Loading = () => {
     autoplay: true,
     animationData: animationData2,
     rendererSettings: {
-      preserveAspectRatio: "xMidYMid slice"
-    }
+      preserveAspectRatio: "xMidYMid slice",
+    },
   };
 
   return (
     <>
-      <GlobalStyle />
       <div>
         <Headerall>
           <LogoContainer>
-            <LogoWrapper>
-              <Logo data={logoSrc} type="image/svg+xml" />
-              <LogoButton onClick={() => navigate('/')} />
-            </LogoWrapper>
+            <Logo data={logoSrc} type="image/svg+xml" />
+            <LogoButton onClick={() => navigate("/")} />
           </LogoContainer>
           <ButtonContainer>
-            <Button onClick={() => navigate('/category')}>AI 검토 받으러 가기</Button>
-            <Button onClick={() => navigate('/fileuploadshare')}>상대방과 계약서 검토하기</Button>
+            <Button onClick={() => navigate("/category")}>
+              AI 검토 받으러 가기
+            </Button>
+            <Button onClick={() => navigate("/fileuploadshare")}>
+              상대방과 계약서 검토하기
+            </Button>
           </ButtonContainer>
         </Headerall>
       </div>
@@ -239,7 +228,8 @@ const Loading = () => {
           loop
           autoplay
           height={400}
-          width={400} />
+          width={400}
+        />
         <Wrapper>
           <div className="load-bar">
             <div className="load-bar-inner" data-loading="0">
