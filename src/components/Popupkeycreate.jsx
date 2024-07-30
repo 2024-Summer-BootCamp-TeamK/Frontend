@@ -27,7 +27,8 @@ const Popupkeycreate = ({ closePopup, pdfFile }) => {
 
   const handleConfirm = async () => {
     const formData = new FormData();
-    emails.forEach(email => formData.append('emails', email));
+    const emailString = emails.join(',');
+    formData.append('emails', emailString);
     formData.append('pdfFile', pdfFile);
     try {
       const data = await contractShare(formData);
