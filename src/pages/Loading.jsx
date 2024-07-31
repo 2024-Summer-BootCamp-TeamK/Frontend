@@ -3,14 +3,9 @@ import Lottie from "react-lottie";
 import { useNavigate } from "react-router-dom";
 import animationData2 from "../lottie/Loading3.json";
 import Button from "../components/Button";
-import styled, { keyframes } from "styled-components";
-import {
-  Headerall,
-  LogoContainer,
-  Logo,
-  ButtonContainer,
-} from "../components/Headerall";
-import logoSrc from "../images/logo.svg";
+import styled, { createGlobalStyle, keyframes } from "styled-components";
+import Headerall from "../components/Headerall";
+import logoSrc from "../images/logo.svg"; // logo.svg 파일 경로를 올바르게 설정
 
 const animationDuration = "15s"; // 애니메이션 지속 시간 설정
 
@@ -165,18 +160,7 @@ const Loading = () => {
     <>
       <div>
         <Headerall>
-          <LogoContainer>
-            <Logo data={logoSrc} type="image/svg+xml" />
-            <LogoButton onClick={() => navigate("/")} />
-          </LogoContainer>
-          <ButtonContainer>
-            <Button onClick={() => navigate("/category")}>
-              AI 검토 받으러 가기
-            </Button>
-            <Button onClick={() => navigate("/fileuploadshare")}>
-              상대방과 계약서 검토하기
-            </Button>
-          </ButtonContainer>
+
         </Headerall>
       </div>
       <Container>

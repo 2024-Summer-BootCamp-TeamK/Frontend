@@ -4,13 +4,8 @@ import styled from "styled-components";
 import Button from "../components/Button";
 import Suggestion from "../components/Suggestion";
 import Aireviewresult from "../components/Aireviewresult";
-import {
-  Headerall,
-  LogoContainer,
-  Logo,
-  ButtonContainer,
-} from "../components/Headerall";
-import logoSrc from "../images/logo.svg";
+import Headerall from "../components/Headerall";
+import logoSrc from "../images/logo.svg"; // logo.svg 파일 경로를 올바르게 설정
 
 const Reviewresult = () => {
   const location = useLocation();
@@ -21,13 +16,7 @@ const Reviewresult = () => {
       <PageWrapper>
         <HeaderWrapper>
           <Headerall>
-            <LogoContainer>
-              <Logo data={logoSrc} type="image/svg+xml" />
-            </LogoContainer>
-            <ButtonContainer>
-              <Button>AI 검토 받으러 가기</Button>
-              <Button>상대방과 계약서 검토하기</Button>
-            </ButtonContainer>
+            
           </Headerall>
         </HeaderWrapper>
 
@@ -36,7 +25,7 @@ const Reviewresult = () => {
             <ComponentWrapper>
               <Aireviewresult contractDataMain={contractMain}  contractDataToxin={contractToxin}/>
             </ComponentWrapper>
-            <ComponentWrapper>
+            <ComponentWrapper style={{ marginRight: "50px" }}>
               <Suggestion
                 contractId = {contractId}
                 contractMain={contractMain}
@@ -93,7 +82,9 @@ const ComponentWrapper = styled.div`
   flex: 1;
   max-width: 800px; /* 컴포넌트의 최대 너비를 설정합니다. 원하는 값으로 변경하세요. */
   box-sizing: border-box;
-  
+  &:nth-child(2) {
+    margin-left: -50px; /* 두 번째 컴포넌트를 왼쪽으로 50px 이동 */
+  }
 `;
 
 export default Reviewresult;
