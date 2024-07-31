@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import animationData2 from "../lottie/Loading3.json";
 import Button from "../components/Button2";
 import styled, { createGlobalStyle, keyframes } from "styled-components";
+
 import {
   Headerall,
   LogoContainer,
@@ -12,29 +13,7 @@ import {
 } from "../components/Headerall";
 import logoSrc from "../images/logo.svg";
 
-const bgColor = "#DFDFDF";
-const foldColor = "#F7F7F6";
-const activeColor = "#868686";
-
-const loadingAnimation = keyframes`
-  from {
-    width: 0%;
-  }
-  to {
-    width: 100%;
-  }
-`;
-
-const Container = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  padding-top: 10em; // 여기서 상단 패딩을 추가합니다.
-`;
-
-const animationDuration = "10s"; // 원하는 애니메이션 지속 시간 설정
+const animationDuration = "15s"; // 애니메이션 지속 시간 설정
 
 const loaderAnimation = keyframes`
   from { width: 0%; }
@@ -44,6 +23,15 @@ const loaderAnimation = keyframes`
 const counterAnimation = keyframes`
   from { left: -25px; }
   to { left: 323px; }
+`;
+
+const Container = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  padding-top: 10em; // 상단 패딩 추가
 `;
 
 const Wrapper = styled.div`
@@ -56,27 +44,18 @@ const Wrapper = styled.div`
     border-radius: 30px;
     background: #dcdbd7;
     position: relative;
-    box-shadow:
-      0 1px 0 rgba(255, 255, 255, 0.8),
-      inset 0 2px 3px rgba(0, 0, 0, 0.2);
-  }
-
-  .load-bar:hover .load-bar-inner,
-  .load-bar:hover #counter {
-    animation-play-state: paused;
+    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.8), inset 0 2px 3px rgba(0, 0, 0, 0.2);
   }
 
   .load-bar-inner {
     height: 99%;
-    width: 0%;
+    width: 100%; // 0에서 시작해 100%로 애니메이션
     border-radius: inherit;
     position: relative;
     background: #c2d7ac;
     background: linear-gradient(#f6d767, #fad23f);
-    box-shadow:
-      inset 0 1px 0 rgba(255, 255, 255, 1),
-      0 1px 5px rgba(0, 0, 0, 0.3),
-      0 4px 5px rgba(0, 0, 0, 0.3);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 1), 0 1px 5px rgba(0, 0, 0, 0.3),
+                0 4px 5px rgba(0, 0, 0, 0.3);
     animation: ${loaderAnimation} ${animationDuration} linear forwards;
   }
 
@@ -89,14 +68,12 @@ const Wrapper = styled.div`
     background: linear-gradient(#141f7b, #141f7b);
     padding: 5px 10px;
     border-radius: 0.4em;
-    box-shadow:
-      inset 0 1px 0 rgba(255, 255, 255, 2),
-      0 2px 4px 1px rgba(0, 0, 0, 0.1),
-      0 1px 3px 1px rgba(0, 0, 0, 0.1);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 2), 0 2px 4px 1px rgba(0, 0, 0, 0.1),
+                0 1px 3px 1px rgba(0, 0, 0, 0.1);
     left: -25px;
     top: -50px;
     font-size: 12px;
-    color: #fff; /* Changed to white */
+    color: #fff;
     font-weight: bold;
     width: 44px;
     height: 25px;
@@ -113,9 +90,7 @@ const Wrapper = styled.div`
     left: 50%;
     margin-left: -4px;
     bottom: -4px;
-    box-shadow:
-      3px 3px 4px rgba(0, 0, 0, 0.2),
-      1px 1px 1px 1px rgba(0, 0, 0, 0.1);
+    box-shadow: 3px 3px 4px rgba(0, 0, 0, 0.2), 1px 1px 1px 1px rgba(0, 0, 0, 0.1);
     border-radius: 0 0 3px 0;
   }
 
@@ -145,7 +120,7 @@ const LogoButton = styled.button`
   outline: none;
 
   &:focus {
-    outline: none; /* Ensures no outline appears when the button is focused */
+    outline: none; /* 버튼 포커스 시 아웃라인 제거 */
   }
 `;
 
@@ -156,42 +131,25 @@ const LogoWrapper = styled.div`
 `;
 
 const Loading = () => {
-  const navigate = useNavigate(); // useNavigate 훅 사용
+  const navigate = useNavigate();
 
   useEffect(() => {
-    let interval = setInterval(increment, 100); // 15초 동안 100%로 증가하도록 수정
     let current = 0;
+    const counterElement = document.getElementById("counter");
 
-    function increment() {
+    // counter 업데이트 함수
+    const increment = () => {
       current++;
-      document.getElementById("counter").innerHTML =
-        Math.min(current, 100) + "%";
-      document.querySelector(".load-bar-inner").style.width =
-        Math.min(current, 100) + "%";
-      if (current === 100) {
-        clearInterval(interval);
+      if (current <= 100) {
+        counterElement.innerHTML = current + "%";
       }
-    }
+    };
 
-    const loadBar = document.querySelector(".load-bar");
-
-    function pauseInterval() {
-      clearInterval(interval);
-    }
-
-    function resumeInterval() {
-      if (current < 100) {
-        interval = setInterval(increment, 150); // 15초 동안 100%로 증가하도록 수정
-      }
-    }
-
-    loadBar.addEventListener("mouseover", pauseInterval);
-    loadBar.addEventListener("mouseout", resumeInterval);
+    // 150ms 간격으로 counter 업데이트
+    const interval = setInterval(increment, 150);
 
     return () => {
-      clearInterval(interval);
-      loadBar.removeEventListener("mouseover", pauseInterval);
-      loadBar.removeEventListener("mouseout", resumeInterval);
+      clearInterval(interval); // 컴포넌트 언마운트 시 interval 클리어
     };
   }, []);
 
@@ -232,7 +190,7 @@ const Loading = () => {
         />
         <Wrapper>
           <div className="load-bar">
-            <div className="load-bar-inner" data-loading="0">
+            <div className="load-bar-inner">
               <span id="counter"></span>
             </div>
           </div>

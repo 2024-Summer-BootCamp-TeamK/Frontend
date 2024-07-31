@@ -107,7 +107,7 @@ const OriginalContractButton = styled.div`
   border: none;
   border-radius: 10px 10px 0px 0px;
   padding: 13px 20px;
-  font-size: 20px;
+  font-size: 15px;
   font-weight: 700;
   cursor: pointer;
 `;
