@@ -190,13 +190,7 @@ const ContractShare = () => {
   return (
     <div>
       <Headerall>
-        <LogoContainer>
-          <Logo data={logoSrc} type="image/svg+xml" />
-        </LogoContainer>
-        <HeaderButtonContainer>
-          <Button onClick={() => navigate('/category')}>AI 검토 받으러 가기</Button>
-          <Button onClick={() => navigate('/fileuploadshare')}>상대방과 계약서 검토하기</Button>
-        </HeaderButtonContainer>
+ 
       </Headerall>
       {!ws ? (
         <JoinContainer>

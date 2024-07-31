@@ -5,13 +5,8 @@ import Button from "../components/Button2";
 import arrowLSrc from '../images/arrowL.svg';
 import arrowRSrc from '../images/arrowR.svg';
 import fileSrc from "../images/file.svg";
-import {
-  Headerall,
-  LogoContainer,
-  Logo,
-  ButtonContainer,
-} from "../components/Headerall";
-import logoSrc from "../images/logo.svg"; // logo.svg 파일 경로를 올바르게 설정
+import Headerall from "../components/Headerall";
+// logo.svg 파일 경로를 올바르게 설정
 
 const GlobalStyle = createGlobalStyle`
   * {
@@ -56,7 +51,7 @@ const slideRight = keyframes`
 
 const SliderWrapper = styled.div`
   overflow: hidden;
-  width: 100%;  // width를 100%로 유지
+  width: 100%; // width를 100%로 유지
   display: flex;
   justify-content: center;
   align-items: center;
@@ -68,7 +63,8 @@ const Slider = styled.div`
   ${({ direction }) =>
     direction &&
     css`
-      animation: ${direction === "left" ? slideLeft : slideRight} 0.5s ease-in-out;
+      animation: ${direction === "left" ? slideLeft : slideRight} 0.5s
+        ease-in-out;
     `}
 `;
 
@@ -92,7 +88,10 @@ const Category = () => {
         if (direction === "left") {
           setItemsQueue((prevItems) => [...prevItems.slice(1), prevItems[0]]);
         } else if (direction === "right") {
-          setItemsQueue((prevItems) => [prevItems[prevItems.length - 1], ...prevItems.slice(0, -1)]);
+          setItemsQueue((prevItems) => [
+            prevItems[prevItems.length - 1],
+            ...prevItems.slice(0, -1),
+          ]);
         }
         setDirection(null);
       }, 400);
@@ -111,35 +110,30 @@ const Category = () => {
   const handleCardClick = (index) => {
     if (index === activeIndex) {
       const selectedCategory = itemsQueue[activeIndex].label;
-      navigate('/fileupload', { state: { category: selectedCategory } });
+      navigate("/fileupload", { state: { category: selectedCategory } });
     }
   };
 
   return (
     <>
       <GlobalStyle />
-      <Headerall>
-        <LogoContainer>
-          <Logo data={logoSrc} type="image/svg+xml" />
-        </LogoContainer>
-        <ButtonContainer>
-          <Button onClick={() => navigate('/category')}>AI 검토 받으러 가기</Button>
-          <Button onClick={() => navigate('/fileuploadshare')}>상대방과 계약서 검토하기</Button>
-        </ButtonContainer>
-      </Headerall>
+      <Headerall />
       <Title>계약서의 카테고리를 선택해주세요</Title>
-      <Container style={{ height: 'calc(100vh - 120px)' }}>
-        <Carousel style={{ height: '70%' }}>
-          <SliderWrapper style={{ height: '100%' }}>
-            <Slider direction={direction} style={{ height: '100%' }}>
+      <Container style={{ height: "calc(100vh - 120px)" }}>
+        <Carousel style={{ height: "70%" }}>
+          <SliderWrapper style={{ height: "100%" }}>
+            <Slider direction={direction} style={{ height: "100%" }}>
               {itemsQueue.slice(0, 5).map((item, index) => (
-                <SlideItem key={item.id} style={{ height: '100%' }}>
+                <SlideItem key={item.id} style={{ height: "100%" }}>
                   <CarouselItem
                     active={index === activeIndex}
-                    style={{ height: '300px' }}
+                    style={{ height: "300px" }}
                     onClick={() => handleCardClick(index)} // 클릭 핸들러 추가
                   >
-                    <IconWrapper active={index === activeIndex} style={{ height: '100%' }}>
+                    <IconWrapper
+                      active={index === activeIndex}
+                      style={{ height: "100%" }}
+                    >
                       <Icon src={fileSrc} alt={item.label} />
                     </IconWrapper>
                     <Label>{item.label}</Label>
@@ -148,8 +142,12 @@ const Category = () => {
               ))}
             </Slider>
           </SliderWrapper>
-          <ButtonL onClick={handlePrev}><img src={arrowLSrc} alt="Previous" /></ButtonL>
-          <ButtonR onClick={handleNext}><img src={arrowRSrc} alt="Next" /></ButtonR>
+          <ButtonL onClick={handlePrev}>
+            <img src={arrowLSrc} alt="Previous" />
+          </ButtonL>
+          <ButtonR onClick={handleNext}>
+            <img src={arrowRSrc} alt="Next" />
+          </ButtonR>
         </Carousel>
       </Container>
     </>
@@ -163,9 +161,9 @@ const Title = styled.h1`
   text-align: center;
   margin: 20px 0 20px 0;
   font-size: 35px;
-  color: #141F7B;
+  color: #141f7b;
   margin-top: 220px;
-   -webkit-text-stroke: 0.7px #141F7B; 
+  -webkit-text-stroke: 0.7px #141f7b;
 `;
 
 const Container = styled.div`
@@ -196,7 +194,9 @@ const CarouselItem = styled.div`
   cursor: pointer;
   opacity: ${(props) => (props.active ? 1 : 0.5)};
   transform: ${(props) => (props.active ? "scale(1.2)" : "scale(1)")};
-  transition: transform 0.3s ease, opacity 0.3s ease;
+  transition:
+    transform 0.3s ease,
+    opacity 0.3s ease;
 
   @media (max-width: 768px) {
     width: 150px;
@@ -222,7 +222,6 @@ const IconWrapper = styled.div`
       }
     `}
 `;
-
 
 const Icon = styled.img`
   width: 70%;
@@ -258,7 +257,7 @@ const ButtonL = styled.button`
     opacity: 0.8;
   }
 
-    &:focus {
+  &:focus {
     outline: none;
   }
 
