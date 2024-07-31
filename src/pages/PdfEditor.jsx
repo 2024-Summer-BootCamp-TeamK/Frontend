@@ -13,12 +13,7 @@ import { Page } from "../components/PdfEditorComponent/Page";
 import { Attachments } from "../components/PdfEditorComponent/Attachments";
 import { fetchPdfDocument } from "../services/pdfService";
 import Button from "../components/Button";
-import {
-  Headerall,
-  LogoContainer,
-  Logo,
-  ButtonContainer,
-} from "../components/Headerall";
+import Headerall from "../components/Headerall";
 import logoSrc from "../images/logo.svg";
 import { useLocation } from "react-router-dom";
 import * as pdfjsLib from "pdfjs-dist";
@@ -156,12 +151,17 @@ const PdfEditor = () => {
           setUsername(message.payload.username); // 서버에서 전달된 username 설정
         }
 
-        if (message.type === 'mouse_move') {
-          setMousePositions(prev => ({ ...prev, [message.payload.username]: message.payload.position }));
+        if (message.type === "mouse_move") {
+          setMousePositions((prev) => ({
+            ...prev,
+            [message.payload.username]: message.payload.position,
+          }));
           if (!userColors[message.payload.username]) {
-            setUserColors(prev => ({ ...prev, [message.payload.username]: getRandomColor() }));
+            setUserColors((prev) => ({
+              ...prev,
+              [message.payload.username]: getRandomColor(),
+            }));
           }
-
         }
         if (message.type === "page_change") {
           setPageIndex(message.payload.pageIndex); // 서버에서 전달된 페이지 인덱스로 페이지 변경
@@ -169,8 +169,8 @@ const PdfEditor = () => {
         if (message.type === "add_drawing") {
           addAttachment(message.payload); // 서버에서 전달된 드로잉 추가
         }
-        if (message.type === 'update_drawing') {
-          update(message.payload); 
+        if (message.type === "update_drawing") {
+          update(message.payload);
         }
       };
       websocket.onerror = (error) => {
@@ -234,8 +234,8 @@ const PdfEditor = () => {
   };
 
   const getRandomColor = () => {
-    const letters = '0123456789ABCDEF';
-    let color = '#';
+    const letters = "0123456789ABCDEF";
+    let color = "#";
     for (let i = 0; i < 6; i++) {
       color += letters[Math.floor(Math.random() * 16)];
     }
@@ -247,7 +247,7 @@ const PdfEditor = () => {
     const g = parseInt(hexColor.slice(3, 5), 16);
     const b = parseInt(hexColor.slice(5, 7), 16);
     const brightness = (r * 299 + g * 587 + b * 114) / 1000;
-    return brightness > 125 ? 'black' : 'white';
+    return brightness > 125 ? "black" : "white";
   };
 
   return (
@@ -255,30 +255,46 @@ const PdfEditor = () => {
       style={{ margin: 30, backgroundColor: "#fefdf6", paddingBottom: 30 }}
       onMouseMove={handleMouseMove}
     >
-      <Headerall>
-        <LogoContainer>
-          <Logo data={logoSrc} type="image/svg+xml" />
-        </LogoContainer>
-        <ButtonContainer>
-          <Button>AI 검토 받으러 가기</Button>
-          <Button>상대방과 계약서 검토하기</Button>
-        </ButtonContainer>
-      </Headerall>
+      <Headerall></Headerall>
       {currentPage ? (
         <Grid>
           <Grid.Row>
-            <Grid.Column style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '20px' }} width={3}>
+            <Grid.Column
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                marginBottom: "20px",
+              }}
+              width={3}
+            >
               {isMultiPage && (
-                <CircleButton onClick={() => handlePageChange(pageIndex - 1)} disabled={isFirstPage}>
-                  <ButtonText>{'<'}</ButtonText>
+                <CircleButton
+                  onClick={() => handlePageChange(pageIndex - 1)}
+                  disabled={isFirstPage}
+                >
+                  <ButtonText>{"<"}</ButtonText>
                 </CircleButton>
               )}
             </Grid.Column>
             <Grid.Column width={10}>
               {currentPage && (
-                <StyledSegment style={{ display: 'flex', justifyContent: 'center', marginTop: '80px' }} data-testid="page" compact stacked={isMultiPage && !isLastPage}>
-                  <div style={{ position: 'relative' }} ref={canvasRef}>
-                    <Page dimensions={dimensions} updateDimensions={setDimensions} page={currentPage} />
+                <StyledSegment
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    marginTop: "80px",
+                  }}
+                  data-testid="page"
+                  compact
+                  stacked={isMultiPage && !isLastPage}
+                >
+                  <div style={{ position: "relative" }} ref={canvasRef}>
+                    <Page
+                      dimensions={dimensions}
+                      updateDimensions={setDimensions}
+                      page={currentPage}
+                    />
 
                     {dimensions && (
                       <Attachments
@@ -303,10 +319,13 @@ const PdfEditor = () => {
                         }}
                       >
                         <PointerCircle />
-                        <PointerLabel 
-                          style={{ 
-                            backgroundColor: userColors[username] || getRandomColor(), 
-                            color: getContrastingColor(userColors[username] || '#ffffff')
+                        <PointerLabel
+                          style={{
+                            backgroundColor:
+                              userColors[username] || getRandomColor(),
+                            color: getContrastingColor(
+                              userColors[username] || "#ffffff"
+                            ),
                           }}
                         >
                           {username}
@@ -317,10 +336,21 @@ const PdfEditor = () => {
                 </StyledSegment>
               )}
             </Grid.Column>
-            <Grid.Column style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '20px' }} width={3}>
+            <Grid.Column
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                marginBottom: "20px",
+              }}
+              width={3}
+            >
               {isMultiPage && (
-                <CircleButton onClick={() => handlePageChange(pageIndex + 1)} disabled={isLastPage}>
-                  <ButtonText>{'>'}</ButtonText>
+                <CircleButton
+                  onClick={() => handlePageChange(pageIndex + 1)}
+                  disabled={isLastPage}
+                >
+                  <ButtonText>{">"}</ButtonText>
                 </CircleButton>
               )}
             </Grid.Column>
@@ -351,9 +381,9 @@ const StyledSegment = styled(Segment)`
 `;
 
 const CircleButton = styled.button`
-  height: 40px; 
+  height: 40px;
   width: 40px;
-  background-color: #141F7B;
+  background-color: #141f7b;
   color: white;
   border: none;
   border-radius: 50%;
