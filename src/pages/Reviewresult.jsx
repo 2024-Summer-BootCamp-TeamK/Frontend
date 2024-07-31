@@ -25,7 +25,7 @@ const Reviewresult = () => {
             <ComponentWrapper>
               <Aireviewresult contractDataMain={contractMain}  contractDataToxin={contractToxin}/>
             </ComponentWrapper>
-            <ComponentWrapper>
+            <ComponentWrapper style={{ marginRight: "50px" }}>
               <Suggestion
                 contractId = {contractId}
                 contractMain={contractMain}
@@ -82,7 +82,9 @@ const ComponentWrapper = styled.div`
   flex: 1;
   max-width: 800px; /* 컴포넌트의 최대 너비를 설정합니다. 원하는 값으로 변경하세요. */
   box-sizing: border-box;
-  
+  &:nth-child(2) {
+    margin-left: -50px; /* 두 번째 컴포넌트를 왼쪽으로 50px 이동 */
+  }
 `;
 
 export default Reviewresult;

@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef, forwardRef, useImperativeHandle } f
 import styled from "styled-components";
 import { modifiedContract } from "../services/getModifiedContract";
 import * as pdfjsLib from "pdfjs-dist";
-import jsPDF from "jspdf"; // jspdf 임포트
+// import jsPDF from "jspdf"; // jspdf 임포트
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.js`;
 
@@ -107,7 +107,7 @@ const OriginalContractButton = styled.div`
   border: none;
   border-radius: 10px 10px 0px 0px;
   padding: 13px 20px;
-  font-size: 20px;
+  font-size: 15px;
   font-weight: 700;
   cursor: pointer;
 `;
