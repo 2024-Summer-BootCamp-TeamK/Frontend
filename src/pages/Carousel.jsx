@@ -7,12 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import { PDFDocument, rgb } from 'pdf-lib';
 import Draggable from 'react-draggable';
 import Button from "../components/Button2";
-import {
-  Headerall,
-  LogoContainer,
-  Logo,
-  ButtonContainer as HeaderButtonContainer,
-} from "../components/Headerall";
+import Headerall from "../components/Headerall";
 import logoSrc from "../images/logo.svg";
 import shareInfoIcon from "../images/share-info-icon.svg";
 

@@ -5,12 +5,7 @@ import animationData2 from "../lottie/Loading3.json";
 import Button from "../components/Button2";
 import styled, { createGlobalStyle, keyframes } from "styled-components";
 
-import {
-  Headerall,
-  LogoContainer,
-  Logo,
-  ButtonContainer,
-} from "../components/Headerall";
+import Headerall from "../components/Headerall";
 import logoSrc from "../images/logo.svg";
 
 const animationDuration = "15s"; // 애니메이션 지속 시간 설정

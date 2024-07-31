@@ -13,12 +13,7 @@ import { Page } from '../components/PdfEditorComponent/Page';
 import { Attachments } from '../components/PdfEditorComponent/Attachments';
 import { fetchPdfDocument } from '../services/pdfService';
 import Button from "../components/Button2";
-import {
-  Headerall,
-  LogoContainer,
-  Logo,
-  ButtonContainer,
-} from "../components/Headerall";
+import Headerall from "../components/Headerall";
 import logoSrc from "../images/logo.svg";
 import { useLocation } from "react-router-dom";
 import * as pdfjsLib from "pdfjs-dist";

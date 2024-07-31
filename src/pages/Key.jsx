@@ -6,12 +6,7 @@ import Popupkeycreate from '../components/Popupkeycreate';
 import Button from '../components/Button2';
 import contractShare from '../services/share_API';
 
-import {
-    Headerall,
-    LogoContainer,
-    Logo,
-    ButtonContainer,
-} from '../components/Headerall';
+import Headerall from '../components/Headerall';
 import logoSrc from '../images/logo.svg'; // logo.svg 파일 경로를 올바르게 설정
 
 const Key = () => {

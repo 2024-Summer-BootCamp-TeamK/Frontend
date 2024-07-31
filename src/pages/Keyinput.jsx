@@ -2,12 +2,7 @@ import React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import Popupkeyinput from '../components/Popupkeyinput';
 import Button from '../components/Button2';
-import {
-    Headerall,
-    LogoContainer,
-    Logo,
-    ButtonContainer,
-} from '../components/Headerall';
+import Headerall from '../components/Headerall';
 import logoSrc from '../images/logo.svg';
 
 
