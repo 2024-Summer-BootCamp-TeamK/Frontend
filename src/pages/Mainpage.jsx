@@ -94,6 +94,11 @@ const Mainpage = () => {
     applyAnimation("text-overlay2", 1.5); // 'text-overlay2' 요소에 1.5초 지연 후 애니메이션 적용
   }, []); // 컴포넌트가 마운트될 때 한 번 실행
 
+  const handleNavigate = (path) => {
+    window.scrollTo(0, 0); // 페이지 전환 시 스크롤을 최상단으로 이동
+    navigate(path);
+  };
+
   return (
     <>
       <GlobalStyle />
@@ -122,7 +127,7 @@ const Mainpage = () => {
           <AnimatedImage ref={ref1_3} src={main1_3Src} alt="main1_3" inView={inView1_3} />
         </SvgRow>
         <ButtonCenter>
-          <Orangebutton onClick={() => navigate('/category')}>계약서 검토 받으러 가기</Orangebutton>
+          <Orangebutton onClick={() => handleNavigate('/category')}>계약서 검토 받으러 가기</Orangebutton>
         </ButtonCenter>
         <SvgRow>
           <AnimatedImage ref={ref2_1} src={main2_1Src} alt="main2_1" inView={inView2_1} />
@@ -132,7 +137,7 @@ const Mainpage = () => {
           <AnimatedImage ref={ref2_3} src={main2_3Src} alt="main2_3" inView={inView2_3} />
         </SvgRow>
         <ButtonCenter>
-          <Orangebutton onClick={() => navigate('/fileuploadshare')}>상대방과 계약서 검토하러 가기</Orangebutton>
+          <Orangebutton onClick={() => handleNavigate('/fileuploadshare')}>상대방과 계약서 검토하러 가기</Orangebutton>
         </ButtonCenter>
         <ImageContainer>
           <img src={mainendSrc} alt="mainend" />
@@ -178,7 +183,7 @@ const TextOverlayContainer = styled.div`
   }
 
   position: absolute;
-  top: 10%; /* 첫 번째 줄의 시작 위치 */
+  top: 8%; /* 첫 번째 줄의 시작 위치 */
   left: 55%;
   transform: translateX(-50%);
   z-index: 2;
@@ -209,8 +214,6 @@ const TextOverlayLine = styled.div`
     padding: 2px 0;
   }
 `;
-
-
 
 const SvgRow = styled.div`
   display: flex;
@@ -254,3 +257,4 @@ const AnimatedImage = styled.img`
       animation: ${fadeInDown} 2s;
     `}
 `;
+

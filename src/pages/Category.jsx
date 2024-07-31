@@ -161,10 +161,10 @@ export default Category;
 // Styled-components
 const Title = styled.h1`
   text-align: center;
-  margin: 20px 0 20px 0;
+  margin: 20px 0 0px 0;
   font-size: 35px;
   color: #141F7B;
-  margin-top: 220px;
+  margin-top: 200px;
    -webkit-text-stroke: 0.7px #141F7B; 
 `;
 
