@@ -16,17 +16,10 @@ import mainendSrc from "../images/mainend.svg";
 import { useNavigate } from 'react-router-dom';
 import UseIntersectionObserver from '../components/UseIntersectionObserver';
 
-// Import the font using createGlobalStyle
+// 글로벌 스타일 정의
 const GlobalStyle = createGlobalStyle`
-  @font-face {
-    font-family: "Rakkas", serif;
-    src: url('https://fonts.googleapis.com/css2?family=Anton+SC&family=Rakkas&display=swap');
-    font-weight: 400;
-    font-style: normal;
-  }
-  
   body {
-    font-family: 'Rakkas', serif;
+    font-family: 'Cafe24Decobox', serif;
   }
 `;
 
@@ -78,21 +71,28 @@ const Mainpage = () => {
 
   useEffect(() => {
     const applyAnimation = (id, delay = 0) => {
-      const dom = document.getElementById(id);
-      const chars = dom.innerText.split("");
-      dom.innerHTML = "";
-      chars.forEach((char, index) => {
-        const span = document.createElement("span");
-        span.innerText = char;
-        span.style.animationDelay = `${0.1 * index + delay}s`;
-        span.classList.add('clip');
-        dom.appendChild(span);
+      const dom = document.getElementById(id); // 주어진 id를 사용하여 DOM 요소를 가져옴
+      const chars = dom.innerText.split(""); // 텍스트를 개별 문자로 분할하여 배열에 저장
+      dom.innerHTML = ""; // DOM 요소의 기존 내용을 비움
+      chars.forEach((char, index) => { // 각 문자를 순회하며 처리
+        const span = document.createElement("span"); // 새로운 span 요소 생성
+        span.innerText = char === " " ? "\u00A0" : char; // 공백 문자는 특수 공백 문자로, 나머지는 그대로 설정
+        span.style.animationDelay = `${0.1 * index + delay}s`; // 애니메이션 지연 시간을 설정
+        span.classList.add('clip'); // span 요소에 'clip' 클래스를 추가하여 애니메이션 적용
+
+        // 부모 요소의 폰트 스타일을 span에 직접 적용
+        span.style.fontFamily = getComputedStyle(dom).fontFamily; // 부모 요소의 font-family 스타일을 상속
+        span.style.fontSize = getComputedStyle(dom).fontSize; // 부모 요소의 font-size 스타일을 상속
+        span.style.fontWeight = getComputedStyle(dom).fontWeight; // 부모 요소의 font-weight 스타일을 상속
+        span.style.fontStyle = getComputedStyle(dom).fontStyle; // 부모 요소의 font-style 스타일을 상속
+
+        dom.appendChild(span); // 새로 만든 span 요소를 DOM에 추가
       });
     };
 
-    applyAnimation("text-overlay1");
-    applyAnimation("text-overlay2", 1.5); // `text-overlay2`는 1.5초 지연
-  }, []);
+    applyAnimation("text-overlay1"); // 'text-overlay1' 요소에 애니메이션 적용
+    applyAnimation("text-overlay2", 1.5); // 'text-overlay2' 요소에 1.5초 지연 후 애니메이션 적용
+  }, []); // 컴포넌트가 마운트될 때 한 번 실행
 
   return (
     <>
@@ -100,17 +100,17 @@ const Mainpage = () => {
       <MainContainer>
         <Header logoSrc={logoSrc} isScrolled={isScrolled} />
 
-        <FirstImageContainer>
+        <ImageContainer>
           <img src={main1Src} alt="main1" />
           <TextOverlayContainer>
             <TextOverlayLine id="text-overlay1">
-              SHARE&nbsp;YOUR
+              SHARE YOUR
             </TextOverlayLine>
             <TextOverlayLine id="text-overlay2" offset>
-              CONTRACT&nbsp;WITH&nbsp;US
+              CONTRACT WITH US
             </TextOverlayLine>
           </TextOverlayContainer>
-        </FirstImageContainer>
+        </ImageContainer>
         <ImageContainer>
           <img src={main2Src} alt="main2" />
         </ImageContainer>
@@ -150,25 +150,6 @@ const MainContainer = styled.div`
   position: relative;
 `;
 
-const FirstImageContainer = styled.div`
-  text-align: center;
-  margin: 0;
-  border: none;
-  position: relative;
-  z-index: 1; 
-
-  img {
-    width: 100%;
-    height: auto;
-    object-fit: cover;
-    object-position: center;
-    margin-top: -100px;
-    border: none;
-    position: relative;
-    z-index: 1;
-  }
-`;
-
 const ImageContainer = styled.div`
   text-align: center;
   margin: 0;
@@ -189,6 +170,13 @@ const ImageContainer = styled.div`
 `;
 
 const TextOverlayContainer = styled.div`
+  @font-face {
+    font-family: 'Cafe24Decobox';
+    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/2405-3@1.1/Cafe24Decobox.woff2') format('woff2');
+    font-weight: normal;
+    font-style: normal;
+  }
+
   position: absolute;
   top: 10%; /* 첫 번째 줄의 시작 위치 */
   left: 55%;
@@ -200,44 +188,29 @@ const TextOverlayContainer = styled.div`
 
 const TextOverlayLine = styled.div`
   color: #E7470A;
-  font-size: 3vw; /* 뷰포트 크기에 맞춰 폰트 크기 조정 */
-  font-weight: bold;
-  line-height: 1; /* 줄 간격 조정 */
+  font-size: clamp(140%, 5vw, 500%); /* 폰트 크기를 동적으로 조정 */
+  font-weight: 900; /* Cafe24Decobox 폰트의 굵기 설정 */
+  font-style: normal; /* Cafe24Decobox 폰트 스타일 설정 */
+  line-height: 1.2; /* 줄 간격 조정 */
   padding: 5px 0; /* 텍스트 위아래 공간 조정 */
-  margin-top: 20px;
-  font-family: 'Rakkas', serif !important; /* 폰트 적용에 !important 추가 */
-  text-shadow: 1px 1px 0 #E7470A, -1px -1px 0 #E7470A, 1px -1px 0 #E7470A, -1px 1px 0 #E7470A;
+  margin-top: 0px;
+  font-family: 'Cafe24Decobox', serif !important; /* 폰트 적용에 !important 추가 */
 
   span {
     display: inline-block;
     animation: ${cliptext} 1s ease-in-out both;
-  }
-
-  @media (max-width: 1200px) {
-    font-size: 3vw; /* 1200px 이하 화면에서 폰트 크기 조정 */
-    line-height: 1; /* 1200px 이하 화면에서 줄 간격 조정 */
-  }
-
-  @media (max-width: 992px) {
-    font-size: 2.5vw; /* 992px 이하 화면에서 폰트 크기 조정 */
-    line-height: 1; /* 992px 이하 화면에서 줄 간격 조정 */
+    font-family: inherit; /* 부모 요소의 폰트 상속 */
+    font-size: inherit; /* 부모 요소의 폰트 크기 상속 */
+    font-weight: inherit; /* 부모 요소의 폰트 두께 상속 */
+    font-style: inherit; /* 부모 요소의 폰트 스타일 상속 */
   }
 
   @media (max-width: 768px) {
-    font-size: 2.5vw; /* 768px 이하 화면에서 폰트 크기 조정 */
-    line-height: 0.5; /* 768px 이하 화면에서 줄 간격 조정 */
-  }
-
-  @media (max-width: 576px) {
-    font-size: 2vw; /* 576px 이하 화면에서 폰트 크기 조정 */
-    line-height: 0.5; /* 576px 이하 화면에서 줄 간격 조정 */
-  }
-
-  @media (max-width: 480px) {
-    font-size: 1.5vw; /* 480px 이하 화면에서 폰트 크기 조정 */
-    line-height: 0.5; /* 480px 이하 화면에서 줄 간격 조정 */
+    padding: 2px 0;
   }
 `;
+
+
 
 const SvgRow = styled.div`
   display: flex;
