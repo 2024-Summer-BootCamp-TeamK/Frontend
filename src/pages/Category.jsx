@@ -159,11 +159,11 @@ export default Category;
 // Styled-components
 const Title = styled.h1`
   text-align: center;
-  margin: 20px 0 20px 0;
+  margin: 20px 0 0px 0;
   font-size: 35px;
-  color: #141f7b;
-  margin-top: 220px;
-  -webkit-text-stroke: 0.7px #141f7b;
+  color: #141F7B;
+  margin-top: 200px;
+   -webkit-text-stroke: 0.7px #141F7B; 
 `;
 
 const Container = styled.div`
