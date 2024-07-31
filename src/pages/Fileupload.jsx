@@ -6,14 +6,9 @@ import Button from "../components/Button";
 import ReviewStartButtonComponent from "../components/ReviewStartButtonComponent";
 import contractUpload from "../services/fileupload_API";
 import Popuploading from "../components/Popuploading"; // Popuploading 임포트
+import Headerall from "../components/Headerall";
+import logoSrc from "../images/logo.svg"; // logo.svg 파일 경로를 올바르게 설정
 
-import {
-  Headerall,
-  LogoContainer,
-  Logo,
-  ButtonContainer,
-} from "../components/Headerall";
-import logoSrc from "../images/logo.svg";
 import uploadIconSrc from "../images/upload-icon.svg";
 
 const Fileupload = () => {
@@ -47,7 +42,7 @@ const Fileupload = () => {
     try {
       const data = await contractUpload(formData);
       console.log("계약서 업로드 성공:", data);
-      alert("계약서 업로드 성공! 계약서 ID: " + data.contractId);
+      alert("계약서 업로드 성공!");
       navigate(`/contract/${data.contractId}`);
     } catch (error) {
       console.error("계약서 업로드 에러:", error.message);
@@ -59,21 +54,10 @@ const Fileupload = () => {
 
   return (
     <>
-      {loading && <Popuploading />} {/* 로딩 중일 때 Popuploading 컴포넌트 렌더링 */}
+      {loading && <Popuploading />}{" "}
+      {/* 로딩 중일 때 Popuploading 컴포넌트 렌더링 */}
       <div>
-        <Headerall>
-          <LogoContainer>
-            <Logo data={logoSrc} type="image/svg+xml" />
-          </LogoContainer>
-          <ButtonContainer>
-            <Button onClick={() => navigate("/category")}>
-              AI 검토 받으러 가기
-            </Button>
-            <Button onClick={() => navigate("/fileuploadshare")}>
-              상대방과 계약서 검토하기
-            </Button>
-          </ButtonContainer>
-        </Headerall>
+        <Headerall></Headerall>
       </div>
       <Wrapper>
         <DropZone {...getRootProps()}>
@@ -90,7 +74,11 @@ const Fileupload = () => {
             {isDragActive ? (
               <p>파일을 여기에 놓으세요 ...</p>
             ) : (
-              <p>{fileName ? `업로드된 파일 : ${fileName}` : 'PDF형식의 파일만 업로드 가능합니다'}</p>
+              <p>
+                {fileName
+                  ? `업로드된 파일 : ${fileName}`
+                  : "PDF형식의 파일만 업로드 가능합니다"}
+              </p>
             )}
           </DropZoneText>
         </DropZone>
@@ -152,8 +140,7 @@ const DropZoneText = styled.div`
   p {
     margin: 0;
     font-size: ${(props) => (props.isFileUploaded ? "28px" : "22px")};
-    color: ${(props) =>
-      props.isFileUploaded ? "#000000" : "#a6a6a6"};
+    color: ${(props) => (props.isFileUploaded ? "#000000" : "#a6a6a6")};
     font-weight: 600;
     position: absolute;
     bottom: 25px;
