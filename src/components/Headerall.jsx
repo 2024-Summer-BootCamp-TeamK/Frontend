@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
-import Button from "./Button";
+import Button from "./Button2";
 import logoSrc from "../images/logo.svg";
 
 const Headerall = ({ logoSrc: logoImage, isScrolled }) => {
